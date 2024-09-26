@@ -29,11 +29,8 @@
 
         .btn-primary {
             background-color: #007bff;
-            /* Mudado para azul */
             border-color: #007bff;
-            /* Mudado para azul */
             color: #FFF;
-            /* Texto em branco para contraste */
             font-weight: bold;
         }
 
@@ -79,9 +76,7 @@
 
         .footer {
             background-color: #007bff;
-            /* Mudado para azul */
             color: #FFF;
-            /* Texto em branco para contraste */
             padding: 40px 0;
             text-align: center;
         }
