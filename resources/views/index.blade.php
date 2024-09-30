@@ -6,72 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickMatch</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-        }
-
-        .navbar {
-            border-bottom: 2px solid #f4f4f4;
-            padding: 15px 0;
+            font-family: 'Poppins', sans-serif;
         }
 
         .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .navbar-nav .nav-link {
-            font-size: 1rem;
-            margin-right: 20px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: #FFF;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .hero {
-            /*  background-image: url('{{ asset(' ') }}');  COLOCAR UMA IMAGEM PARA FICAR MAIS BONITO */
-            background-size: cover;
             background-position: center;
-            padding: 100px 0;
-            text-align: center;
             color: #000;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 20px;
-        }
-
-        .info-section {
-            padding: 60px 0;
-        }
-
-        .info-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
-        .info-card {
-            background-color: #f4f4f4;
-            border: none;
-            padding: 20px;
+            padding: 80px 0;
             text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-10px);
         }
 
         .footer {
@@ -84,7 +34,8 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url('/') }}">QuickMatch</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,32 +43,21 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">Campos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">Jogos</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Campos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Jogos</a></li>
                     @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('dashboard') }}">Painel de Controlo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">Sair</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('dashboard') }}">Painel de Controlo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Sair</a></li>
                     @else
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('login') }}">Iniciar Sessão</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-primary" href="{{ url('register') }}">Começar</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('login') }}">Iniciar Sessão</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-primary" href="{{ url('register') }}">Começar</a></li>
                     @endauth
                 </ul>
             </div>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <div class="hero">
         <div class="container">
             <h1>Comunique. Colabore. Jogue.</h1>
@@ -126,38 +66,50 @@
         </div>
     </div>
 
-    <div class="container info-section text-center">
-        <h2>Como Funciona?</h2>
-        <div class="row">
+    <!-- Info Section -->
+    <div class="container py-5 text-center">
+        <h2 class="display-5 mb-5">Como Funciona?</h2>
+        <div class="row g-4">
             <div class="col-md-3">
-                <div class="card info-card">
-                    <h5 class="card-title">Encontre Campos</h5>
-                    <p class="card-text">Navegue pela nossa lista de campos disponíveis e encontre o campo ideal perto de si.</p>
+                <div class="card p-4 bg-light rounded">
+                    <div class="card-body">
+                        <i class="bi bi-map-fill display-4 text-primary"></i>
+                        <h5 class="card-title">Encontre Campos</h5>
+                        <p class="card-text">Navegue pela nossa lista de campos disponíveis e encontre o campo ideal perto de si.</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card info-card">
-                    <h5 class="card-title">Organize Jogos</h5>
-                    <p class="card-text">Crie e organize partidas com os seus amigos de maneira simples e eficiente.</p>
+                <div class="card p-4 bg-light rounded">
+                    <div class="card-body">
+                        <i class="bi bi-calendar-check-fill display-4 text-success"></i>
+                        <h5 class="card-title">Organize Jogos</h5>
+                        <p class="card-text">Crie e organize partidas com os seus amigos de maneira simples e eficiente.</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card info-card">
-                    <h5 class="card-title">Encontre Outros Jogadores</h5>
-                    <p class="card-text">Conecte-se com jogadores da sua área que partilham a sua paixão pelo desporto.</p>
-
-
+                <div class="card p-4 bg-light rounded">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill display-4 text-warning"></i>
+                        <h5 class="card-title">Encontre Outros Jogadores</h5>
+                        <p class="card-text">Conecte-se com jogadores da sua área que partilham a sua paixão pelo desporto.</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card info-card">
-                    <h5 class="card-title">Registe-se Agora</h5>
-                    <p class="card-text">Crie a sua conta gratuitamente e tenha acesso a todos os recursos para gerir as suas partidas.</p>
+                <div class="card p-4 bg-light rounded">
+                    <div class="card-body">
+                        <i class="bi bi-person-plus-fill display-4 text-danger"></i>
+                        <h5 class="card-title">Registe-se Agora</h5>
+                        <p class="card-text">Crie a sua conta gratuitamente e tenha acesso a todos os recursos para gerir as suas partidas.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
     <div class="footer">
         <h2>Pronto para jogar?</h2>
         <p>Junte-se agora e reserve o seu campo preferido!</p>
@@ -165,7 +117,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/script.js') }}"></script>
 </body>
 
 </html>
