@@ -1,9 +1,9 @@
-<main class="container mx-auto text-center py-4 flex-grow">
+<main class="container mx-auto text-center py-4 flex-grow mt-10">
     <h1 class="text-4xl font-bold mb-4">Comunique. Colabore. Jogue.</h1>
     <p class="text-gray-700 mb-8">          
         Organize as suas partidas de vários desportos com facilidade e agilidade. Encontre os melhores campos perto de si!
     </p>
-    <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 shadow-lg">Começar agora</a>
+    <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 shadow-lg">Começar agora</a>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
     <div class="bg-gray-200 p-6 rounded shadow text-center">
@@ -31,6 +31,6 @@
     <div class="mt-16">
         <h2 class="text-2xl font-bold mb-4">Pronto para jogar?</h2>
         <p class="text-gray-700 mb-6">Junte-se agora e reserve o seu campo preferido!</p>
-        <a href="{{url('/register')}}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition duration-300 shadow-lg" >Registe-se!</a>
+        <a href="{{url('/register')}}" class="bg-black text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 shadow-lg">Registe-se!</a>
         </div>
 </main>
