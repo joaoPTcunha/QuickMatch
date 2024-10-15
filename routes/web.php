@@ -26,3 +26,6 @@ Route::get('/roulette', function () {
     return view('home.roulette'); 
 })->name('roulette');
 
+Route::get('/profile-complete', [])->name('profile.complete');
+
+
