@@ -12,23 +12,46 @@
         </label>
 
         <nav class="hidden md:flex flex-col md:flex-row space-x-4">
-            <a href="#" class="text-gray-700 hover:text-gray-900">Jogar</a>
+            <div class="relative group">
+                <a href="#" class="text-gray-700 hover:text-gray-900">Jogar</a>
+                @auth
+                <div class="absolute hidden group-hover:block bg-white shadow-md mt-1 rounded">
+                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
+                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                </div>
+                @endauth
+            </div>
             <a href="#" class="text-gray-700 hover:text-gray-900">Campos</a>
             <a href="#" class="text-gray-700 hover:text-gray-900">Roleta</a>
             <a href="#" class="text-gray-700 hover:text-gray-900">Contactos</a>
-            <a href="{{url('/login')}}" class="text-gray-700 hover:text-gray-900">Iniciar Sessão</a>
-            <a href="{{url('/register')}}" class="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600">Começar</a>
+            @guest
+                <a href="{{url('/login')}}" class="text-gray-700 hover:text-gray-900">Iniciar Sessão</a>
+                <a href="{{url('/register')}}" class="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600">Começar</a>
+            @endguest
+            @auth
+                <a href="{{url('/logout')}}" class="text-gray-700 hover:text-gray-900">Sair</a>
+            @endauth
         </nav>
     </div>
     <div class="md:hidden">
         <nav class="bg-gray-200" id="dropdown-menu">
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Jogar</label>
+            @auth
+            <div class="bg-white shadow-md mt-1 rounded">
+                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 1</a>
+                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 2</a>
+            </div>
+            @endauth
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Campos</label>
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Roleta</label>
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Contactos</label>
-            <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Iniciar Sessão</label>
-            <a href="{{url('/register')}}" class="bg-blue-500 text-white block text-center px-4 py-2 rounded hover:bg-blue-600">Começar</a>
+            @guest
+                <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Iniciar Sessão</label>
+                <a href="{{url('/register')}}" class="bg-blue-500 text-white block text-center px-4 py-2 rounded hover:bg-blue-600">Começar</a>
+            @endguest
+            @auth
+                <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Sair</label>
+            @endauth
         </nav>
     </div>
 </header>
-
