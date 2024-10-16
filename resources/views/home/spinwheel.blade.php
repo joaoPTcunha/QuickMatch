@@ -4,14 +4,14 @@
 <style>
     .wheel {
         display: flex;
-        justify-content: center;
         position: relative;
+        margin-left: 150px;
     }
 
     .center-circle {
-        width: 100px;
-        height: 100px;
-        border-radius: 60px;
+        width: 75px;
+        height: 75px;
+        border-radius: 100px;
         background-color: #fff; 
         position: absolute;
         top: 50%;
@@ -20,6 +20,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        margin-left: 212px;
         box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3); 
     }
 
@@ -31,14 +32,13 @@
         border-right: 40px solid #000;
         position: absolute;
         top: 50%;
-        right: -220%;
+        right: -330%;
         transform: translateY(-50%);
     }
 
     textarea {
         background-color: rgba(20, 20, 20, 0.5); 
         caret-color: #fff;
-        resize: none;
         color: #fff;
     }
 
@@ -46,6 +46,7 @@
         display: flex;
         justify-content: center;
         margin-top: 40px;
+        margin-left: 180px;
     }
 
     .controls {
@@ -57,7 +58,7 @@
 
     .btn {
         padding: 10px 20px;
-        background-color: #fff;
+        background-color: #f0f;
         color: #333;
         border: none;
         cursor: pointer;
@@ -65,7 +66,7 @@
     }
 
     .btn:hover {
-        background-color: #ddd;
+        background-color: #333;
     }
 </style>
 
@@ -74,22 +75,25 @@
     <div class="center-circle" onclick="spin()">Girar
         <div class="triangle"></div>
     </div>
-</div>
 
 <div class="inputArea">
     <textarea id="player-list" rows="10" cols="30">jogador 1
-jogador2
-jogador3
-jogador4</textarea>
+jogador 2
+jogador 3
+jogador 4</textarea>
+</div>
 </div>
 
+<div>
+    <button></button>
+</div>
+
+
 <div class="controls">
-    <label for="speed-control">Velocidade:</label>
-    <input type="range" id="speed-control" min="1" max="10" value="5">
     <button class="btn" onclick="spin()">Rodar</button>
 </div>
 
-<div id="winner" class="text-center text-white mt-4"></div>
+@include('home.footer')
 
 <script>
     function randomColor() {
@@ -124,16 +128,14 @@ jogador4</textarea>
     const centerY = height / 2;
     const radius = width / 2;
 
-    let items = document.getElementById("player-list").value.split("\n");
+    let items = document.getElementById("player-list").value.split("\n").filter(item => item.trim() !== "");
+    let colors = [];
     let currentDeg = 0;
     let step = 360 / items.length;
-    let colors = [];
     let itemDegs = {};
 
     function createWheel() {
-        items = document.getElementById("player-list").value.split("\n").filter(item => item.trim() !== "");
-        step = 360 / items.length;
-        colors = [];
+        colors = []; 
         for (let i = 0; i < items.length; i++) {
             colors.push(randomColor());
         }
@@ -186,8 +188,9 @@ jogador4</textarea>
 
     function animate() {
         if (pause) return;
-        const speedControl = document.getElementById('speed-control').value;
+        const speedControl = 35; 
         speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * speedControl;
+        
         if (speed < 0.01) {
             speed = 0;
             pause = true;
@@ -209,7 +212,6 @@ jogador4</textarea>
         maxRotation = (360 * 6) + randomRange(0, 360);
         currentDeg = 0;
         pause = false;
-        createWheel();
         window.requestAnimationFrame(animate);
     }
 

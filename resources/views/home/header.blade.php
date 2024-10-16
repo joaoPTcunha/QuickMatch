@@ -1,7 +1,8 @@
 <header class="bg-gray-200 py-4 mb-8">
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-2xl flex items-center space-x-2">
-            <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-10">
+        <a href="{{ route('index') }}">
+            <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-10"></a>
             <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>
         </div>
         <input type="checkbox" id="menu-toggle" class="hidden">
@@ -11,9 +12,8 @@
             </svg>
         </label>
 
-        <nav class="hidden md:flex flex-col md:flex-row space-x-4">
+        <nav class="hidden md:flex flex-col md:flex-row space-x-2"> <!-- Alterado de space-x-4 para space-x-2 -->
             <div class="relative group">
-                <a href="#" class="text-gray-700 hover:text-gray-900">Jogar</a>
                 @auth
                 <div class="absolute hidden group-hover:block bg-white shadow-md mt-1 rounded">
                     <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
@@ -21,15 +21,21 @@
                 </div>
                 @endauth
             </div>
-            <a href="#" class="text-gray-700 hover:text-gray-900">Campos</a>
-            <a href="#" class="text-gray-700 hover:text-gray-900">Roleta</a>
-            <a href="#" class="text-gray-700 hover:text-gray-900">Contactos</a>
+            <a href="{{url('/match')}}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Jogar</a>
+            <a href="#" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
+            <a href="{{url('/spinwheel')}}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Roleta</a>
+            <a href="{{url('/contact')}}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Contactos</a>
+
             @guest
-                <a href="{{url('/login')}}" class="text-gray-700 hover:text-gray-900">Iniciar Sessão</a>
-                <a href="{{url('/register')}}" class="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600">Começar</a>
+                <a href="{{ url('/login') }}" class="text-gray-700 hover:text-gray-900 px-4 py-2">Iniciar Sessão</a>
+                <a href="{{ url('/register') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Começar</a>
             @endguest
+
             @auth
-                <a href="{{url('/logout')}}" class="text-gray-700 hover:text-gray-900">Sair</a>
+                <form action="{{ url('/logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Sair</button>
+                </form>
             @endauth
         </nav>
     </div>
@@ -47,10 +53,13 @@
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Contactos</label>
             @guest
                 <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Iniciar Sessão</label>
-                <a href="{{url('/register')}}" class="bg-blue-500 text-white block text-center px-4 py-2 rounded hover:bg-blue-600">Começar</a>
+                <a href="{{ url('/register') }}" class="bg-blue-500 text-white block text-center px-4 py-2 rounded hover:bg-blue-600 mb-4">Começar</a>
             @endguest
             @auth
-                <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Sair</label>
+                <form action="{{ url('/logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-red-500 text-white block w-full text-center px-4 py-2 rounded hover:bg-red-600">Sair</button>
+                </form>
             @endauth
         </nav>
     </div>

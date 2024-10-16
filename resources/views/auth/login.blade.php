@@ -54,12 +54,7 @@
                 <a href="{{ url('/register') }}" class="mt-2 w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-500 transition duration-300 text-center flex items-center justify-center">
                 Criar nova conta</a>
             </div>                
-            
-            <!--Botao testes -->
-            <a href="{{ route('profile.complete') }}" class="mt-2 w-full bg-red-600 text-white py-2 rounded-md hover:bg-green-500 transition duration-300 text-center flex items-center justify-center">
-    Testes
-</a>
-            </div>
+        </div>
         </form>
     </div>
 </div>

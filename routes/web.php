@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,7 +11,7 @@ Route::get('/', function () {
 
 Route::get('/profile-complete', function () {
     return view('profile-complete');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified']);
 
 ### LOGIN/REGISTOS
 Route::middleware('auth')->group(function () {
@@ -19,12 +21,22 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__ . '/auth.php';
 
+######## UTILIZADOR SEM ESTAR LOGADO
+Route::get('/', function () {
+    return view('home.index');
+})->name('index');
 
+Route::get('/match', function () {
+    return view('home.match'); 
+})->name('match');
 
-#### TESTES #######
 Route::get('/spinwheel', function () {
     return view('home.spinwheel'); 
 })->name('spinwheel');
+
+Route::get('/match', function () {
+    return view('home.match'); 
+})->name('match');
 
 Route::get('/profile-complete', [])->name('profile.complete');
 
