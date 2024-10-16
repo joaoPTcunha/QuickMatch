@@ -22,9 +22,9 @@ require __DIR__ . '/auth.php';
 
 
 #### TESTES #######
-Route::get('/roulette', function () {
-    return view('home.roulette'); 
-})->name('roulette');
+Route::get('/spinwheel', function () {
+    return view('home.spinwheel'); 
+})->name('spinwheel');
 
 Route::get('/profile-complete', [])->name('profile.complete');
 
