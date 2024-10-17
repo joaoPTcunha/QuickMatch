@@ -48,7 +48,7 @@
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Jogar</label>
             @auth
                 <div class="bg-white shadow-md mt-1 rounded">
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 1</a>
+        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 1</a>
                     <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 2</a>
                 </div>
             @endauth
