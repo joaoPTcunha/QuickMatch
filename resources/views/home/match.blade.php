@@ -3,9 +3,6 @@
 @include('home.header')
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
-
-
-@include('home.footer')
-
+    <h1>Jogar</h1>
+    @include('home.footer')
 </body>
-</html>

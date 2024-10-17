@@ -27,17 +27,15 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('/match', function () {
-    return view('home.match'); 
+    return view('home.match');
 })->name('match');
 
 Route::get('/spinwheel', function () {
-    return view('home.spinwheel'); 
+    return view('home.spinwheel');
 })->name('spinwheel');
 
-Route::get('/match', function () {
-    return view('home.match'); 
-})->name('match');
+Route::get('/field', function () {
+    return view('home.field');
+})->name('field');
 
 Route::get('/profile-complete', [])->name('profile.complete');
-
-
