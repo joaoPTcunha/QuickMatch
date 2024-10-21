@@ -12,7 +12,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
             </svg>
         </label>
-        <nav class="hidden md:flex flex-col md:flex-row space-x-3">
+        <nav class="hidden md:flex flex-col md:flex-row space-x-3 items-center">
             <div class="relative group">
                 <a class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center">
                     Jogar
@@ -20,10 +20,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </a>
-
                 <div class="absolute hidden group-hover:block bg-white shadow-md rounded">
-                    <a href="{{ url('/create-event') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
-                    <a href="{{ url('/view-events') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                    @auth
+                        <a href="{{ url('/newmatch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
+                        <a href="{{ url('/seematch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                    @else
+                        <a href="{{ url('/login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
+                        <a href="{{ url('/login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                    @endauth
                 </div>
             </div>
             <a href="{{ url('/field') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
@@ -33,35 +37,49 @@
             @guest
                 <a href="{{ url('/login') }}" class="text-gray-700 hover:text-gray-900 px-4 py-2">Iniciar Sessão</a>
                 <a href="{{ url('/register') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Começar</a>
-            @endguest
-
-            @auth
-                <form action="{{ url('/logout') }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Sair</button>
-                </form>
+            @else
+                <div class="relative group">
+                    <button class="text-gray-700 hover:text-gray-900 px-4 py-2 flex items-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 19a1 1 0 00.91-.618l1.72-3.44a8 8 0 117.516 0l1.72 3.44a1 1 0 00.91.618H19.9"></path>
+                        </svg>
+                        <span class="ml-2">Perfil</span>
+                        <svg class="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute right-0 hidden group-hover:block bg-white shadow-md rounded">
+                        <a href="{{ url('/profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver Perfil</a>
+                        <a href="{{ url('/help') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Central de Ajuda</a>
+                        <a href="{{ url('/manage-fields') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Gerir campos</a>
+                        <form action="{{ url('/logout') }}" method="POST" class="block">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Terminar Sessão</button>
+                        </form>
+                    </div>
+                </div>
             @endauth
         </nav>
     </div>
     <div class="md:hidden">
         <nav class="bg-gray-200" id="dropdown-menu">
             <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Jogar</label>
-            @auth
-                <div class="bg-white shadow-md mt-1 rounded">
-        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 1</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Opção 2</a>
-                </div>
-            @endauth
-
-            <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Campos</label>
-            <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Roleta</label>
-            <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Contactos</label>
+            <div class="bg-white shadow-md rounded">
+                @auth
+                    <a href="{{ url('/newmatch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
+                    <a href="{{ url('/seematch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                @else
+                    <a href="{{ url('/login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
+                    <a href="{{ url('/login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                @endauth
+            </div>
+            <a href="{{ url('/field') }}" class="block text-gray-700 hover:text-gray-900 px-4 py-2">Campos</a>
+            <a href="{{ url('/spinwheel') }}" class="block text-gray-700 hover:text-gray-900 px-4 py-2">Roleta</a>
+            <a href="{{ url('/contact') }}" class="block text-gray-700 hover:text-gray-900 px-4 py-2">Contactos</a>
             @guest
-                <label for="menu-toggle" class="block text-gray-700 hover:text-gray-900 px-4 py-2 cursor-pointer">Iniciar Sessão</label>
+                <a href="{{ url('/login') }}" class="block text-gray-700 hover:text-gray-900 px-4 py-2">Iniciar Sessão</a>
                 <a href="{{ url('/register') }}" class="bg-blue-500 text-white block text-center px-4 py-2 rounded hover:bg-blue-600 mb-4">Começar</a>
-            @endguest
-
-            @auth
+            @else
                 <form action="{{ url('/logout') }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" class="bg-red-500 text-white block w-full text-center px-4 py-2 rounded hover:bg-red-600">Sair</button>

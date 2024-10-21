@@ -58,40 +58,47 @@
 
     .btn {
         padding: 10px 20px;
-        background-color: #f0f;
-        color: #333;
+        background-color: #007BFF;
+        color: #fff;
         border: none;
         cursor: pointer;
         border-radius: 5px;
     }
 
     .btn:hover {
-        background-color: #333;
+        background-color: #0056b3;
+    }
+
+    #winner {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
     }
 </style>
 
-<div class="wheel">
-    <canvas id="canvas" width="500" height="500"></canvas>
-    <div class="center-circle" onclick="spin()">Girar
-        <div class="triangle"></div>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <div class="wheel">
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <div class="center-circle" onclick="spin()">Girar
+            <div class="triangle"></div>
+        </div>
     </div>
+    
 
-<div class="inputArea">
-    <textarea id="player-list" rows="10" cols="30">jogador 1
+    <div class="inputArea">
+        <textarea id="player-list" rows="10" cols="30">jogador 1
 jogador 2
 jogador 3
 jogador 4</textarea>
-</div>
-</div>
+    </div>
 
-<div>
-    <button></button>
-</div>
+    <div class="controls">
+        <button class="btn" onclick="addPlayer()">Adicionar Jogador</button>
+        <button class="btn" onclick="spin()">Rodar</button>
+    </div>
 
-
-<div class="controls">
-    <button class="btn" onclick="spin()">Rodar</button>
-</div>
+    <div id="winner"></div>
 
 @include('home.footer')
 
@@ -136,6 +143,7 @@ jogador 4</textarea>
 
     function createWheel() {
         colors = []; 
+        step = 360 / items.length;
         for (let i = 0; i < items.length; i++) {
             colors.push(randomColor());
         }
@@ -187,24 +195,39 @@ jogador 4</textarea>
     let pause = false;
 
     function animate() {
-        if (pause) return;
-        const speedControl = 35; 
-        speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * speedControl;
-        
-        if (speed < 0.01) {
-            speed = 0;
-            pause = true;
-            const winningItem = Object.keys(itemDegs).find(
-                item => itemDegs[item].startDeg <= (360 - currentDeg % 360) &&
-                        itemDegs[item].endDeg > (360 - currentDeg % 360)
-            );
-            document.getElementById("winner").innerHTML = `Parabéns! Você ganhou: ${winningItem}`;
+    if (pause) return;
+    const speedControl = 35; 
+    speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * speedControl;
+    
+    if (speed < 0.01) {
+        speed = 0;
+        pause = true;
+
+        const adjustedDeg = (360 - (currentDeg % 360) + step / 2) % 360;
+
+        const winningItem = items.find((item, index) => {
+            const startDeg = (index * step) % 360;
+            const endDeg = ((index + 1) * step) % 360;
+            if (startDeg < endDeg) {
+                return adjustedDeg >= startDeg && adjustedDeg < endDeg;
+            } else {
+                return adjustedDeg >= startDeg || adjustedDeg < endDeg;
+            }
+        });
+
+        document.getElementById("winner").innerHTML = `Parabéns! Você ganhou: ${winningItem || "Nenhum item encontrado"}`;
+
+        if (winningItem) {
             removeItem(winningItem);
         }
-        currentDeg += speed;
-        draw();
-        window.requestAnimationFrame(animate);
     }
+
+    currentDeg += speed;
+    draw();
+    window.requestAnimationFrame(animate);
+}
+
+
 
     function spin() {
         if (speed !== 0) return;
@@ -215,11 +238,22 @@ jogador 4</textarea>
         window.requestAnimationFrame(animate);
     }
 
+    function addPlayer() {
+        const newItem = prompt("Digite o nome do jogador:");
+        if (newItem) {
+            items.push(newItem);
+            document.getElementById("player-list").value = items.join("\n");
+            createWheel();
+        }
+    }
+
     function removeItem(item) {
         items = items.filter(i => i !== item);
         document.getElementById("player-list").value = items.join("\n");
         createWheel();
     }
+
+
 
     createWheel();
 </script>

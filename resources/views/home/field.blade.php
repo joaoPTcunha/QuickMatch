@@ -29,9 +29,8 @@
                 <span class="text-yellow-500">★★★★★</span>
                 5 estrelas
             </div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Aderir</button>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Conversar com o dono</button>
         </div>
     </div>
 
     @include('home.footer')
-</body>

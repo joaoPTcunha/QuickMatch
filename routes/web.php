@@ -26,10 +26,6 @@ Route::get('/', function () {
     return view('home.index');
 })->name('index');
 
-Route::get('/match', function () {
-    return view('home.match');
-})->name('match');
-
 Route::get('/spinwheel', function () {
     return view('home.spinwheel');
 })->name('spinwheel');
@@ -38,4 +34,13 @@ Route::get('/field', function () {
     return view('home.field');
 })->name('field');
 
+Route::get('/contact', function () {
+    return view('home.contact');
+})->name('contact');
+
 Route::get('/profile-complete', [])->name('profile.complete');
+
+### FEITO LOGIN
+
+Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
