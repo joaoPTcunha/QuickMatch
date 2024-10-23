@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('home/index');
@@ -20,6 +21,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 require __DIR__ . '/auth.php';
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/'); 
+})->name('logout');
 
 ######## UTILIZADOR SEM ESTAR LOGADO
 Route::get('/', function () {
@@ -43,4 +49,8 @@ Route::get('/profile-complete', [])->name('profile.complete');
 ### FEITO LOGIN
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
+
+##### ADMIN
+
 
