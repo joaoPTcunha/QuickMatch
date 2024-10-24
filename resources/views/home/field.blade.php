@@ -2,7 +2,8 @@
 
 @include('home.header')
 
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-gray-100">
+    <div class="flex-grow">
     <h1>Campos</h1>
     <div class="container mx-auto">
         <div class="bg-gray-200 rounded-lg p-6">
@@ -32,5 +33,7 @@
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Conversar com o dono</button>
         </div>
     </div>
-
+    </div>
     @include('home.footer')
+</body>
+</html>

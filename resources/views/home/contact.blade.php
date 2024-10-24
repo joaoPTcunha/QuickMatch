@@ -2,7 +2,8 @@
 
 @include('home.header')
 
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-gray-100">
+    <div class="flex-grow">
     <div class="flex-1 container mx-auto px-4 py-12">
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Contactos</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -42,6 +43,8 @@
         </div>
         </div>
     </div>
-
+</div>
 @include('home.footer')
+</body>
+</html>
 

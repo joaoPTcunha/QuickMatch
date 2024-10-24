@@ -5,10 +5,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\Admin;
+
+
 
 Route::get('/', function () {
     return view('home/index');
-});
+})->name('index');
 
 Route::get('/profile-complete', function () {
     return view('profile-complete');
@@ -22,15 +25,11 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__ . '/auth.php';
 
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/'); 
-})->name('logout');
+Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index');
 
 ######## UTILIZADOR SEM ESTAR LOGADO
-Route::get('/', function () {
-    return view('home.index');
-})->name('index');
+
+
 
 Route::get('/spinwheel', function () {
     return view('home.spinwheel');
@@ -44,13 +43,7 @@ Route::get('/contact', function () {
     return view('home.contact');
 })->name('contact');
 
-Route::get('/profile-complete', [])->name('profile.complete');
 
-### FEITO LOGIN
-
-Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
-
-
-##### ADMIN
+#ADMIN
 
 

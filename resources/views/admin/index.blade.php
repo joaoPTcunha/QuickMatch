@@ -1,8 +1,12 @@
-@include('home.css')
+@include('admin.css')
+@include('admin.header')
 
-@include('home.header')
+<body class="flex flex-col min-h-screen bg-gray-100">
 
-<body class="bg-gray-100 flex flex-col min-h-screen">
-    @include('home.main')
-
-    @include('home.footer')
+    <div class="flex-grow">
+        @include('admin.main') 
+    </div>
+    
+    @include('admin.footer')
+</body>
+</html>
