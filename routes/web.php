@@ -1,13 +1,12 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\Admin;
-
-
 
 Route::get('/', function () {
     return view('home/index');
@@ -29,8 +28,6 @@ Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index'
 
 ######## UTILIZADOR SEM ESTAR LOGADO
 
-
-
 Route::get('/spinwheel', function () {
     return view('home.spinwheel');
 })->name('spinwheel');
@@ -46,4 +43,7 @@ Route::get('/contact', function () {
 
 #ADMIN
 
-
+Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
+Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');    
+Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');  
+Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy'); 

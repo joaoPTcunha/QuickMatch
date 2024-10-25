@@ -1,5 +1,5 @@
 <div class="container mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-6 text-center">Bem-Vindo, Admin!</h1>
+    <h1 class="text-2xl font-bold mb-6 text-center">Olá,{{ $name }}! ({{ $usertype }})</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Gráfico 1: % de realização de jogos -->
