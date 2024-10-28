@@ -34,7 +34,7 @@ class GoogleAuthController extends Controller
                 Auth::login($user);
             }
     
-            return redirect()->intended('seematch');
+            return redirect()->route('see.match');
     
         } catch (\Throwable $th) {
             dd('Algo Errado! ' . $th->getMessage());

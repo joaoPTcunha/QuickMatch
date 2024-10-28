@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
 use App\Models\User;
 
 class HomeController extends Controller
@@ -22,6 +21,22 @@ class HomeController extends Controller
         return redirect()->route('login');
     }
 
+    public function aaa(){
+        return view('home.seematch');
+    }
+
+    public function spinwheel(){
+        return view('home.spinwheel');
+    }
+
+    public function field(){
+        return view('home.field');
+    }
+
+    public function contact(){
+        return view('home.contact');
+    }
+
     public function newmatch(){
         return view('home.newmatch');
     }
@@ -29,5 +44,7 @@ class HomeController extends Controller
     public function seematch(){
         return view('home.seematch');
     }
+
+
 
 }

@@ -13,9 +13,9 @@ Route::get('/', function () {
     return view('home/index');
 })->name('index');
 
-Route::get('/profile-complete', function () {
-    return view('profile-complete');
-})->middleware(['auth', 'verified']);
+Route::get('/dashboard', function () {
+    return view('home.index'); // Para a rota de dashboard, caso precise dela
+})->name('dashboard');
 
 ### LOGIN/REGISTOS
 Route::middleware('auth')->group(function () {
@@ -30,27 +30,15 @@ Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index'
 #google
 
 Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
-
 Route::get('auth/google/call-back',[GoogleAuthController::class, 'callbackGoogle']);
 
 ######## UTILIZADOR SEM ESTAR LOGADO
 
-Route::get('/spinwheel', function () {
-    return view('home.spinwheel');
-})->name('spinwheel');
-
-Route::get('/field', function () {
-    return view('home.field');
-})->name('field');
-
-Route::get('/contact', function () {
-    return view('home.contact');
-})->name('contact');
-
-Route::get('/newmatch',[HomeController::class, 'newmatch'])->name('new.match');
-Route::get('/seematch',[HomeController::class, 'seematch'])->name('see.match');
-
-
+Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel');
+Route::get('/field', [HomeController::class, 'field'])->name('field');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
+Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
 
 #ADMIN
 
