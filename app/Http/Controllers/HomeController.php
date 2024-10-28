@@ -22,26 +22,12 @@ class HomeController extends Controller
         return redirect()->route('login');
     }
 
-    public function show($id)
-    {
-        $user = User::findOrFail($id);
-        return view('users.show', compact('user'));
+    public function newmatch(){
+        return view('home.newmatch');
     }
 
-    // Função para editar um utilizador
-    public function edit($id)
-    {
-        $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
-    }
-
-    // Função para apagar um utilizador
-    public function destroy($id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-
-        return redirect()->route('admin.user-management')->with('success', 'Utilizador apagado com sucesso.');
+    public function seematch(){
+        return view('home.seematch');
     }
 
 }

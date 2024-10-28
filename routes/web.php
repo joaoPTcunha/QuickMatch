@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,12 @@ require __DIR__ . '/auth.php';
 
 Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index');
 
+#google
+
+Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
+
+Route::get('auth/google/call-back',[GoogleAuthController::class, 'callbackGoogle']);
+
 ######## UTILIZADOR SEM ESTAR LOGADO
 
 Route::get('/spinwheel', function () {
@@ -39,6 +46,10 @@ Route::get('/field', function () {
 Route::get('/contact', function () {
     return view('home.contact');
 })->name('contact');
+
+Route::get('/newmatch',[HomeController::class, 'newmatch'])->name('new.match');
+Route::get('/seematch',[HomeController::class, 'seematch'])->name('see.match');
+
 
 
 #ADMIN
