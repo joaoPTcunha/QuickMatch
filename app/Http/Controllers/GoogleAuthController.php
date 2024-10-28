@@ -17,9 +17,9 @@ class GoogleAuthController extends Controller
         try{
             $google_user = Socialite::driver('google')->user();
     
-            $user = User::where('google_id', $google_user->getId())->first();
+            $user = User::where('google_id', $google_user->getId())->orWhere('email', $google_user->getEmail())->first();
     
-            if(!$user){
+            if (!$user) {
                 $new_user = User::create([
                     'name' => $google_user->getName(),
                     'email' => $google_user->getEmail(),
@@ -27,13 +27,15 @@ class GoogleAuthController extends Controller
                 ]);
     
                 Auth::login($new_user);
-    
-                return redirect()->intended('seematch');
             } else {
+                if (!$user->google_id) {
+                    $user->update(['google_id' => $google_user->getId()]);
+                }
                 Auth::login($user);
-    
-                return redirect()->intended('seematch');
             }
+    
+            return redirect()->intended('seematch');
+    
         } catch (\Throwable $th) {
             dd('Algo Errado! ' . $th->getMessage());
         }
