@@ -39,6 +39,9 @@ Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
 Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
+Route::get('/help', [HomeController::class, 'help'])->name('help');
+
+
 
 #ADMIN
 
