@@ -45,6 +45,10 @@ class HomeController extends Controller
         return view('home.seematch');
     }
 
+    public function help(){
+        return view('home.help');
+    }
+
 
 
 }

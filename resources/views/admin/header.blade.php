@@ -18,7 +18,7 @@
 
         <nav class="hidden md:flex md:flex-row md:space-x-3 md:items-center w-full md:w-auto">
             <a href="{{ url('/field') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Estatisticas</a>
-            <a href="{{ url('/spinwheel') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
+            <a href="{{ url('/') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
             <a href="{{ url('/user-management') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Gestão de Utilizadores</a>
             <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Suporte ao Cliente</a>
             <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Manutenção</a>
