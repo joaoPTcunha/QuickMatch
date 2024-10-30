@@ -57,7 +57,7 @@
         <section>
             <h2 class="text-2xl font-semibold mb-4 my-">Envie uma Reclamação</h2>
             <div class="bg-white rounded-lg shadow-md p-6">
-                <form action="/enviar-reclamacao" method="POST">
+                <form action="/sendproblem" method="POST">
                     @csrf
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Nome:</label>

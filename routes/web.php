@@ -28,12 +28,11 @@ require __DIR__ . '/auth.php';
 Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index');
 
 #google
-
 Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
 Route::get('auth/google/call-back',[GoogleAuthController::class, 'callbackGoogle']);
 
-######## UTILIZADOR SEM ESTAR LOGADO
 
+######## UTILIZADOR SEM ESTAR LOGADO
 Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel');
 Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
@@ -41,11 +40,12 @@ Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
 Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 
-
-
 #ADMIN
-
 Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
-Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');    
-Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');  
-Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy'); 
+Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
+Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
+Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
+Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
+
+Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
+Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
