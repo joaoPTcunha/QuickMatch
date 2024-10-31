@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Problem;
+
 
 
 use App\Models\User;
@@ -33,8 +35,11 @@ class AdminController extends Controller
         return view('users.show', compact('user'));
     }
     
-    public function support(){
-        return view('admin.support');
+    public function support()
+    {
+        // Buscar todos os problemas da base de dados
+        $problems = Problem::all(); // Pode usar paginate() se quiser paginação
+        return view('admin.support', compact('problems'));
     }
 
     public function maintenance(){

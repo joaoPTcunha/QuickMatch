@@ -2,87 +2,26 @@
 @include('admin.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <!-- Conteúdo Principal -->
     <div class="flex-grow container mx-auto p-6">
-        <h1 class="text-3xl  mb-6">Suporte ao cliente</h1>
+        <h1 class="text-3xl mb-6">Suporte ao cliente</h1>
 
-        <!-- Lista de Suporte ao Cliente -->
         <div id="clientes-list" class="space-y-4">
-            <!-- Cartões de Suporte com Problemas -->
-            <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                <div class="flex-grow flex flex-col">
-                    <p class="font-semibold text-gray-800">Luís Henrique</p>
-                    <p class="text-gray-600">Problema ao fazer login</p>
+            @foreach ($problems as $problem)
+                <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                    <div class="flex-grow flex flex-col">
+                        <p class="font-semibold text-gray-800">{{ $problem->subject }}</p>
+                        <p class="text-gray-600">{{ $problem->description }}</p>
+                    </div>
+                    <div class="flex items-center ml-4">
+                        <button onclick="openModal('{{ addslashes($problem->description) }}', '{{ addslashes($problem->subject) }}')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
+                            Ver Problema
+                        </button>
+                    </div>
                 </div>
-                <div class="flex items-center ml-4">
-                    <button onclick="openModal('Problema ao fazer login', 'Luís Henrique')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                        Ver Problema
-                    </button>
-                </div>
-            </div>
-
-            <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                <div class="flex-grow flex flex-col">
-                    <p class="font-semibold text-gray-800">Miguel Antunes</p>
-                    <p class="text-gray-600">Quando tento me inscrever em um campo, o botão não funciona</p>
-                </div>
-                <div class="flex items-center ml-4">
-                    <button onclick="openModal('Quando tento me inscrever em um campo, o botão não funciona', 'Miguel Antunes')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                        Ver Problema
-                    </button>
-                </div>
-            </div>
-
-            <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                <div class="flex-grow flex flex-col">
-                    <p class="font-semibold text-gray-800">Tiago Novais</p>
-                    <p class="text-gray-600">Não está a aceitar inscrições</p>
-                </div>
-                <div class="flex items-center ml-4">
-                    <button onclick="openModal('Não está a aceitar inscrições', 'Tiago Novais')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                        Ver Problema
-                    </button>
-                </div>
-            </div>
-
-            <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                <div class="flex-grow flex flex-col">
-                    <p class="font-semibold text-gray-800">Renato Costa</p>
-                    <p class="text-gray-600">Falta de desportos disponíveis</p>
-                </div>
-                <div class="flex items-center ml-4">
-                    <button onclick="openModal('Falta de desportos disponíveis', 'Renato Costa')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                        Ver Problema
-                    </button>
-                </div>
-            </div>
-
-            <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                <div class="flex-grow flex flex-col">
-                    <p class="font-semibold text-gray-800">João Silva</p>
-                    <p class="text-gray-600">Erro ao atualizar informações pessoais</p>
-                </div>
-                <div class="flex items-center ml-4">
-                    <button onclick="openModal('Erro ao atualizar informações pessoais', 'João Silva')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                        Ver Problema
-                    </button>
-                </div>
-            </div>
-
-            <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                <div class="flex-grow flex flex-col">
-                    <p class="font-semibold text-gray-800">Maria Pereira</p>
-                    <p class="text-gray-600">Recebo uma mensagem de erro ao tentar fazer pagamento</p>
-                </div>
-                <div class="flex items-center ml-4">
-                    <button onclick="openModal('Recebo uma mensagem de erro ao tentar fazer pagamento', 'Maria Pereira')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                        Ver Problema
-                    </button>
-                </div>
-            </div>
+            @endforeach
         </div>
 
-        <!-- Paginação (controlada pelo JavaScript) -->
+        <!-- Paginação (se necessário) -->
         <div id="pagination" class="flex justify-center items-center mt-8 space-x-2">
             <button onclick="changePage('prev')" class="text-gray-500 hover:text-black">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -100,7 +39,6 @@
 
     @include('admin.footer')
 
-    <!-- JavaScript remains unchanged -->
     <script>
         const itemsPerPage = 4;
         let currentPage = 1;
@@ -122,7 +60,7 @@
                         'success'
                     );
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    window.location.href = "URL_DO_CHAT";
+                    window.location.href = "URL_DO_CHAT"; // Coloque a URL do chat aqui
                 }
             });
         }
