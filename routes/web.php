@@ -38,16 +38,14 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
 Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
-Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
-
 
 #ADMIN
-Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index');
-Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
-Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
-Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
-Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
-Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
+Route::get('/admin/index', [HomeController::class, 'index'])->name('admin.index')->middleware(['auth', 'verified']);
+Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management')->middleware(['auth', 'verified']);
+Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show')->middleware(['auth', 'verified']);
+Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit')->middleware(['auth', 'verified']);
+Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy')->middleware(['auth', 'verified']);
+Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search')->middleware(['auth', 'verified']);
 
-Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
-Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
+Route::get('/support', [AdminController::class, 'support'])->name('admin.support')->middleware(['auth', 'verified']);
+Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance')->middleware(['auth', 'verified']);
