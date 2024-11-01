@@ -5,13 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Problem;
-
-
-
 use App\Models\User;
 
 class AdminController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        
+        if ($user) {
+            $usertype = $user->usertype;
+            $name = $user->name;
+            return view('admin.index', compact('usertype', 'name'));
+        }
+    
+        return redirect()->route('login');
+    }
 
     public function userManagement()
     {
@@ -37,8 +46,7 @@ class AdminController extends Controller
     
     public function support()
     {
-        // Buscar todos os problemas da base de dados
-        $problems = Problem::all(); // Pode usar paginate() se quiser paginação
+        $problems = Problem::all(); 
         return view('admin.support', compact('problems'));
     }
 
@@ -47,14 +55,12 @@ class AdminController extends Controller
         return view('admin.maintenance');
     }
 
-    // Função para editar um utilizador
     public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('users.edit', compact('user'));
     }
 
-    // Função para apagar um utilizador
     public function destroy($id)
     {
         $user = User::findOrFail($id);

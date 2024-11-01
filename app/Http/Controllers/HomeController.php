@@ -11,18 +11,19 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        
-        if ($user) {
-            $usertype = $user->usertype;
-            $name = $user->name;
-            return view('admin.index', compact('usertype', 'name'));
-        }
-    
-        return redirect()->route('login');
+        return view('home.index');
     }
 
-    public function aaa(){
+    public function dashboard()
+    {
+        return view('home.index'); 
+    }
+
+    public function newmatch(){
+        return view('home.newmatch');
+    }
+
+    public function seematch(){
         return view('home.seematch');
     }
 
@@ -36,14 +37,6 @@ class HomeController extends Controller
 
     public function contact(){
         return view('home.contact');
-    }
-
-    public function newmatch(){
-        return view('home.newmatch');
-    }
-
-    public function seematch(){
-        return view('home.seematch');
     }
 
     public function help()
