@@ -16,8 +16,8 @@
         </label>
 
         <nav class="hidden md:flex md:flex-row md:space-x-3 md:items-center w-full md:w-auto">
-            <a href="{{ url('/field') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Estatisticas</a>
-            <a href="{{ url('/') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
+            <a href="{{ url('admin/index') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Estatisticas</a>
+            <a href="{{ url('') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
             <a href="{{ url('/user-management') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Gestão de Utilizadores</a>
             <a href="{{ url('/support') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Suporte ao Cliente</a>
             <a href="{{ url('/maintenance') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Manutenção</a>
@@ -32,8 +32,8 @@
     <!-- telemovel -->
     <div class="md:hidden">
         <div id="menu-items" class="hidden flex-col space-y-2 p-4 bg-gray-200">
-            <a href="{{ url('') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Estatisticas</a>
-            <a href="{{ url('/') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Campos</a>
+            <a href="{{ url('admin/index') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Estatisticas</a>
+            <a href="{{ url('/index') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Campos</a>
             <a href="{{ url('/user-management') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Gestão de Utilizadores</a>
             <a href="{{ url('/support') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Suporte ao Cliente</a>
             <a href="{{ url('/maintenance') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2 w-full">Manutenção</a>
@@ -42,7 +42,7 @@
             </svg> 
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="block px-2 py-2 text-red-700 hover:bg-red-500 hover:text-white w-full text-left rounded-md transition-all hover:rounded-xl">
+                <button type="submit" class="block px-2 py-2 text-red-700 hover:bg-red-500 hover:text-white w-full text-left rounded-md transition-all hover:rounded-bg">
                     Terminar Sessão
                 </button>
             </form>

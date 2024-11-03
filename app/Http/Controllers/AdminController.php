@@ -16,7 +16,10 @@ class AdminController extends Controller
         if ($user) {
             $usertype = $user->usertype;
             $name = $user->name;
-            return view('admin.index', compact('usertype', 'name'));
+    
+            $userCount = User::whereIn('usertype', ['user', 'user_field'])->count();
+    
+            return view('admin.index', compact('usertype', 'name', 'userCount'));
         }
     
         return redirect()->route('login');

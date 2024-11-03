@@ -25,16 +25,16 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-center">
-        <!-- Número de utilizadores criados -->
+        
         <div>
-            <p class="text-4xl font-bold">1657</p>
-            <p>Número de utilizadores criados:</p>
+            <p class="text-4xl font-bold">{{ $userCount }}</p>
+            <p>Total de Utilizadores</p>
         </div>
 
         <!-- Número de eventos ativos -->
         <div>
             <p class="text-4xl font-bold">88</p>
-            <p>Número de eventos ativos:</p>
+            <p>Número de campos:</p>
         </div>
 
         <!-- Novos utilizadores que criaram conta -->
