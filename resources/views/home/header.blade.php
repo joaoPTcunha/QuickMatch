@@ -22,13 +22,8 @@
                     </svg>
                 </a>
                 <div class="absolute hidden group-hover:block bg-white shadow-md rounded" id="play-dropdown-content">
-                    @auth
-                        <a href="{{ url('/newmatch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
-                        <a href="{{ url('/seematch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
-                    @else
-                        <a href="{{ url('/login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
-                        <a href="{{ url('/login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
-                    @endauth
+                    <a href="{{ url('/newmatch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
+                    <a href="{{ url('/seematch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
                 </div>
             </div>
             <a href="{{ url('/field') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
