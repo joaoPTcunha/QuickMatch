@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Toggle arrow rotation
         const arrow = mobileProfileToggle.querySelector("svg");
+        mobilePlayToggle.querySelector("svg").classList.remove("rotate-180");
     });
 
     // Desktop dropdowns
@@ -64,9 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         playDropdownGroup.addEventListener("mouseleave", function () {
             desktopPlayContent.classList.add("hidden");
-            desktopPlayToggle
-                .querySelector("svg")
-                .classList.remove("rotate-180");
+            desktopPlayToggle.querySelector("svg");
         });
     }
 
@@ -75,9 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const profileDropdownGroup = desktopProfileToggle.closest(".group");
         profileDropdownGroup.addEventListener("mouseenter", function () {
             desktopProfileContent.classList.remove("hidden");
-            desktopProfileToggle
-                .querySelector("svg")
-                .classList.add("rotate-180");
+            desktopProfileToggle.querySelector("svg");
         });
         profileDropdownGroup.addEventListener("mouseleave", function () {
             desktopProfileContent.classList.add("hidden");
@@ -92,18 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
             !mobilePlayContent.contains(e.target)
         ) {
             mobilePlayContent.classList.add("hidden");
-            mobilePlayToggle
-                .querySelector("svg")
-                .classList.remove("rotate-180");
+            mobilePlayToggle.querySelector("svg");
         }
         if (
             !mobileProfileToggle.contains(e.target) &&
             !mobileProfileContent.contains(e.target)
         ) {
             mobileProfileContent.classList.add("hidden");
-            mobileProfileToggle
-                .querySelector("svg")
-                .classList.remove("rotate-180");
+            mobileProfileToggle.querySelector("svg");
         }
     });
 });
