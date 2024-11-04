@@ -5,21 +5,15 @@
     <div class="flex-grow container mx-auto p-6">
         <h1 class="text-3xl mb-6">Suporte ao cliente</h1>
 
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl">Suporte ao cliente</h1>
+            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline">
+                Ver Histórico de Problemas
+            </a>
+        </div>
         <div id="clientes-list" class="space-y-4">
             @foreach ($problems as $problem)
                 <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                    <div class="flex-grow flex flex-col">
-                        <p class="font-semibold text-gray-800">{{ $problem->subject }}</p>
-                        <p class="text-gray-600">{{ $problem->description }}</p>
-                    </div>
-                    <div class="flex items-center ml-4">
-                        <button onclick="openModal('{{ addslashes($problem->description) }}', '{{ addslashes($problem->subject) }}')" class="bg-red-400 text-white hover:bg-red-600 flex items-center px-4 py-1 rounded">
-                            Ver Problema
-                        </button>
-                    </div>
-                </div>
-            @endforeach
-        </div>
 
         <!-- Paginação (se necessário) -->
         <div id="pagination" class="flex justify-center items-center mt-8 space-x-2">

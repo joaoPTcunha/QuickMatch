@@ -51,5 +51,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
+    Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
 });
