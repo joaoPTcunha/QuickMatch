@@ -11,14 +11,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('home.index');
+        $usertype = Auth::check() ? Auth::user()->user_type : 'guest';
+        return view('home.index', compact('usertype'));
     }
-
-    public function dashboard()
-    {
-        return view('home.index'); 
-    }
-
+    
     public function newmatch(){
         return view('home.newmatch');
     }

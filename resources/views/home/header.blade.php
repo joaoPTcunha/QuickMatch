@@ -14,6 +14,8 @@
                 <div class="w-6 h-0.5 bg-gray-700"></div>
             </div> 
         </label>
+        @dump(auth()->user()->user_type)
+
         <nav class="hidden md:flex md:flex-row md:space-x-2 md:items-center w-full md:w-auto">
             <div class="relative group">
                 <a id="desktop-play-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center cursor-pointer">
@@ -30,14 +32,16 @@
             <a href="{{ url('/field') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
             <a href="{{ url('/spinwheel') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Roleta</a>
             <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Contactos</a>
+            @guest
+                <a href="{{ url('/login') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Iniciar Sessão</a>
+            @else
+
             <a href="{{ url('/chat') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
                 </svg>
             </a>
-            @guest
-                <a href="{{ url('/login') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Iniciar Sessão</a>
-            @else
+
                 <div class="relative group">
                     <button id="desktop-profile-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-4 py-2 flex items-center">
                         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -51,9 +55,10 @@
                     <div class="absolute right-0 hidden group-hover:block bg-white shadow-md rounded" id="profile-dropdown-content">
                         <a href="{{ url('/profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver Perfil</a>
                         <a href="{{ url('/help') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Central de Ajuda</a>
-                        @if(auth()->user()->user_type === 'user_field')
+
+                        @if ($usertype === 'user_field')
                             <a href="{{ url('/manage-fields') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Gerir campos</a>
-                        @endif                        
+                        @endif     
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="block px-4 py-2 text-red-700 hover:bg-red-500 hover:text-white w-full text-left">
@@ -96,21 +101,17 @@
             <a href="{{ url('/spinwheel') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2">Roleta</a>
             <a href="{{ url('/contact') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2">Contactos</a>
 
-            <button id="mobile-profile-dropdown-toggle" class="w-full text-left flex items-center justify-between text-gray-700 hover:text-gray-900 px-2 py-2">
-                        <span class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                            </svg>
-                            Chat
-                        </span>
-                        <svg class="w-4 h-4 text-gray-500 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-
             @guest
                 <a href="{{ url('/login') }}" class="block bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-blue-green">Iniciar Sessão</a>
             @else
+
+            <a href="{{ url('/chat') }}" class="flex items-center text-gray-700 hover:text-gray-900 px-2 py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+                </svg>
+                <span>Chat</span>
+            </a>
+
                 <div class="relative">
                     <button id="mobile-profile-dropdown-toggle" class="w-full text-left flex items-center justify-between text-gray-700 hover:text-gray-900 px-2 py-2">
                         <span class="flex items-center">
