@@ -49,7 +49,7 @@
                 if (result.isConfirmed) {
                     markAsSolved(problemId);
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    window.location.href = "chat"; // Coloque a URL do chat aqui
+                    window.location.href = "{{ url('/chat') }}"; // Coloque a URL do chat aqui
                 }
             });
         }
