@@ -27,6 +27,10 @@ class HomeController extends Controller
         return view('home.spinwheel');
     }
 
+    public function chat(){
+        return view('home.chat');
+    }
+
     public function field(){
         return view('home.field');
     }
