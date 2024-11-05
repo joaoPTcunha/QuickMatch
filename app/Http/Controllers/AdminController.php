@@ -39,10 +39,12 @@ class AdminController extends Controller
         
         $query = User::query();
     
+        // Se um tipo de utilizador específico for selecionado, aplica o filtro
         if ($usertype) {
             $query->where('usertype', $usertype);
         }
     
+        // Se houver um termo de pesquisa, aplica o filtro ao nome e ao tipo de utilizador
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'LIKE', '%' . $search . '%')
@@ -50,6 +52,7 @@ class AdminController extends Controller
             });
         }
     
+        // Paginação dos resultados
         $users = $query->paginate(5);
     
         return view('admin.user-management', compact('users'));
@@ -58,14 +61,30 @@ class AdminController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-        return view('admin.user-details', compact('user')); 
+        return view('users.show', compact('user'));
     }
     
     public function support()
     {
-        $problems = Problem::all(); 
+        $problems = Problem::where('is_solved', false)->get();
         return view('admin.support', compact('problems'));
     }
+
+    public function problemHistory()
+    {
+        $problems = Problem::where('is_solved', true)->get();
+        return view('admin.problem_history', compact('problems'));
+    }
+
+    public function markAsSolved(Request $request, $id)
+    {
+    $problem = Problem::findOrFail($id);
+    $problem->is_solved = true;
+    $problem->save();
+
+    return response()->json(['status' => 'success', 'message' => 'Problem marked as solved']);
+    }
+
 
     public function maintenance(){
         

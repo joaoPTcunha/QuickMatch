@@ -36,21 +36,21 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
-Route::middleware('auth','verified')->group(function (){   
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
     Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
-});
 
 #ADMIN
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
-        Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
-        Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
-        Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
+    Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
+    Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
-    Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
+    Route::post('/store-problem', [AdminController::class, 'storeProblem'])->name('storeProblem');
+    Route::get('/problem_history', [AdminController::class, 'problem_history'])->name('admin.problem_history');
+    Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
     Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
 });

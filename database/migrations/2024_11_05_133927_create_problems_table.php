@@ -10,9 +10,10 @@ class CreateProblemsTable extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->id();
-            $table->string('subject');         
-            $table->string('email');         
-            $table->text('description');     
+            $table->string('subject');
+            $table->string('email');
+            $table->text('description');
+            $table->boolean('is_solved')->default(false); // Add is_solved column
             $table->timestamps();
         });
     }

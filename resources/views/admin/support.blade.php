@@ -4,29 +4,41 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow container mx-auto p-6">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl">Suporte ao cliente</h1>
-            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline">
+            <h1 class="text-3xl">Suporte ao Cliente</h1>
+            <a href="{{ url('/problem_history') }}" class="text-blue-500 hover:underline">
                 Ver Histórico de Problemas
             </a>
         </div>
+
         <div id="clientes-list" class="space-y-4">
             @foreach ($problems as $problem)
-                <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-                    <!-- Conteúdo de cada problema -->
+                <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between" data-id="{{ $problem->id }}">
+                    <div>
+                        <h2 class="font-bold">{{ $problem->subject }}</h2>
+                        <p>{{ $problem->description }}</p>
+                        <p class="text-gray-500">{{ $problem->email }}</p>
+                        <p class="text-gray-400">{{ $problem->created_at->format('d/m/Y H:i') }}</p>
+                    </div>
+                    <div>
+                        @if (!$problem->is_solved)
+                            <button onclick="openModal('{{ addslashes($problem->subject) }}', '{{ addslashes($problem->description) }}', '{{ $problem->id }}')" class="bg-purple-500 text-white px-4 py-2 rounded">Ver Detalhes</button>
+                        @else
+                            <span class="text-green-500">Resolvido</span>
+                        @endif
+                    </div>
                 </div>
-            @endforeach <!-- Encerrar o loop corretamente -->
+            @endforeach
         </div>
+
+        <div id="page-numbers" class="mt-6 flex justify-center space-x-2"></div>
     </div>
 
     @include('admin.footer')
 
     <script>
-        const itemsPerPage = 4;
-        let currentPage = 1;
-
-        function openModal(description, clientName) {
+        function openModal(subject, description, problemId) {
             Swal.fire({
-                title: `Descrição do Problema - ${clientName}`,
+                title: `Descrição do Problema - ${subject}`,
                 text: description,
                 icon: 'info',
                 showCancelButton: true,
@@ -35,61 +47,52 @@
                 reverseButtons: true,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire(
-                        'Marcado como Solucionado!',
-                        'O problema foi marcado como resolvido.',
-                        'success'
-                    );
+                    markAsSolved(problemId);
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    window.location.href = "URL_DO_CHAT"; // Coloque a URL do chat aqui
+                    window.location.href = "chat"; // Coloque a URL do chat aqui
                 }
             });
         }
 
-        function displayPage(page) {
-            const problems = document.querySelectorAll('.problem-item');
-            const totalItems = problems.length;
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-            problems.forEach((item) => {
-                item.style.display = 'none';
+        function markAsSolved(problemId) {
+            fetch(`/problems/${problemId}/mark-as-solved`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Adicione o token CSRF para segurança
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remover o problema da lista
+                    document.querySelector(`.problem-item[data-id="${problemId}"]`).remove();
+                    Swal.fire(
+                        'Marcado como Solucionado!',
+                        'O problema foi marcado como resolvido e removido da lista.',
+                        'success'
+                    );
+                } else {
+                    Swal.fire(
+                        'Erro!',
+                        'Houve um problema ao marcar o problema como resolvido.',
+                        'error'
+                    );
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire(
+                    'Erro!',
+                    'Houve um problema ao marcar o problema como resolvido.',
+                    'error'
+                );
             });
-
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            for (let i = start; i < end && i < totalItems; i++) {
-                problems[i].style.display = 'flex';
-            }
-
-            updatePagination(page, totalPages);
         }
-
-        function updatePagination(currentPage, totalPages) {
-            const pageNumbers = document.getElementById('page-numbers');
-            pageNumbers.innerHTML = '';
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.className = `px-3 py-1 border rounded-md ${currentPage === i ? 'bg-gray-300' : 'hover:bg-gray-200'}`;
-                pageButton.onclick = () => displayPage(i);
-                pageNumbers.appendChild(pageButton);
-            }
-        }
-
-        function changePage(direction) {
-            const problems = document.querySelectorAll('.problem-item');
-            const totalPages = Math.ceil(problems.length / itemsPerPage);
-
-            if (direction === 'prev' && currentPage > 1) {
-                currentPage--;
-            } else if (direction === 'next' && currentPage < totalPages) {
-                currentPage++;
-            }
-
-            displayPage(currentPage);
-        }
-
-        displayPage(currentPage);
     </script>
 </body>
