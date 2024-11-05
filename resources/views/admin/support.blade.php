@@ -3,8 +3,6 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow container mx-auto p-6">
-        <h1 class="text-3xl mb-6">Suporte ao cliente</h1>
-
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl">Suporte ao cliente</h1>
             <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline">
@@ -14,20 +12,9 @@
         <div id="clientes-list" class="space-y-4">
             @foreach ($problems as $problem)
                 <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between">
-
-        <!-- Paginação (se necessário) -->
-        <div id="pagination" class="flex justify-center items-center mt-8 space-x-2">
-            <button onclick="changePage('prev')" class="text-gray-500 hover:text-black">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-            <div id="page-numbers" class="flex space-x-2"></div>
-            <button onclick="changePage('next')" class="text-gray-500 hover:text-black">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </button>
+                    <!-- Conteúdo de cada problema -->
+                </div>
+            @endforeach <!-- Encerrar o loop corretamente -->
         </div>
     </div>
 

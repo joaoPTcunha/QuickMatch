@@ -1,4 +1,3 @@
-@ -0,0 +1,24 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -11,9 +10,9 @@ class CreateProblemsTable extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->id();
-            $table->string('subject');          // Coluna name
-            $table->string('email');         // Coluna email
-            $table->text('description');     // Coluna description
+            $table->string('subject');         
+            $table->string('email');         
+            $table->text('description');     
             $table->timestamps();
         });
     }
