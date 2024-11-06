@@ -35,8 +35,12 @@ Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
-Route::post('/send-message', [HomeController::class, 'sendMessage'])->middleware('auth');
-Route::get('/get-messages/{receiver_id}', [HomeController::class, 'getMessages'])->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
+    Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send-message');
+});
+Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
+
 
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');

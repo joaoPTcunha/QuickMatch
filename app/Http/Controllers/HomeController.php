@@ -35,53 +35,68 @@ class HomeController extends Controller
     }
     
 
+    public function conversations()
+{
+    {
+        $userId = Auth::id();
+
+        // Busca todos os usuários com os quais o usuário logado teve uma conversa.
+        $conversations = Message::where('sender_id', $userId)
+            ->orWhere('receiver_id', $userId)
+            ->with(['sender', 'receiver'])
+            ->latest('created_at')
+            ->get()
+            ->groupBy(function ($message) use ($userId) {
+                // Agrupando por usuário (outro participante da conversa)
+                return $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
+            })
+            ->map(function ($messages) {
+                // Retorna apenas a última mensagem de cada conversa
+                return $messages->first();
+            });
+
+        return view('chat.conversations', compact('conversations'));
+    }
+}
+
+public function getMessages($receiverId)
+    {
+        $userId = Auth::id();
+
+        // Busca as mensagens entre o usuário logado e o destinatário
+        $messages = Message::where(function ($query) use ($userId, $receiverId) {
+                $query->where('sender_id', $userId)
+                      ->where('receiver_id', $receiverId);
+            })
+            ->orWhere(function ($query) use ($userId, $receiverId) {
+                $query->where('sender_id', $receiverId)
+                      ->where('receiver_id', $userId);
+            })
+            ->with('sender')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return response()->json($messages);
+    }
+    // Envia uma nova mensagem
     public function sendMessage(Request $request)
     {
-        // Validação dos dados recebidos
         $request->validate([
-            'receiver_id' => 'required|exists:users,id',  // Verifica se o receiver_id é válido
-            'content' => 'required|string|max:255',  // Verifica se o conteúdo é uma string
+            'receiver_id' => 'required|exists:users,id',
+            'content' => 'required|string',
         ]);
-    
-        // Criação da nova mensagem
-        try {
-            $message = Message::create([
-                'sender_id' => Auth::id(),  // Usa o ID do usuário autenticado
-                'receiver_id' => $request->receiver_id,  // O ID do destinatário
-                'content' => $request->content,  // O conteúdo da mensagem
-            ]);
-    
-            // Resposta de sucesso em formato JSON
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Mensagem enviada com sucesso!',  // Mensagem de sucesso
-            ]);
-        } catch (\Exception $e) {
-            // Em caso de erro, retorna uma resposta de erro
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Não foi possível enviar a mensagem. Tente novamente.',  // Mensagem de erro
-            ], 500); // Código HTTP 500 para erro interno
-        }
+
+        $message = Message::create([
+            'sender_id' => Auth::id(),
+            'receiver_id' => $request->receiver_id,
+            'content' => $request->content,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $message,
+        ]);
     }
-
-    public function getMessages($receiverId)
-{
-    // Obtém as mensagens entre o usuário logado e o receptor, carregando o nome do remetente
-    $messages = Message::with('sender')  // Carrega o remetente da mensagem
-        ->where(function($query) use ($receiverId) {
-            $query->where('sender_id', auth::id())
-                  ->where('receiver_id', $receiverId);
-        })
-        ->orWhere(function($query) use ($receiverId) {
-            $query->where('sender_id', $receiverId)
-                  ->where('receiver_id', auth::id());
-        })
-        ->orderBy('created_at', 'asc')
-        ->get();
-
-    return response()->json($messages);
-}
     
     public function field(){
         return view('home.field');
