@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Message;
+use App\Models\Field;
+
 
 class HomeController extends Controller
 {
@@ -35,9 +38,8 @@ class HomeController extends Controller
     }
     
 
-    public function conversations()
-{
-    {
+    public function conversations(){
+    
         $userId = Auth::id();
 
         // Busca todos os usuários com os quais o usuário logado teve uma conversa.
@@ -56,10 +58,10 @@ class HomeController extends Controller
             });
 
         return view('chat.conversations', compact('conversations'));
-    }
+    
 }
 
-public function getMessages($receiverId)
+    public function getMessages($receiverId)
     {
         $userId = Auth::id();
 
@@ -134,9 +136,43 @@ public function getMessages($receiverId)
         return redirect()->route('help');
     }
 
-public function my_fields()
-{
-   // $fields = Field::where('user_id', Auth::id())->get();
-    return view('home.manage-fields', compact('fields'));
+    public function manageFields()
+    {
+        $user = Auth::user();  
+        $fields = Field::where('user_id', $user->id)->get();  
+
+        return view('home.manage-fields', compact('fields'));  
+    }
+
+    public function createField()
+    {
+        return view('home.create-field');  
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'modality' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('Campos'), $imageName);
+            $validated['image'] = $imageName;
+        }
+        $validated['user_id'] = Auth::id();
+
+        Field::create($validated);
+
+        toastr()->success('Pedido de adicao de campo com sucessso');
+
+        return redirect()->route('manage-fields');
+    }
 }
-}
+

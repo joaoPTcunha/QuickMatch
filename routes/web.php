@@ -47,8 +47,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
     Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
-    Route::get('/manage-fields', [HomeController::class, 'my_fields'])->name('manage-fields');
-        Route::get('/add-field', [HomeController::class, 'addField'])->name('add.field');
+
+    Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
+
+    // Página para adicionar um novo campo
+        Route::get('/create-field', [HomeController::class, 'createField'])->name('fields.create');
+
+    // Armazenar o novo campo no banco de dados
+    Route::post('/fields', [HomeController::class, 'store'])->name('fields.store');
 });
 #ADMIN
 Route::middleware(['auth', 'admin'])->group(function () {
