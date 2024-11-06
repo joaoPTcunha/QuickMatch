@@ -133,4 +133,10 @@ public function getMessages($receiverId)
 
         return redirect()->route('help');
     }
+
+public function my_fields()
+{
+   // $fields = Field::where('user_id', Auth::id())->get();
+    return view('home.manage-fields', compact('fields'));
+}
 }
