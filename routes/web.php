@@ -39,10 +39,13 @@ Route::post('/send-message', [HomeController::class, 'sendMessage'])->middleware
 Route::get('/get-messages/{receiver_id}', [HomeController::class, 'getMessages'])->middleware('auth');
 
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
     Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
-
+    Route::get('/manage-fields', [HomeController::class, 'my_fields'])->name('manage-fields');
+        Route::get('/add-field', [HomeController::class, 'addField'])->name('add.field');
+});
 #ADMIN
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
