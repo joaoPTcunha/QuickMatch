@@ -34,9 +34,9 @@ Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel'
 Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
-Route::get('/chat', [HomeController::class, 'help'])->name('chat');
-
-
+Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
+Route::post('/send-message', [HomeController::class, 'sendMessage'])->middleware('auth');
+Route::get('/get-messages/{receiver_id}', [HomeController::class, 'getMessages'])->middleware('auth');
 
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
