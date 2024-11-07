@@ -14,7 +14,7 @@ use App\Http\Middleware\Admin;
 Route::get('/', [HomeController::class, 'index'])->name('index');
 
 
-Route::get('/dashboard', [HomeController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/index', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
 
 ### LOGIN/REGISTOS
 Route::middleware('auth')->group(function (){
