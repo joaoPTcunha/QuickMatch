@@ -10,27 +10,31 @@
                 <p>Ainda não tem campos registados</p>
             </div>
         @else
-            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                @foreach($fields as $field)
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ asset('Campos/' . $field->image) }}" alt="Imagem do campo" class="w-full h-40 object-cover">
-                        <div class="p-4">
-                            <h4 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h4>
-                            <p class="text-gray-600">Dias livres para aluguer: Todos os dias</p>
-                            <p class="text-gray-600">Horário: 18:00 - 23:00</p>
-                            <p class="text-gray-600">Custo: {{ $field->price }}€/hora</p>
-                            <p class="text-gray-600">Tipo de desporto: </p>
-                            <p class="text-gray-600">Contacto: {{ $field->contact }}</p>
-                            <div class="mt-4">
-                                <a href="{{ route('edit-fields', $field->id) }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300">
-                                    Editar
-                                </a>
+            <div class="flex justify-center">
+                <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl">
+                    @foreach($fields as $field)
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
+                            <img src="{{ asset('Campos/' . $field->image) }}" alt="Imagem do campo" class="w-full h-40 object-cover">
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h4 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h4>
+                                <p class="text-gray-600">Localização:{{ $field->location }} </p>
+                                <p class="text-gray-600">Custo: {{ $field->price }}€/hora</p>
+                                <p class="text-gray-600">Tipo de desporto: {{ $field->modality }} </p>
+                                <p class="text-gray-600">Contacto: {{ $field->contact }}</p>
+                                <p class="text-gray-600">Descrição: {{ $field->description }}</p>
+
+                                <div class="mt-4">
+                                    <a href="{{ route('edit-fields', $field->id) }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300">
+                                        Editar
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
         @endif
+
         <div class="mt-6 text-center">
             <a href="{{ route('create-fields') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                 Adicionar Novo Campo

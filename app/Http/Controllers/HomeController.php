@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 use App\Models\User;
 use App\Models\Problem;
@@ -32,7 +34,6 @@ class HomeController extends Controller
 
     public function chat()
     {
-        // Lista todos os usuários, exceto o logado
         $users = User::where('id', '!=', Auth::id())->get(); 
         return view('home.chat', compact('users'));
     }
@@ -65,7 +66,6 @@ class HomeController extends Controller
     {
         $userId = Auth::id();
 
-        // Busca as mensagens entre o usuário logado e o destinatário
         $messages = Message::where(function ($query) use ($userId, $receiverId) {
                 $query->where('sender_id', $userId)
                       ->where('receiver_id', $receiverId);
@@ -80,7 +80,6 @@ class HomeController extends Controller
 
         return response()->json($messages);
     }
-    // Envia uma nova mensagem
     public function sendMessage(Request $request)
     {
         $request->validate([
@@ -131,7 +130,7 @@ class HomeController extends Controller
             'email' => Auth::user()->email,          
             'description' => $validatedData['description'],
         ]);
-        toastr()->success('Reclamação enviada com sucesso');
+        toastr()->timeout(10000)->closeButton()->success('Reclamação enviada com sucesso');
 
         return redirect()->route('help');
     }
@@ -170,51 +169,65 @@ class HomeController extends Controller
 
         Field::create($validated);
 
-        toastr()->success('Pedido de adicao de campo com sucessso');
+        toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucessso');
 
         return redirect()->route('manage-fields');
     }
     public function editFields($id)
     {
         $field = Field::findOrFail($id);
-        return view('edit-fields', compact('field'));
+        return view('home.edit-fields', compact('field'));
     }
     
 
-    // Método para atualizar o campo no banco de dados
     public function updateFields(Request $request, $id)
     {
-        // Validação dos dados
-        $request->validate([
+        // Validando os campos
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'description' => 'required|string',
             'location' => 'required|string|max:255',
-            'availability' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
+            // A imagem é opcional durante a atualização
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', 
         ]);
-
-        // Encontrando o campo e atualizando os dados
+    
+        // Encontrar o campo no banco de dados
         $field = Field::findOrFail($id);
-
-        // Processamento da imagem
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('fields', 'public');
-            $field->image = $imagePath;
-        }
-
+    
         // Atualizando os outros campos
-        $field->name = $request->input('name');
-        $field->description = $request->input('description');
-        $field->location = $request->input('location');
-        $field->availability = $request->input('availability');
-        $field->contact = $request->input('contact');
-        $field->price = $request->input('price');
+        $field->name = $validated['name'];
+        $field->description = $validated['description'];
+        $field->location = $validated['location'];
+        $field->contact = $validated['contact'];
+        $field->price = $validated['price'];
+    
+        // Verifica se foi enviada uma nova imagem
+        if ($request->hasFile('image')) {
+            // Verificar se já existe uma imagem antiga e excluir
+            if ($field->image && file_exists(public_path('Campos/' . $field->image))) {
+                unlink(public_path('Campos/' . $field->image)); // Excluindo a imagem antiga
+            }
+    
+            // Armazenar a nova imagem no diretório public/Campos
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('Campos'), $imageName); // Movendo a imagem para o diretório public/Campos
+    
+            // Atualizando o campo de imagem com o novo nome
+            $field->image = $imageName;
+        }
+    
+        // Salvar as alterações no banco de dados
         $field->save();
-
-        return redirect()->route('fields.edit', $id)->with('success', 'Campo atualizado com sucesso!');
+    
+        // Mensagem de sucesso com Toastr
+        toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso');
+    
+        // Redirecionar de volta para a página de gerenciamento de campos
+        return redirect()->route('manage-fields');
     }
-
+    
+    
 }
 
