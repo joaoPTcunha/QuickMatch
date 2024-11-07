@@ -102,48 +102,63 @@
                 sendButton.disabled = false;  // Habilita o botão de envio
             })
             .catch(error => {
-                toastr.error('Erro ao carregar as mensagens', 'Erro');
-                sendButton.disabled = false;
+                // Tratamento de erro movido para o controller
             });
         }
 
         // Enviar mensagem
-        function sendMessage(event) {
-            event.preventDefault();
+       function sendMessage(event) {
+    event.preventDefault();
 
-            const content = document.getElementById('message-content').value;
-            const receiverId = document.getElementById('receiver-id').value;
-            const sendButton = document.getElementById('send-button');
-            sendButton.disabled = true;
+    const content = document.getElementById('message-content').value.trim();
+    if (!content) {
+        toastr.clear();  // Limpar qualquer notificação anterior
+        toastr.error('Você não pode enviar uma mensagem vazia.', 'Erro');
+        return;
+    }
 
-            fetch('/send-message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    receiver_id: receiverId,
-                    content: content
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('message-content').value = ''; // Limpar campo de entrada
-                loadMessages(receiverId); // Carregar mensagens novamente
-            })
-            .catch(error => {
-                toastr.error('Não foi possível enviar sua mensagem', 'Erro', { timeOut: 3000, closeButton: true });
-                sendButton.disabled = false;
-            });
-        }
+    const receiverId = document.getElementById('receiver-id').value;
+    const sendButton = document.getElementById('send-button');
+    sendButton.disabled = true;
+
+    fetch('/send-message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            receiver_id: receiverId,
+            content: content
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('message-content').value = ''; // Limpar campo de entrada
+        loadMessages(receiverId); // Carregar mensagens novamente
+        toastr.clear();  // Limpar qualquer notificação de erro
+        toastr.success('Mensagem enviada com sucesso!', 'Sucesso');
+    })
+    .catch(error => {
+        toastr.clear();  // Limpar qualquer notificação de sucesso anterior
+        toastr.error('Ocorreu um erro ao enviar a mensagem. Tente novamente.', 'Erro');
+    })
+    .finally(() => {
+        sendButton.disabled = false;  // Habilitar o botão após a resposta
+    });
+}
+
 
         // Verifica se pressionou "Enter" para enviar mensagem
         function checkEnter(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                const content = document.getElementById('message-content').value;
-                sendMessage(event);
+                const content = document.getElementById('message-content').value.trim();
+                if (content) {
+                    sendMessage(event);
+                } else {
+                    toastr.error('Você não pode enviar uma mensagem vazia.', 'Erro');
+                }
             }
         }
 
@@ -159,14 +174,5 @@
             const receiverId = document.getElementById('receiver-id').value;
             sendButton.disabled = this.value.trim() === '';  // Desabilita botão se não houver texto
         });
-
-        // Exibe notificações de sucesso ou erro
-        @if(session('success'))
-            toastr.success("{{ session('success') }}", "Sucesso");
-        @endif
-
-        @if(session('error'))
-            toastr.error("{{ session('error') }}", "Erro");
-        @endif
     </script>
 </body>

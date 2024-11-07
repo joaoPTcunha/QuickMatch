@@ -5,7 +5,7 @@
     <div class="flex-grow container mx-auto p-6">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl">Suporte ao Cliente</h1>
-            <a href="{{ url('/problem_history') }}" class="text-blue-500 hover:underline">
+            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline">
                 Ver Histórico de Problemas
             </a>
         </div>

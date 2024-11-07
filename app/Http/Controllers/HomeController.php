@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Message;
 use App\Models\Field;
-
 
 class HomeController extends Controller
 {
@@ -18,55 +16,59 @@ class HomeController extends Controller
         return view('home.index');
     }
 
-    public function newmatch(){
+    public function newMatch()
+    {
         return view('home.newmatch');
     }
 
-    public function seematch(){
+    public function seeMatch()
+    {
         return view('home.seematch');
     }
 
-    public function spinwheel(){
+    public function spinWheel()
+    {
         return view('home.spinwheel');
     }
 
     public function chat()
     {
-        // Lista todos os usuários, exceto o logado
-        $users = User::where('id', '!=', Auth::id())->get(); 
+        $users = User::where('id', '!=', Auth::id())->get();
         return view('home.chat', compact('users'));
     }
-    
 
-    public function conversations(){
-    
+    public function conversations()
+    {
         $userId = Auth::id();
+        $conversations = $this->getConversations($userId);
+        return view('chat.conversations', compact('conversations'));
+    }
 
-        // Busca todos os usuários com os quais o usuário logado teve uma conversa.
-        $conversations = Message::where('sender_id', $userId)
+    private function getConversations($userId)
+    {
+        return Message::where('sender_id', $userId)
             ->orWhere('receiver_id', $userId)
             ->with(['sender', 'receiver'])
             ->latest('created_at')
             ->get()
             ->groupBy(function ($message) use ($userId) {
-                // Agrupando por usuário (outro participante da conversa)
                 return $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
             })
             ->map(function ($messages) {
-                // Retorna apenas a última mensagem de cada conversa
                 return $messages->first();
             });
-
-        return view('chat.conversations', compact('conversations'));
-    
-}
+    }
 
     public function getMessages($receiverId)
     {
         $userId = Auth::id();
+        $messages = $this->getMessagesBetweenUsers($userId, $receiverId);
+        return response()->json($messages);
+    }
 
-        // Busca as mensagens entre o usuário logado e o destinatário
-        $messages = Message::where(function ($query) use ($userId, $receiverId) {
+    private function getMessagesBetweenUsers($userId, $receiverId)
+    {
+        return Message::where(function ($query) use ($userId, $receiverId) {
                 $query->where('sender_id', $userId)
                       ->where('receiver_id', $receiverId);
             })
@@ -77,34 +79,51 @@ class HomeController extends Controller
             ->with('sender')
             ->orderBy('created_at', 'asc')
             ->get();
-
-        return response()->json($messages);
     }
-    // Envia uma nova mensagem
-    public function sendMessage(Request $request)
-    {
-        $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'content' => 'required|string',
-        ]);
 
+    public function sendMessage(Request $request)
+{
+    $validatedData = $request->validate([
+        'receiver_id' => 'required|exists:users,id',
+        'content' => 'required|string',
+    ]);
+
+    try {
+        // Criação da mensagem
         $message = Message::create([
             'sender_id' => Auth::id(),
-            'receiver_id' => $request->receiver_id,
-            'content' => $request->content,
+            'receiver_id' => $validatedData['receiver_id'],
+            'content' => $validatedData['content'],
         ]);
 
+        // Notificação de sucesso no backend
+        toastr()->success('Mensagem enviada com sucesso');
+
+        // Retorna os dados para o frontend, sem necessidade de outra notificação aqui
         return response()->json([
             'status' => 'success',
             'data' => $message,
         ]);
+    } catch (\Exception $e) {
+        // Notificação de erro no backend
+        toastr()->error('Não foi possível enviar sua mensagem');
+
+        // Retorna erro para o frontend
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Não foi possível enviar a mensagem',
+        ], 500);
     }
-    
-    public function field(){
+}
+
+
+    public function field()
+    {
         return view('home.field');
     }
 
-    public function contact(){
+    public function contact()
+    {
         return view('home.contact');
     }
 
@@ -151,7 +170,7 @@ class HomeController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
@@ -161,18 +180,20 @@ class HomeController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        $this->storeFieldImage($validatedData, $request);
+        $validatedData['user_id'] = Auth::id();
+        Field::create($validatedData);
+
+        toastr()->success('Pedido de adicao de campo com sucessso');
+        return redirect()->route('manage-fields');
+    }
+
+    private function storeFieldImage($validatedData, $request)
+    {
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('Campos'), $imageName);
-            $validated['image'] = $imageName;
+            $validatedData['image'] = $imageName;
         }
-        $validated['user_id'] = Auth::id();
-
-        Field::create($validated);
-
-        toastr()->success('Pedido de adicao de campo com sucessso');
-
-        return redirect()->route('manage-fields');
     }
 }
-

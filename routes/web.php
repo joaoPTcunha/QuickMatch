@@ -35,6 +35,7 @@ Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
+Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
 Route::middleware(['auth'])->group(function () {
     Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
     Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send-message');
@@ -66,7 +67,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
     Route::post('/store-problem', [AdminController::class, 'storeProblem'])->name('storeProblem');
-    Route::get('/problem_history', [AdminController::class, 'problem_history'])->name('admin.problem_history');
+    Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
     Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
 });
