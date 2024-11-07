@@ -149,7 +149,7 @@ class HomeController extends Controller
         return view('home.create-field');  
     }
 
-    public function store(Request $request)
+    public function storeFields(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -174,5 +174,47 @@ class HomeController extends Controller
 
         return redirect()->route('manage-fields');
     }
+    public function editFields($id)
+    {
+        $field = Field::findOrFail($id);
+        return view('edit-fields', compact('field'));
+    }
+    
+
+    // Método para atualizar o campo no banco de dados
+    public function updateFields(Request $request, $id)
+    {
+        // Validação dos dados
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'location' => 'required|string|max:255',
+            'availability' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        // Encontrando o campo e atualizando os dados
+        $field = Field::findOrFail($id);
+
+        // Processamento da imagem
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('fields', 'public');
+            $field->image = $imagePath;
+        }
+
+        // Atualizando os outros campos
+        $field->name = $request->input('name');
+        $field->description = $request->input('description');
+        $field->location = $request->input('location');
+        $field->availability = $request->input('availability');
+        $field->contact = $request->input('contact');
+        $field->price = $request->input('price');
+        $field->save();
+
+        return redirect()->route('fields.edit', $id)->with('success', 'Campo atualizado com sucesso!');
+    }
+
 }
 

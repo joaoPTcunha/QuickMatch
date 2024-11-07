@@ -9,10 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\Admin;
 
-
-
 Route::get('/', [HomeController::class, 'index'])->name('index');
-
 
 Route::get('/index', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
 
@@ -28,7 +25,6 @@ require __DIR__ . '/auth.php';
 Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
 Route::get('auth/google/call-back',[GoogleAuthController::class, 'callbackGoogle']);
 
-
 #UTILIZADOR SEM ESTAR LOGADO
 Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel');
 Route::get('/field', [HomeController::class, 'field'])->name('field');
@@ -41,7 +37,6 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
 
-
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
@@ -49,13 +44,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
+    Route::get('/create-field', [HomeController::class, 'createField'])->name('create-fields');
+    Route::post('/fields', [HomeController::class, 'storeFields'])->name('store-fields');
+    Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
 
-    // Página para adicionar um novo campo
-        Route::get('/create-field', [HomeController::class, 'createField'])->name('fields.create');
-
-    // Armazenar o novo campo no banco de dados
-    Route::post('/fields', [HomeController::class, 'store'])->name('fields.store');
 });
+
 #ADMIN
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');

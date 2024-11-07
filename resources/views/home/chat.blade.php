@@ -1,5 +1,5 @@
-@include('home.css')  <!-- Incluindo o CSS do Tailwind -->
-@include('home.header')  <!-- Incluindo o cabeçalho -->
+@include('home.css') <!-- Incluindo o CSS do Tailwind -->
+@include('home.header') <!-- Incluindo o cabeçalho -->
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow flex">
@@ -7,7 +7,7 @@
         <div class="w-1/4 bg-gray-100 p-4 border-r overflow-y-auto">
             <h2 class="text-xl font-semibold mb-4">Usuários</h2>
             <ul>
-                @foreach($users as $user)  <!-- Loop através dos usuários -->
+                @foreach($users as $user) <!-- Loop através dos usuários -->
                     <li class="py-2 px-4 rounded hover:bg-gray-200 cursor-pointer" onclick="loadMessages({{ $user->id }})">
                         <span class="text-gray-700">{{ $user->name }}</span>
                     </li>
@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    @include('home.footer')  <!-- Incluindo o rodapé -->
+    @include('home.footer') <!-- Incluindo o rodapé -->
 
     <!-- Scripts e Toastr para feedback de mensagens -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -142,7 +142,6 @@
         function checkEnter(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                const content = document.getElementById('message-content').value;
                 sendMessage(event);
             }
         }
@@ -156,7 +155,6 @@
         // Verifica se há texto no campo para habilitar ou desabilitar o botão de envio
         document.getElementById('message-content').addEventListener('input', function() {
             const sendButton = document.getElementById('send-button');
-            const receiverId = document.getElementById('receiver-id').value;
             sendButton.disabled = this.value.trim() === '';  // Desabilita botão se não houver texto
         });
 
