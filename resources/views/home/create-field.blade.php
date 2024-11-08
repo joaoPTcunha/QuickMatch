@@ -5,19 +5,8 @@
 
     <div class="flex-grow container mx-auto p-4">
         <h3 class="text-3xl font-semibold text-center mb-6">Adicionar Novo Campo</h3>
-
-        @if ($errors->any())
-            <div class="mb-4 bg-red-500 text-white p-3 rounded-lg">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('fields.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
-            @csrf
+        <form action="{{ route('store-fields') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+        @csrf
 
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
@@ -40,7 +29,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="price" class="block text-sm font-medium text-gray-700">Preço</label>
+                <label for="price" class="block text-sm font-medium text-gray-700">Preço por Hora</label>
                 <input type="text" name="price" id="price" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 

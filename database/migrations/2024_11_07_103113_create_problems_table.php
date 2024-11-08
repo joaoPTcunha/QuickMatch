@@ -13,7 +13,7 @@ class CreateProblemsTable extends Migration
             $table->string('subject');
             $table->string('email');
             $table->text('description');
-            $table->boolean('is_solved')->default(false); // Add is_solved column
+            $table->boolean('is_solved')->default(false); 
             $table->timestamps();
         });
     }
