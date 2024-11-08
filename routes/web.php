@@ -34,7 +34,7 @@ Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('
 Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
 Route::middleware(['auth'])->group(function () {
     Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
-    Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send-message');
+    Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
 });
 Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
 

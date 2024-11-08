@@ -32,56 +32,16 @@ class HomeController extends Controller
     }
 
     public function chat()
-    {
-        $users = User::where('id', '!=', Auth::id())->get();
-        return view('home.chat', compact('users'));
-    }
+{
+    $users = User::where('id', '!=', Auth::id())->get(); // Carrega todos os usuários, exceto o logado
+    $conversations = $this->getUserConversations(); // Carrega as conversas do usuário
+    
+    return view('home.chat', compact('users', 'conversations')); // Passa as conversas e usuários para a view
+}
 
-    public function conversations()
-    {
-        $userId = Auth::id();
-        $conversations = $this->getConversations($userId);
-        return view('chat.conversations', compact('conversations'));
-    }
-
-    private function getConversations($userId)
-    {
-        return Message::where('sender_id', $userId)
-            ->orWhere('receiver_id', $userId)
-            ->with(['sender', 'receiver'])
-            ->latest('created_at')
-            ->get()
-            ->groupBy(function ($message) use ($userId) {
-                return $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
-            })
-            ->map(function ($messages) {
-                return $messages->first();
-            });
-    }
-
-    public function getMessages($receiverId)
-    {
-        $userId = Auth::id();
-        $messages = $this->getMessagesBetweenUsers($userId, $receiverId);
-        return response()->json($messages);
-    }
-
-    private function getMessagesBetweenUsers($userId, $receiverId)
-    {
-        return Message::where(function ($query) use ($userId, $receiverId) {
-                $query->where('sender_id', $userId)
-                      ->where('receiver_id', $receiverId);
-            })
-            ->orWhere(function ($query) use ($userId, $receiverId) {
-                $query->where('sender_id', $receiverId)
-                      ->where('receiver_id', $userId);
-            })
-            ->with('sender')
-            ->orderBy('created_at', 'asc')
-            ->get();
-    }
-
-    public function sendMessage(Request $request)
+// Dentro do HomeController.php
+// Dentro do HomeController.php
+public function sendMessage(Request $request)
 {
     $validatedData = $request->validate([
         'receiver_id' => 'required|exists:users,id',
@@ -89,33 +49,70 @@ class HomeController extends Controller
     ]);
 
     try {
-        // Criação da mensagem
+        // Crie a nova mensagem
         $message = Message::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $validatedData['receiver_id'],
             'content' => $validatedData['content'],
         ]);
 
-        // Notificação de sucesso no backend
-        toastr()->success('Mensagem enviada com sucesso');
-
-        // Retorna os dados para o frontend, sem necessidade de outra notificação aqui
+        // Retorne uma resposta de sucesso
         return response()->json([
             'status' => 'success',
-            'data' => $message,
+            'message' => 'Mensagem enviada com sucesso!',
+            'message_data' => $message,
         ]);
     } catch (\Exception $e) {
-        // Notificação de erro no backend
-        toastr()->error('Não foi possível enviar sua mensagem');
-
-        // Retorna erro para o frontend
+        // Caso ocorra um erro, retorna a mensagem de erro
         return response()->json([
             'status' => 'error',
-            'message' => 'Não foi possível enviar a mensagem',
-        ], 500);
+            'message' => 'Ocorreu um erro ao enviar a mensagem. Tente novamente.',
+        ]);
     }
 }
 
+
+
+    // Função para obter todas as conversas de um usuário
+    private function getUserConversations()
+    {
+        $userId = Auth::id();
+        
+        // Buscar todas as mensagens enviadas ou recebidas pelo usuário logado
+        return Message::where('sender_id', $userId)
+            ->orWhere('receiver_id', $userId)
+            ->with('sender', 'receiver') // Carrega os remetentes e destinatários das mensagens
+            ->get()
+            ->groupBy(function ($message) use ($userId) {
+                return $message->sender_id == $userId ? $message->receiver_id : $message->sender_id;
+            });
+    }
+    
+
+    // Função para carregar as mensagens de uma conversa específica
+    public function getMessages($receiverId)
+    {
+        $userId = Auth::id();
+        $messages = $this->getMessagesBetweenUsers($userId, $receiverId);
+
+        return response()->json($messages);
+    }
+
+    // Obter mensagens entre dois usuários
+    private function getMessagesBetweenUsers($userId, $receiverId)
+{
+    return Message::where(function ($query) use ($userId, $receiverId) {
+            $query->where('sender_id', $userId)
+                  ->where('receiver_id', $receiverId);
+        })
+        ->orWhere(function ($query) use ($userId, $receiverId) {
+            $query->where('sender_id', $receiverId)
+                  ->where('receiver_id', $userId);
+        })
+        ->with('sender')
+        ->orderBy('created_at', 'asc')
+        ->get();
+}
 
     public function field()
     {
@@ -196,4 +193,4 @@ class HomeController extends Controller
             $validatedData['image'] = $imageName;
         }
     }
-}
+} 
