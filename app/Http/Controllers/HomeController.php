@@ -162,7 +162,7 @@ class HomeController extends Controller
 
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('Campos'), $imageName);
+            $request->image->move(public_path('Fields'), $imageName);
             $validated['image'] = $imageName;
         }
         $validated['user_id'] = Auth::id();
@@ -182,49 +182,38 @@ class HomeController extends Controller
 
     public function updateFields(Request $request, $id)
     {
-        // Validando os campos
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            // A imagem é opcional durante a atualização
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', 
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', 
         ]);
     
-        // Encontrar o campo no banco de dados
         $field = Field::findOrFail($id);
     
-        // Atualizando os outros campos
         $field->name = $validated['name'];
         $field->description = $validated['description'];
         $field->location = $validated['location'];
         $field->contact = $validated['contact'];
         $field->price = $validated['price'];
     
-        // Verifica se foi enviada uma nova imagem
         if ($request->hasFile('image')) {
-            // Verificar se já existe uma imagem antiga e excluir
             if ($field->image && file_exists(public_path('Campos/' . $field->image))) {
-                unlink(public_path('Campos/' . $field->image)); // Excluindo a imagem antiga
+                unlink(public_path('Fields/' . $field->image)); // Excluindo a imagem antiga
             }
     
-            // Armazenar a nova imagem no diretório public/Campos
             $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('Campos'), $imageName); // Movendo a imagem para o diretório public/Campos
+            $request->image->move(public_path('Fields'), $imageName); 
     
-            // Atualizando o campo de imagem com o novo nome
             $field->image = $imageName;
         }
     
-        // Salvar as alterações no banco de dados
         $field->save();
     
-        // Mensagem de sucesso com Toastr
         toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso');
     
-        // Redirecionar de volta para a página de gerenciamento de campos
         return redirect()->route('manage-fields');
     }
     

@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('surname')->nullable();
+            $table->string('user_name')->nullable();
             $table->string('date_birth')->nullable();
             $table->string('gender')->nullable();
             $table->string('email')->unique();
             $table->string('usertype')->default('user');
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->string('google_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();

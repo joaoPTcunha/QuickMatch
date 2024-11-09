@@ -7,7 +7,7 @@
         <div class="w-1/4 bg-gray-100 p-4 border-r overflow-y-auto">
             <h2 class="text-xl font-semibold mb-4">Usuários</h2>
             <ul>
-                @foreach($users as $user) <!-- Loop através dos usuários -->
+                @foreach($users as $user) 
                     <li class="py-2 px-4 rounded hover:bg-gray-200 cursor-pointer" onclick="loadMessages({{ $user->id }})">
                         <span class="text-gray-700">{{ $user->name }}</span>
                     </li>

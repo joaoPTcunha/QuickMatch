@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GoogleAuthController;
@@ -15,9 +14,10 @@ Route::get('/index', [HomeController::class, 'index'])->middleware(['auth', 'ver
 
 ### LOGIN/REGISTOS
 Route::middleware('auth')->group(function (){
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/password', [ProfileController::class, 'update'])->name('password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
 });
 require __DIR__ . '/auth.php';
 
@@ -31,6 +31,7 @@ Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
     Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send-message');

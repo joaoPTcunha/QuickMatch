@@ -6,7 +6,7 @@
             <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>
         </div>
         <input type="checkbox" id="menu-toggle" class="hidden" />
-        <!--- Hamburger --->
+        
         <label for="menu-toggle" class="md:hidden flex items-center cursor-pointer">
             <div class="flex flex-col space-y-1">
                 <div class="w-6 h-0.5 bg-gray-700"></div>
