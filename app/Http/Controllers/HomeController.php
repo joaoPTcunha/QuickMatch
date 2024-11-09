@@ -238,10 +238,5 @@ public function sendMessage(Request $request)
     
         return redirect()->route('manage-fields');
     }
-    
-    
 }
 
-=======
-} 
->>>>>>> b0b1f2f9c3b99bb723911da938acd99d55833185
