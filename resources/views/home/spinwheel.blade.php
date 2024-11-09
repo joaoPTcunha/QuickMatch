@@ -342,12 +342,36 @@ function getRandomUnusedColor() {
 }
 
     
-        function allocateToRandomTeam(player) {
-    const randomTeamIndex = Math.floor(Math.random() * teams.length);
-    teams[randomTeamIndex].push(player); // Adiciona o jogador à equipe aleatória
-    removeItem(player); // Remove o jogador da lista de jogadores disponíveis
-    updateTeamDisplay(); // Atualiza a tabela de equipes
+function allocateToRandomTeam(player) {
+    // Primeiro, garantimos que todas as equipes sejam criadas, se ainda não houver equipes
+    if (teams.length === 0) {
+        const numTeams = 2; // Ou outro número desejado de equipes
+        for (let i = 0; i < numTeams; i++) {
+            teams.push([]); // Cria as equipes vazias
+        }
+    }
+
+    // Encontramos a equipe com o menor número de jogadores
+    let minTeamIndex = 0;
+    let minTeamSize = teams[0].length;
+
+    for (let i = 1; i < teams.length; i++) {
+        if (teams[i].length < minTeamSize) {
+            minTeamSize = teams[i].length;
+            minTeamIndex = i;
+        }
+    }
+
+    // Atribui o jogador à equipe com o menor número de jogadores
+    teams[minTeamIndex].push(player);
+
+    // Remove o jogador da lista de jogadores disponíveis
+    removeItem(player);
+
+    // Atualiza a exibição das equipes
+    updateTeamDisplay();
 }
+
 
 document.getElementById("player-list").addEventListener("input", updatePlayersFromTextarea);
 

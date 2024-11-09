@@ -70,10 +70,10 @@ class AdminController extends Controller
         return view('admin.support', compact('problems'));
     }
 
-    public function problemHistory()
+    public function problems_history()
     {
         $problems = Problem::where('is_solved', true)->get();
-        return view('admin.problem_history', compact('problems'));
+        return view('admin.problems_history', compact('problems'));
     }
 
     public function markAsSolved(Request $request, $id)
