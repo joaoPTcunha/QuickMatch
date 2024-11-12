@@ -2,7 +2,7 @@
 
 @include('home.header')
 
-<body class="flex flex-col min-h-screen bg-gray-100">
+<body class="flex flex-col min-h-screen bg-gray-200">
 
     <div class="flex-grow">
         @include('home.main')

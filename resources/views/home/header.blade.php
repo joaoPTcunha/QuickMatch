@@ -1,10 +1,10 @@
 <header class="bg-gray-200 py-4 mb-8">
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-4xl flex items-center space-x-2">
-            <a href="{{ url('/') }}">
+            <a href="{{ url('/') }}" class="flex items-center space-x-2">
                 <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-10" />
+                <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>
             </a>
-        <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>
     </div>
         <input type="checkbox" id="menu-toggle" class="hidden" />
         <label for="menu-toggle" class="md:hidden flex items-center cursor-pointer">
@@ -34,11 +34,7 @@
                 <a href="{{ url('/login') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Iniciar Sessão</a>
             @else
 
-            <a href="{{ url('/chat') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                </svg>
-            </a>
+           
 
                 <div class="relative group">
                     <button id="desktop-profile-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center">
@@ -103,12 +99,7 @@
                 <a href="{{ url('/login') }}" class="block bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-blue-green">Iniciar Sessão</a>
             @else
 
-            <a href="{{ url('/chat') }}" class="flex items-center text-gray-700 hover:text-gray-900 px-2 py-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                </svg>
-                <span>Chat</span>
-            </a>
+            
 
                 <div class="relative">
                     <button id="mobile-profile-dropdown-toggle" class="w-full text-left flex items-center justify-between text-gray-700 hover:text-gray-900 px-2 py-2">

@@ -30,8 +30,12 @@
                 <span class="text-yellow-500">★★★★★</span>
                 5 estrelas
             </div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Conversar com o dono</button>
-        </div>
+            <a href="{{ route('chat') }}">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Conversar com o dono
+                </button>
+            </a>
+                    </div>
     </div>
     </div>
     @include('home.footer')
