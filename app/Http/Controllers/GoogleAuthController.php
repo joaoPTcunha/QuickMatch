@@ -52,7 +52,7 @@ class GoogleAuthController extends Controller
             Auth::login($user);
 
             // Redireciona para a rota desejada após o login com o Google
-            return redirect()->route('see.match');
+            return redirect()->route('index');
 
         } catch (\Throwable $th) {
             return redirect()->route('login')->with('error', 'Algo deu errado: ' . $th->getMessage());

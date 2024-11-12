@@ -39,8 +39,6 @@ class HomeController extends Controller
     return view('home.chat', compact('users', 'conversations')); // Passa as conversas e usuários para a view
 }
 
-// Dentro do HomeController.php
-// Dentro do HomeController.php
 public function sendMessage(Request $request)
 {
     $validatedData = $request->validate([
@@ -165,7 +163,7 @@ public function sendMessage(Request $request)
         return view('home.create-field');  
     }
 
-    public function store(Request $request)
+    public function storeFields(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -176,25 +174,31 @@ public function sendMessage(Request $request)
             'modality' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-        $this->storeFieldImage($validatedData, $request);
-        $validatedData['user_id'] = Auth::id();
-        Field::create($validatedData);
-
-        toastr()->success('Pedido de adicao de campo com sucessso');
-        return redirect()->route('manage-fields');
-    }
-
-    private function storeFieldImage($validatedData, $request)
-    {
-        if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('Fields'), $imageName);
-            $validated['image'] = $imageName;
-            $request->image->move(public_path('Campos'), $imageName);
+    
+        $imageName = $this->storeFieldImage($request);
+    
+        if ($imageName) {
             $validatedData['image'] = $imageName;
         }
+        $validatedData['user_id'] = Auth::id();
+    
+        Field::create($validatedData);
+    
+        toastr()->success('Pedido de adição de campo com sucesso');
+        return redirect()->route('manage-fields');
     }
+    
+    private function storeFieldImage($request)
+{
+    if ($request->hasFile('image')) {
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('Fields'), $imageName);
+        return $imageName; 
+    }
+    
+    return null; // Caso não tenha imagem, retorna null
+}
+
     public function editFields($id)
     {
         $field = Field::findOrFail($id);
@@ -210,7 +214,7 @@ public function sendMessage(Request $request)
             'location' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', 
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Tornando a imagem opcional
         ]);
     
         $field = Field::findOrFail($id);
@@ -222,12 +226,12 @@ public function sendMessage(Request $request)
         $field->price = $validated['price'];
     
         if ($request->hasFile('image')) {
-            if ($field->image && file_exists(public_path('Campos/' . $field->image))) {
-                unlink(public_path('Fields/' . $field->image)); // Excluindo a imagem antiga
+            if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
+                unlink(public_path('Fields/' . $field->image)); // Corrigido o caminho para 'Fields/'
             }
     
             $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('Fields'), $imageName); 
+            $request->image->move(public_path('Fields'), $imageName);
     
             $field->image = $imageName;
         }

@@ -27,20 +27,21 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
+
     public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'surname' => 'nullable|string|max:255',
-            'user_name' => 'nullable|string|max:255',
+            'user_name' => 'required|string|max:255',
             'date_birth' => 'nullable|date',
-            'gender' => 'nullable|string|in:Masculino,Feminino',
+            'gender' => 'nullable|string|in:Male,Female,Other',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
-            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:1024', 
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:1024',
         ]);
     
-        $user = Auth::user(); 
+        $user = Auth::user();
     
         if ($user instanceof User) {
             $user->name = $request->input('name');
@@ -51,25 +52,31 @@ class ProfileController extends Controller
             $user->phone = $request->input('phone');
             $user->address = $request->input('address');
     
-            if ($request->hasFile('image')) {
-                if ($user->image && file_exists(public_path('Profile_Photo/' . $user->image))) {
-                    unlink(public_path('Profile_Photo/' . $user->image)); 
-                }
-        
-                $imageName = time() . '.' . $request->image->extension();
-                $request->image->move(public_path('Profile_Photo'), $imageName); 
-        
-                $user->image = $imageName;
+            if ($request->hasFile('profile_picture')) {
+                $this->storeUserProfileImage($request, $user);
             }
-        
     
-            $user->save(); 
-
+            $user->save();
+    
             toastr()->timeout(10000)->closeButton()->success('Perfil atualizado com sucesso');
-
+    
             return back()->with('status', 'profile-updated');
         }
     }
+    
+    private function storeUserProfileImage($request, $user)
+    {
+        if ($user->profile_picture && file_exists(public_path('Profile_Photo/' . $user->profile_picture))) {
+            unlink(public_path('Profile_Photo/' . $user->profile_picture));
+        }
+    
+        $imageName = time() . '.' . $request->file('profile_picture')->extension();
+        $request->file('profile_picture')->move(public_path('Profile_Photo'), $imageName);
+    
+        $user->profile_picture = $imageName;
+    }
+    
+    
 
     /**
      * Delete the user's account.

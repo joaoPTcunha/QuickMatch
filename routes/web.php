@@ -13,11 +13,11 @@ Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('/index', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
 
 ### LOGIN/REGISTOS
-Route::middleware('auth')->group(function (){
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/password', [ProfileController::class, 'update'])->name('password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 require __DIR__ . '/auth.php';
 
@@ -31,11 +31,7 @@ Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
-Route::middleware(['auth'])->group(function () {
-    Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
-    Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
-});
-Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
+
 
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -45,9 +41,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
     Route::get('/create-field', [HomeController::class, 'createField'])->name('create-fields');
-    Route::post('/fields', [HomeController::class, 'storeFields'])->name('store-fields');
+    Route::post('/field', [HomeController::class, 'storeFields'])->name('store-fields');
     Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
-    Route::put('/fields/{id}', [HomeController::class, 'updateFields'])->name('fields.update');
+    Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');
+
+    Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
+    Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
+    Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
 
 });
 

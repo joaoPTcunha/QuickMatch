@@ -14,7 +14,7 @@
                 <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl">
                     @foreach($fields as $field)
                         <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
-                            <img src="{{ asset('Campos/' . $field->image) }}" alt="Imagem do campo" class="w-full h-40 object-cover">
+                            <img src="{{ asset('Fields/' . $field->image) }}" alt="Imagem do campo" class="w-full h-40 object-cover">
                             <div class="p-4 flex flex-col flex-grow">
                                 <h4 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h4>
                                 <p class="text-gray-600">Localização:{{ $field->location }} </p>
