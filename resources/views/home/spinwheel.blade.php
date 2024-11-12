@@ -9,12 +9,11 @@
         border-right: 20px solid #000;
         position: absolute;
         top: -16%;
-        left: calc(20% + 0.5rem); /* Ajusta a posição relativa ao botão */
+        left: calc(20% + 0.5rem); 
         transform: translateY(-50%) rotate(90deg);
         transition: transform 0.05s ease-out;
     }
 
-    /* Media queries para ajustar o tamanho em diferentes resoluções */
     @media (max-width: 640px) {
         .triangle {
             border-top: 8px solid transparent;
@@ -32,28 +31,34 @@
 
 </style>
 
-<body class="bg-gray-100 flex flex-col min-h-screen">
 
-    <div class="flex flex-col items-center justify-center w-full max-w-6xl mx-auto p-5">
-        <!-- Seção de boas-vindas -->
-        <div class="text-center p-5 w-full max-w-lg mx-auto">
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <!-- Primeira Linha: Texto de Boas-vindas -->
+    <div class="flex justify-center w-full max-w-6xl mx-auto p-4">
+        <div class="text-center">
             <h1 class="font-bold text-3xl sm:text-4xl text-green-600">Bem-vindo à Roleta</h1>
             <p class="text-lg text-gray-800 mt-2 mx-auto max-w-xl leading-relaxed">
                 Adicione os jogadores à lista, escolha o número de equipas e o tipo de desporto. Ao girar a roleta, os jogadores serão distribuídos automaticamente entre as equipas. Divirta-se e boa sorte!
             </p>
         </div>
-    
+    </div>
 
-        <div class="container mx-auto p-4 flex flex-col items-center space-y-4">
+    <!-- Segunda Linha: Divisão em duas colunas -->
+    <div class="flex flex-col lg:flex-row items-start w-full max-w-6xl mx-auto p-4 space-y-8 lg:space-y-2 flex-grow">
+        <!-- Coluna 1: Roleta -->
+        <div class="lg:w-1/2 w-full flex justify-center lg:justify-start">
             <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
                 <canvas id="canvas" class="w-full h-auto" style="max-width: 200%" width="500" height="500"></canvas>
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-12 h-12 sm:w-16 sm:h-16 rounded-full flex justify-center items-center shadow-lg border-2 border-black font-bold text-lg cursor-pointer hover:bg-blue-600 hover:text-white transition-all duration-300" onclick="spin()">
-                  Girar
-                  <div class="triangle absolute top-1/2 right-[-40px] transform -translate-y-1/2 rotate-0 transition-transform duration-150"></div>
+                    Girar
+                    <div class="triangle absolute top-1/2 right-[-40px] transform -translate-y-1/2 rotate-0 transition-transform duration-150"></div>
                 </div>
             </div>
-            
-            <div class="flex flex-wrap justify-center gap-5 mb-5 bg-gray-800 p-4 rounded-lg shadow-md w-full max-w-lg mx-auto">
+        </div>
+
+        <!-- Coluna 2: Formulários para Número de Equipas e Tipo de Desporto -->
+        <div class="lg:w-1/2 w-full space-y-8">
+            <div class="flex flex-wrap justify-center gap-5 mb-5 bg-gray-800 p-4 rounded-lg shadow-md">
                 <input type="number" id="team-count" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto" placeholder="Número de equipas" min="2" value="2">
                 <select id="sport-type" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto">
                     <option value="futebol">Futebol</option>
@@ -68,31 +73,40 @@
                 </select>
             </div>
 
+            <!-- Adicionar Jogador -->
             <div class="w-full max-w-lg space-y-4">
                 <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-600 text-white border-none placeholder-gray-400" placeholder="Adicione jogadores separados por linha..."></textarea>
             
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
-                  <button class="btn p-3 bg-blue-600 text-white rounded shadow transition duration-300 hover:bg-blue-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogador</button>
+                    <button class="btn p-3 bg-blue-600 text-white rounded shadow transition duration-300 hover:bg-blue-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogador</button>
                 </div>
-              </div>          
-              <div class="team-table-container w-full max-w-lg bg-gray-800 rounded-lg p-4 shadow-md mt-4 mx-auto overflow-x-auto">
+            </div>
+
+            <!-- Exibição das Equipas -->
+            <div class="team-table-container w-full max-w-lg bg-gray-800 rounded-lg p-4 shadow-md mt-4 mx-auto overflow-x-auto">
                 <h2 class="text-center text-lg font-bold text-white mb-3">Distribuição de Jogadores</h2>
                 <table id="team-table" class="min-w-full table-auto bg-gray-700 text-sm">
-                  <thead>
-                    <tr>
-                      <th class="border-b border-blue-600 text-white p-2 bg-blue-600">Equipa</th>
-                      <th class="border-b border-blue-600 text-white p-2 bg-blue-600">Jogadores</th>
-                    </tr>
-                  </thead>
-                  <tbody id="team-body">
-                    <!-- Jogadores adicionados aqui -->
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th class="border-b border-blue-600 text-white p-2 bg-blue-600">Equipa</th>
+                            <th class="border-b border-blue-600 text-white p-2 bg-blue-600">Jogadores</th>
+                        </tr>
+                    </thead>
+                    <tbody id="team-body">
+                        <!-- Jogadores adicionados aqui -->
+                    </tbody>
                 </table>
-              </div>
             </div>
-</div>
+        </div>
+    </div>
 
-    @include('home.footer')
+    <!-- Footer fixado na parte inferior -->
+        @include('home.footer')
+</body>
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 
@@ -107,25 +121,25 @@
         }
 
         // Lista de cores disponíveis
-const availableColors = [
-    "#FF0000", // Vermelho
-    "#00FF00", // Verde
-    "#0000FF", // Azul
-    "#FFFF00", // Amarelo
-    "#FF8C00", // Laranja Escuro
-    "#8B0000", // Vermelho Escuro
-    "#4682B4", // Azul Aço
-    "#708090", // Cinza Ardósia
-    "#2F4F4F", // Verde Escuro
-    "#B8860B", // Ouro Escuro
-    "#5F9EA0", // Verde-azulado
-    "#7B68EE", // Azul Médio
-    "#6B8E23", // Verde Oliva
-];
+    const availableColors = [
+        "#FF0000", // Vermelho
+        "#00FF00", // Verde
+        "#0000FF", // Azul
+        "#FFFF00", // Amarelo
+        "#FF8C00", // Laranja Escuro
+        "#8B0000", // Vermelho Escuro
+        "#4682B4", // Azul Aço
+        "#708090", // Cinza Ardósia
+        "#2F4F4F", // Verde Escuro
+        "#B8860B", // Ouro Escuro
+        "#5F9EA0", // Verde-azulado
+        "#7B68EE", // Azul Médio
+        "#6B8E23", // Verde Oliva
+    ];
 
-// Objeto para rastrear cores em uso
-let usedColors = new Map();
-let availableColorsList = [...availableColors];
+    // Objeto para rastrear cores em uso
+    let usedColors = new Map();
+    let availableColorsList = [...availableColors];
 
 function getRandomUnusedColor() {
     if (availableColorsList.length === 0) {
@@ -135,7 +149,7 @@ function getRandomUnusedColor() {
     const color = availableColorsList[randomIndex];
     availableColorsList.splice(randomIndex, 1);
     return color;
-}
+    }
         function toRad(deg) {
             return deg * (Math.PI / 180.0);
         }

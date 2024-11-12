@@ -32,46 +32,45 @@ class HomeController extends Controller
     }
 
     public function chat()
-{
-    $users = User::where('id', '!=', Auth::id())->get(); // Carrega todos os usuários, exceto o logado
-    $conversations = $this->getUserConversations(); // Carrega as conversas do usuário
-    
-    return view('home.chat', compact('users', 'conversations')); // Passa as conversas e usuários para a view
-}
-
-public function sendMessage(Request $request)
-{
-    $validatedData = $request->validate([
-        'receiver_id' => 'required|exists:users,id',
-        'content' => 'required|string',
-    ]);
-
-    try {
-        // Crie a nova mensagem
-        $message = Message::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $validatedData['receiver_id'],
-            'content' => $validatedData['content'],
-        ]);
-
-        // Retorne uma resposta de sucesso
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Mensagem enviada com sucesso!',
-            'message_data' => $message,
-        ]);
-    } catch (\Exception $e) {
-        // Caso ocorra um erro, retorna a mensagem de erro
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Ocorreu um erro ao enviar a mensagem. Tente novamente.',
-        ]);
+    {
+        $users = User::where('id', '!=', Auth::id())->get(); // Carrega todos os usuários, exceto o logado
+        $conversations = $this->getUserConversations(); // Carrega as conversas do usuário
+        
+        return view('home.chat', compact('users', 'conversations')); // Passa as conversas e usuários para a view
     }
-}
+
+    public function sendMessage(Request $request)
+    {
+        $validatedData = $request->validate([
+            'receiver_id' => 'required|exists:users,id',
+            'content' => 'required|string',
+        ]);
+
+        try {
+            // Crie a nova mensagem
+            $message = Message::create([
+                'sender_id' => Auth::id(),
+                'receiver_id' => $validatedData['receiver_id'],
+                'content' => $validatedData['content'],
+            ]);
+
+            // Retorne uma resposta de sucesso
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Mensagem enviada com sucesso!',
+                'message_data' => $message,
+            ]);
+        } catch (\Exception $e) {
+            // Caso ocorra um erro, retorna a mensagem de erro
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ocorreu um erro ao enviar a mensagem. Tente novamente.',
+            ]);
+        }
+    }
 
 
 
-    // Função para obter todas as conversas de um usuário
     private function getUserConversations()
     {
         $userId = Auth::id();
@@ -87,7 +86,6 @@ public function sendMessage(Request $request)
     }
     
 
-    // Função para carregar as mensagens de uma conversa específica
     public function getMessages($receiverId)
     {
         $userId = Auth::id();
@@ -96,25 +94,26 @@ public function sendMessage(Request $request)
         return response()->json($messages);
     }
 
-    // Obter mensagens entre dois usuários
     private function getMessagesBetweenUsers($userId, $receiverId)
-{
-    return Message::where(function ($query) use ($userId, $receiverId) {
-            $query->where('sender_id', $userId)
-                  ->where('receiver_id', $receiverId);
-        })
-        ->orWhere(function ($query) use ($userId, $receiverId) {
-            $query->where('sender_id', $receiverId)
-                  ->where('receiver_id', $userId);
-        })
-        ->with('sender')
-        ->orderBy('created_at', 'asc')
-        ->get();
-}
+    {
+        return Message::where(function ($query) use ($userId, $receiverId) {
+                $query->where('sender_id', $userId)
+                    ->where('receiver_id', $receiverId);
+            })
+            ->orWhere(function ($query) use ($userId, $receiverId) {
+                $query->where('sender_id', $receiverId)
+                    ->where('receiver_id', $userId);
+            })
+            ->with('sender')
+            ->orderBy('created_at', 'asc')
+            ->get();
+    }
 
     public function field()
     {
-        return view('home.field');
+        $fields = Field::all();
+
+        return view('home.field',compact('fields'));
     }
 
     public function contact()
@@ -189,15 +188,15 @@ public function sendMessage(Request $request)
     }
     
     private function storeFieldImage($request)
-{
-    if ($request->hasFile('image')) {
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->move(public_path('Fields'), $imageName);
-        return $imageName; 
+    {
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('Fields'), $imageName);
+            return $imageName; 
+        }
+        
+        return null; // Caso não tenha imagem, retorna null
     }
-    
-    return null; // Caso não tenha imagem, retorna null
-}
 
     public function editFields($id)
     {

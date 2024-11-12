@@ -4,36 +4,22 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
-    <h1>Campos</h1>
-    <div class="container mx-auto">
-        <div class="bg-gray-200 rounded-lg p-6">
-            <img src="{{ asset('images/campo_de_futebol.jpg') }}" alt="Campo de Futebol" class="w-full rounded-lg mb-4" />
-            <h1 class="text-2xl font-bold">Futebol</h1>
-            <p>Olá a todos! Estamos à procura de 12 "futebolistas" para uma partida de 11x11.</p>
-            <p>
-                <strong>Data:</strong>
-                16/10/2024
-            </p>
-            <p>
-                <strong>Horário:</strong>
-                20:00
-            </p>
-            <p>
-                <strong>Custo:</strong>
-                2€ por pessoa
-            </p>
-            <p>
-                <strong>Local:</strong>
-                Campo Municipal Póvoa de Varzim
-            </p>
-            <div class="rating">
-                <span class="text-yellow-500">★★★★★</span>
-                5 estrelas
-            </div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Conversar com o dono</button>
+        <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Lista de Campos</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4 px-20">
+            @foreach($fields as $field)
+                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
+                    <h2 class="text-xl font-semibold text-center text-gray-800 mb-2">{{ $field->name }}</h2>
+                    <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-48 object-cover rounded-md mb-6">
+                    <p class="text-gray-600 text-sm mb-4">Descrição:{{ $field->description }}</p>
+                    <p class="text-gray-500 text-sm mb-4">Localização: {{ $field->location }}</p>
+                    <p class="text-gray-700 font-semibold text-lg">Preço: {{ number_format($field->price, 2, ',', '.') }}</p>
+                    
+                    <a href="{{ url('/field/'.$field->id) }}" class="text-blue-500 hover:text-blue-700 font-medium mt-4 block">Ver mais</a>
+                </div>
+            @endforeach
         </div>
     </div>
-    </div>
+
     @include('home.footer')
 </body>
 </html>
