@@ -1,39 +1,40 @@
 <main class="container mx-auto text-center py-4 flex-grow mt-10">
-    <h1 class="text-4xl font-bold mb-4">Comunique. Colabore. Jogue.</h1>
-    <p class="text-gray-700 mb-8">          
-        Organize as suas partidas de vários desportos com facilidade e agilidade. Encontre os melhores campos perto de si!
+    <h1 class="text-4xl font-bold mb-4">Queres fazer desporto mas não gostas de o fazer sozinho?</h1>
+    <p class="text-gray-700 mb-8 text-m">          
+        A espera acabou! Através da QuickMatch, podes criar e entrar nos eventos desportivos que mehor te agradem, abrindo uma ampla comunidade desportiva e <br>
+         facilita á procura de pessoas que gostem de exercitar tal como tu!</br>
     </p>
-    <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 shadow-lg">Começar agora</a>
+    <a href="{{url('/login')}}" class="bg-blue-900 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Começar agora</a>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
-        <div class="bg-gray-200 p-6 rounded shadow text-center">
+        <div class="bg-blue-300 p-6 rounded shadow text-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
             </svg>
-            <h2 class="text-xl font-semibold">Encontre Campos</h2>
-            <p class="text-gray-600 mt-2">Navegue pela nossa lista de campos disponíveis e encontre o campo ideal perto de si.</p>
+            <h2 class="text-xl font-semibold">Encontra Campos</h2>
+            <p class="text-gray-600 mt-2">Procura pelo desporto que queres, e ainda podes procurar o campo mais perto de ti</p>
         </div>
-        <div class="bg-gray-200 p-6 rounded shadow text-center">
+        <div class="bg-blue-200 p-6 rounded shadow text-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
             </svg>
-            <h2 class="text-xl font-semibold">Organize Jogos</h2>
-            <p class="text-gray-600 mt-2">Crie e organize partidas com os seus amigos de maneira simples e eficiente.</p>
+            <h2 class="text-xl font-semibold">Organiza Jogos</h2>
+            <p class="text-gray-600 mt-2">Cria e organize partidas com os teus amigos de maneira simples e eficiente.</p>
         </div>
-        <div class="bg-gray-200 p-6 rounded shadow text-center">
+        <div class="bg-[#C1E1C1] p-6 rounded shadow text-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
             </svg>
-            <h2 class="text-xl font-semibold">Encontre Outros Jogadores</h2>
-            <p class="text-gray-600 mt-2">Conecte-se com jogadores da sua área que partilham a sua paixão pelo desporto.</p>
+            <h2 class="text-xl font-semibold">Encontra Outros Jogadores</h2>
+            <p class="text-gray-600 mt-2">Conecta-te com jogadores da sua área que partilham a mesma paixão pelo desporto como tu!</p>
         </div>
-        <div class="bg-gray-200 p-6 rounded shadow text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-800" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+        <div class="bg-[#90EE90] p-6 rounded shadow text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-16 w-16 mx-auto mb-4 text-gray-800">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
             </svg>
-            <h2 class="text-xl font-semibold">Registe-se Agora</h2>
-            <p class="text-gray-600 mt-2">Crie a sua conta gratuitamente e tenha acesso a todos os recursos para gerir as suas partidas.</p>
-        </div>
+            <h2 class="text-xl font-semibold">Exercita</h2>
+            <p class="text-gray-600 mt-2">O intuito principal é atrair todos a fazer desporto, exercitar com diversão custa pouco!</p>
+        </div>        
     </div>
 
     <div class="mt-16">
