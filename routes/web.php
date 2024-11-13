@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
-    Route::get('/create-field', [HomeController::class, 'createField'])->name('create-fields');
+    Route::get('/create-field', [HomeController::class, 'createField'])->name('create-field');
     Route::post('/store-fields', [HomeController::class, 'storeFields'])->name('store-fields');
     Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
     Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');

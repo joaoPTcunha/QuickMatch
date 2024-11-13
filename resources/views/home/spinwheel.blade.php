@@ -32,7 +32,7 @@
 </style>
 
 
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="bg-gray-200 flex flex-col min-h-screen">
     <!-- Primeira Linha: Texto de Boas-vindas -->
     <div class="flex justify-center w-full max-w-6xl mx-auto p-4">
         <div class="text-center">
