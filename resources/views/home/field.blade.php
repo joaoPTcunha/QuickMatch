@@ -12,8 +12,8 @@
                     <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-48 object-cover rounded-md mb-6">
                     <p class="text-gray-600 text-sm mb-4">Descrição:{{ $field->description }}</p>
                     <p class="text-gray-500 text-sm mb-4">Localização: {{ $field->location }}</p>
-                    <p class="text-gray-700 font-semibold text-lg">Preço: {{ number_format($field->price, 2, ',', '.') }}</p>
-                    
+                    <p class="text-gray-600 text-sm mb-4">Modalidade: {{ $field->modality}}</p>
+                    <p class="text-gray-700 font-semibold text-lg">Preço: {{ $field->price}}€</p>                
                     <a href="{{ url('/field/'.$field->id) }}" class="text-blue-500 hover:text-blue-700 font-medium mt-4 block">Ver mais</a>
                 </div>
             @endforeach

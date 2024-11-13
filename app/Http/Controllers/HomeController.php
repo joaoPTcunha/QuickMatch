@@ -241,5 +241,11 @@ class HomeController extends Controller
     
         return redirect()->route('manage-fields');
     }
+
+    public function showFields($id)
+    {
+        $field = Field::with('user')->findOrFail($id);
+        return view('home.show-fields', compact('field')); 
+    }
 }
 
