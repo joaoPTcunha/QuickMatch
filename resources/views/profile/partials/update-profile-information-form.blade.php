@@ -85,22 +85,32 @@
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Guardar') }}</x-primary-button>
+            <x-primary-button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                {{ __('Guardar') }}
+            </x-primary-button>
         </div>
     </form>
 </section>
 
 <script>
+
 function previewImage(event) {
-    var reader = new FileReader();
-    reader.onload = function() {
-        var output = document.getElementById('profile-picture');
-        if (output) { 
-            output.src = reader.result; 
-        } else {
-            console.error('Elemento de imagem não encontrado.');
-        }
-    };
-    reader.readAsDataURL(event.target.files[0]); 
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            let output = document.getElementById('profile-picture');
+            
+            if (!output) {
+                output = document.createElement('img');
+                output.id = 'profile-picture';
+                output.className = 'w-32 h-32 rounded-full object-cover shadow-md border-2 border-blue-500';
+                document.getElementById('profile-picture-preview').appendChild(output);
+            }
+
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
 }
 </script>

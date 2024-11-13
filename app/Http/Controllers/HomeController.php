@@ -214,7 +214,7 @@ class HomeController extends Controller
             return $imageName; 
         }
         
-        return null; // Caso não tenha imagem, retorna null
+        return null; 
     }
 
     public function editFields($id)
@@ -232,7 +232,7 @@ class HomeController extends Controller
             'location' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Tornando a imagem opcional
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', 
         ]);
     
         $field = Field::findOrFail($id);
@@ -245,7 +245,7 @@ class HomeController extends Controller
     
         if ($request->hasFile('image')) {
             if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
-                unlink(public_path('Fields/' . $field->image)); // Corrigido o caminho para 'Fields/'
+                unlink(public_path('Fields/' . $field->image)); 
             }
     
             $imageName = time() . '.' . $request->image->extension();

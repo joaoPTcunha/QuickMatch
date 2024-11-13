@@ -1,7 +1,5 @@
 @include('home.css')
-@include('home.header')
-
-<body class="bg-gray-100 flex flex-col min-h-screen">
+@include('home.header')<body class="bg-gray-100 flex flex-col min-h-screen">
     <main class="container mx-auto px-4 py-6 flex-grow">
         <h2 class="text-2xl font-semibold text-gray-800 leading-tight mb-4 text-center">
             {{ __('Adicionar Novo Campo') }}
@@ -58,7 +56,7 @@
                 </div>
 
                 <!-- Campo Modalidade -->
-                <div class="mb-4">
+                  <div class="mb-4">
                     <label for="modality" class="block text-sm font-medium text-gray-700">Modalidade</label>
                     <select name="modality" id="modality" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="futebol">Futebol</option>
@@ -72,9 +70,7 @@
                         <option value="padel">Padel</option>
                         <option value="outro">Outro</option>
                     </select>
-                </div>
-
-                <!-- Campo de Modalidade Personalizada (aparece quando 'Outro' é selecionado) -->
+                </div>                <!-- Campo de Modalidade Personalizada (aparece quando 'Outro' é selecionado) -->
                 <div id="otherModality" class="mb-4 hidden">
                     <label for="customModality" class="block text-sm font-medium text-gray-700">Qual a modalidade?</label>
                     <input type="text" name="customModality" id="customModality" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
@@ -114,3 +110,8 @@
         });
     </script>
 </body>
+iv>
+
+    @include('home.footer')
+</body>
+</html>

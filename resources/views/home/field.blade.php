@@ -37,30 +37,21 @@
                 </div>
             </form>
         </div>
-        
-        <!-- Alterar a `grid` para flex column -->
-<div class="flex flex-col space-y-4 p-4 px-20">
-    @foreach($fields as $field)
-        <div class="flex flex-col sm:flex-row bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
-            <!-- Imagem do Campo -->
-            <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full sm:w-1/4 h-48 object-cover rounded-md mb-4 sm:mb-0 sm:mr-4">
-
-            <!-- Detalhes do Campo -->
-            <div class="flex flex-col flex-grow">
-                <h2 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h2>
-                <p class="text-gray-600 text-sm mt-2">Descrição: {{ $field->description }}</p>
-                <p class="text-gray-500 text-sm mt-1">Localização: {{ $field->location }}</p>
-                <p class="text-gray-700 font-semibold mt-2">Preço: {{ $field->price }}€</p>
-                <p class="text-gray-700 font-semibold">Modalidade: {{ $field->modality }}</p>
-
-                <!-- Link para mais detalhes -->
-                <a href="{{ url('/field/'.$field->id) }}" class="text-blue-500 hover:text-blue-700 font-medium mt-4">Ver mais</a>
-            </div>
+        <div class="flex flex-col space-y-4 p-4 px-20">
+            @foreach($fields as $field)
+                <div class="flex flex-col sm:flex-row bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
+                    <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full sm:w-1/4 h-48 object-cover rounded-md mb-4 sm:mb-0 sm:mr-4">
+                    <div class="flex flex-col flex-grow">
+                        <h2 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h2>
+                        <p class="text-gray-600 text-sm mt-2">Descrição: {{ $field->description }}</p>
+                        <p class="text-gray-500 text-sm mt-1">Localização: {{ $field->location }}</p>
+                        <p class="text-gray-700 font-semibold mt-2">Preço: {{ $field->price }}€</p>
+                        <p class="text-gray-700 font-semibold">Modalidade: {{ $field->modality }}</p>
+                        <a href="{{ url('/field/'.$field->id) }}" class="text-blue-500 hover:text-blue-700 font-medium mt-4">Ver mais</a>
+                    </div>
+                </div>
+            @endforeach
         </div>
-    @endforeach
-</div>
-
-
     @include('home.footer')
 </body>
 </html>

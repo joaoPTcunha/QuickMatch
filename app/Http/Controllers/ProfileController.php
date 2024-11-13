@@ -33,7 +33,7 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'surname' => 'nullable|string|max:255',
-            'user_name' => 'required|string|max:255',
+            'user_name' => 'nullable|string|max:255',
             'date_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:Male,Female,Other',
             'phone' => 'nullable|string|max:20',
