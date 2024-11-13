@@ -109,12 +109,31 @@ class HomeController extends Controller
             ->get();
     }
 
-    public function field()
+    public function field(Request $request)
     {
-        $fields = Field::all();
-
-        return view('home.field',compact('fields'));
+        $query = Field::query();
+    
+        if ($request->filled('modality')) {
+            $query->where('modality', $request->modality);
+        }
+    
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('modality', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('user_name', 'like', "%{$search}%");
+                  });
+            });
+        }
+    
+        $fields = $query->get();
+    
+        return view('home.field', compact('fields'));
     }
+    
 
     public function contact()
     {

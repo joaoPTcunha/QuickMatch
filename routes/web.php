@@ -41,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
     Route::get('/create-field', [HomeController::class, 'createField'])->name('create-fields');
-    Route::post('/field', [HomeController::class, 'storeFields'])->name('store-fields');
+    Route::post('/store-fields', [HomeController::class, 'storeFields'])->name('store-fields');
     Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
     Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');
     Route::get('/field/{id}', [HomeController::class, 'showFields'])->name('show-fields');

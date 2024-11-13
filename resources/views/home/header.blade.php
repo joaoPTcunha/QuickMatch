@@ -32,36 +32,37 @@
             <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Contactos</a>
             @guest
                 <a href="{{ url('/login') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Iniciar Sessão</a>
-            @else
+                @else
+                    <div class="relative group">
+                        <button id="desktop-profile-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center">
+                        @if(auth()->user()->profile_picture)
+                            <img src="{{ asset('Profile_Photo/' . auth()->user()->profile_picture) }}" alt="Profile Picture" class="w-8 h-8 rounded-full">
+                        @else
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        @endif
+                            <span class="ml-2">Perfil</span>
+                            <svg class="w-4 h-4 ml-1 text-gray-500 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+                        <div class="absolute right-0 hidden group-hover:block bg-white shadow-md rounded" id="profile-dropdown-content">
+                            <a href="{{ url('/profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver Perfil</a>
+                            <a href="{{ url('/help') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Central de Ajuda</a>
 
-           
-
-                <div class="relative group">
-                    <button id="desktop-profile-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center">
-                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
-                        <span class="ml-2">Perfil</span>
-                        <svg class="w-4 h-4 ml-1 text-gray-500 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                    <div class="absolute right-0 hidden group-hover:block bg-white shadow-md rounded" id="profile-dropdown-content">
-                        <a href="{{ url('/profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver Perfil</a>
-                        <a href="{{ url('/help') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Central de Ajuda</a>
-
-                        @if (auth()->check() && auth()->user()->usertype === 'user_field')
-                        <a href="{{ url('/manage-fields') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Gerir campos</a>
-                        @endif     
-                        <form action="{{ route('logout') }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="block px-4 py-2 text-red-700 hover:bg-red-500 hover:text-white w-full text-left">
-                                Terminar Sessão
-                            </button>
-                        </form>
+                            @if (auth()->check() && auth()->user()->usertype === 'user_field')
+                                <a href="{{ url('/manage-fields') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Gerir campos</a>
+                            @endif     
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="block px-4 py-2 text-red-700 hover:bg-red-500 hover:text-white w-full text-left">
+                                    Terminar Sessão
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            @endguest
+                @endguest
         </nav>
     </div>
 
