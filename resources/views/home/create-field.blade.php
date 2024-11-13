@@ -70,13 +70,12 @@
                         <option value="padel">Padel</option>
                         <option value="outro">Outro</option>
                     </select>
-                </div>                <!-- Campo de Modalidade Personalizada (aparece quando 'Outro' é selecionado) -->
+                </div>                
                 <div id="otherModality" class="mb-4 hidden">
                     <label for="customModality" class="block text-sm font-medium text-gray-700">Qual a modalidade?</label>
                     <input type="text" name="customModality" id="customModality" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                 </div>
 
-                <!-- Botão de Enviar -->
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                     Adicionar Campo
                 </button>
@@ -87,7 +86,6 @@
     @include('home.footer')
 
     <script>
-        // Exibe ou esconde o campo para digitar uma modalidade personalizada
         document.getElementById('modality').addEventListener('change', function() {
             const otherModalityField = document.getElementById('otherModality');
             if (this.value === 'outro') {
@@ -97,7 +95,6 @@
             }
         });
 
-        // Funcionalidade de troca de foto de avatar
         document.getElementById('image').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
@@ -109,9 +106,6 @@
             }
         });
     </script>
-</body>
-iv>
-
     @include('home.footer')
 </body>
 </html>

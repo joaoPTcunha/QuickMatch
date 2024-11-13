@@ -73,7 +73,6 @@
                 </table>
             </div>
 
-            <!-- Modais para detalhes dos usuários -->
             @foreach($users as $user)
                 <div id="modal-{{ $user->id }}" class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 hidden modal">
                     <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
@@ -81,15 +80,13 @@
                         <p><strong>Nome:</strong> {{ $user->name }}</p>
                         <p><strong>Email:</strong> {{ $user->email }}</p>
                         <p><strong>Tipo de Utilizador:</strong> {{ $user->usertype }}</p>
-                        <a href="#" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-lg font-bold">&times;</a>
+                        <a href="#" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-lg font-bold">Ver mais</a>
                     </div>
                 </div>
             @endforeach
         </div>
     </div>
-
-    <!-- Paginação -->
-    <div class="mt-4 flex justify-center">
+    <div class="flex justify-center">
         <div class="inline-flex rounded-md shadow">
             {{ $users->links('pagination::tailwind') }}
         </div>
@@ -98,8 +95,3 @@
     @include('admin.footer')
 </body>
 
-<style>
-    .modal:target {
-        display: flex;
-    }
-</style>

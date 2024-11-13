@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Problem;
 use App\Models\User;
+use App\Models\Field;
 
 class AdminController extends Controller
 {
@@ -18,8 +19,9 @@ class AdminController extends Controller
             $name = $user->name;
     
             $userCount = User::whereIn('usertype', ['user', 'user_field'])->count();
+            $fieldCount = Field::count();
     
-            return view('admin.index', compact('usertype', 'name', 'userCount'));
+            return view('admin.index', compact('usertype', 'name', 'userCount','fieldCount'));
         }
     
         return redirect()->route('login');
@@ -39,20 +41,15 @@ class AdminController extends Controller
         
         $query = User::query();
     
-        // Se um tipo de utilizador específico for selecionado, aplica o filtro
         if ($usertype) {
             $query->where('usertype', $usertype);
         }
-    
-        // Se houver um termo de pesquisa, aplica o filtro ao nome e ao tipo de utilizador
         if ($search) {
             $query->where(function($q) use ($search) {
-                $q->where('name', 'LIKE', '%' . $search . '%')
-                  ->orWhere('usertype', 'LIKE', '%' . $search . '%');
+                $q->where('name', 'LIKE', '%' . $search . '%')->orWhere('usertype', 'LIKE', '%' . $search . '%');
             });
         }
     
-        // Paginação dos resultados
         $users = $query->paginate(5);
     
         return view('admin.user-management', compact('users'));
@@ -102,12 +99,12 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
 
         if ($user->usertype === 'owner') {
-            toastr()->error('O Owner nao pode ser apagado');
+            toastr()->error('O Owner não pode ser apagado.');
             return redirect()->back();
         }
         $user->delete();
 
-        toastr()->success('Utilizador apagado com sucesso');
+        toastr()->success('Utilizador apagado com sucesso!');
         return redirect()->route('admin.user-management');
     }
 }

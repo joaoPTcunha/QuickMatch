@@ -1,46 +1,35 @@
 <div class="container mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-6 text-center">Olá,{{ $name }}! ({{ $usertype }})</h1>
-
+    <h1 class="text-3xl mb-4 text-center text-gray-800">Olá, {{ $name }}! ({{ $usertype }})</h1>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Gráfico 1: % de realização de jogos -->
-        <div class="text-center">
+        <div class="text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
             <canvas id="realizacaoJogosChart" width="100" height="100"></canvas>
-            <p class="mt-4 font-semibold">91%</p>
-            <p>% de realização de jogos (mensal)</p>
+            <p class="mt-4 text-3xl font-semibold text-blue-500">91%</p>
+            <p class="text-gray-600">% de realização de jogos (mensal)</p>
         </div>
 
-        <!-- Gráfico 2: % de utilizadores ativos -->
-        <div class="text-center">
+        <div class="text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
             <canvas id="utilizadoresAtivosChart" width="100" height="100"></canvas>
-            <p class="mt-4 font-semibold">83%</p>
-            <p>% utilizadores ativos</p>
+            <p class="mt-4 text-3xl font-semibold text-green-500">83%</p>
+            <p class="text-gray-600">% utilizadores ativos</p>
         </div>
-
-        <!-- Gráfico 3: % de jogos não realizados -->
-        <div class="text-center">
+        <div class="text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
             <canvas id="jogosNaoRealizadosChart" width="100" height="100"></canvas>
-            <p class="mt-4 font-semibold">2%</p>
-            <p>% jogos não realizados (mensal)</p>
+            <p class="mt-4 text-3xl font-semibold text-red-500">2%</p>
+            <p class="text-gray-600">% jogos não realizados (mensal)</p>
         </div>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-center">
-        
-        <div>
-            <p class="text-4xl font-bold">{{ $userCount }}</p>
-            <p>Total de Utilizadores</p>
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <p class="text-5xl font-bold text-indigo-600">{{ $userCount }}</p>
+            <p class="text-gray-600">Total de Utilizadores</p>
         </div>
-
-        <!-- Número de eventos ativos -->
-        <div>
-            <p class="text-4xl font-bold">88</p>
-            <p>Número de campos:</p>
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <p class="text-5xl font-bold text-green-600">{{ $fieldCount }}</p>
+            <p class="text-gray-600">Número de campos</p>
         </div>
-
-        <!-- Novos utilizadores que criaram conta -->
-        <div>
-            <p class="text-4xl font-bold">23</p>
-            <p>Novos utilizadores que criaram conta:</p>
+        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <p class="text-5xl font-bold text-yellow-600">23</p>
+            <p class="text-gray-600">Total de eventos criados por realizar</p>
         </div>
     </div>
 </div>
