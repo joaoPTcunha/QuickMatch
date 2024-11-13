@@ -4,12 +4,8 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Lista de Campos</h1>
-        
-        <!-- Formulário de Filtro -->
-        <div class="px-20 mb-6">
+            <div class="px-20 mb-6">
             <form action="{{ url()->current() }}" method="GET" class="flex sm:justify-end space-x-2 sm:ml-auto space-y-4 sm:space-y-0">
-                
-                <!-- Filtro por Modalidade -->
                 <div class="flex flex-col sm:w-1/3">
                     <label for="modality" class="text-gray-700 font-semibold mb-2">Filtrar por Modalidade:</label>
                     <div class="relative">
@@ -39,11 +35,9 @@
                         </svg>
                     </div>
                 </div>
-
             </form>
         </div>
-
-        <!-- Lista de Campos -->
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4 px-20">
             @foreach($fields as $field)
                 <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
