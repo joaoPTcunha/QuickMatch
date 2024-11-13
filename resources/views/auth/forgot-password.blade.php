@@ -2,11 +2,11 @@
 
 @include('home.header')
 
-<div class="flex items-center justify-center min-h-screen bg-white overflow-hidden">
-    <div class="bg-gray-200 p-10 rounded-lg shadow-lg w-full max-w-sm transition-transform transform hover:scale-105">
+<div class="flex items-center justify-center min-h-screen  overflow-hidden">
+    <div class="p-10 rounded-lg w-full max-w-sm transition-transform transform hover:scale-105">
         <div class="flex items-center mb-6">
             <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-14 mr-3">
-            <h1 class="text-3xl font-bold text-gray-700">QuickMatch</h1>
+            <h1 class="text-4xl  text-gray-700">QuickMatch</h1>
         </div>
 
         <div class="mb-4 text-sm text-gray-600">

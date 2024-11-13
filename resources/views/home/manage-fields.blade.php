@@ -20,8 +20,12 @@
                                 <p class="text-gray-600">Localização:{{ $field->location }} </p>
                                 <p class="text-gray-600">Custo: {{ $field->price }}€/hora</p>
                                 <p class="text-gray-600">Tipo de desporto: {{ $field->modality }} </p>
-                                <p class="text-gray-600">Contacto: {{ $field->contact }}</p>
-                                <p class="text-gray-600">Descrição: {{ $field->description }}</p>
+                                <p class="text-gray-600">Contacto: {{ $field->contact }} 
+                                    @if($field->user) 
+                                        ({{ $field->user->name }}) 
+                                    @endif
+                                </p>
+                                 <p class="text-gray-600">Descrição: {{ $field->description }}</p>
 
                                 <div class="mt-4">
                                     <a href="{{ route('edit-fields', $field->id) }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300">

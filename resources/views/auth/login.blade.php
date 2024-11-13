@@ -3,8 +3,8 @@
 @include('home.header')
 
 <body class="flex flex-col min-h-screen">
-    <div class="flex items-center justify-center flex-grow bg-white overflow-hidden">
-        <div class="bg-gray-200 p-10 rounded-lg shadow-lg w-full max-w-sm transition-transform transform hover:scale-105">
+    <div class="flex items-center justify-center flex-grow overflow-hidden">
+        <div class="p-10 rounded-lg w-full max-w-sm transition-transform transform hover:scale-105">
             <div class="flex items-center mb-6">
                 <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-14 mr-3">
                 <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>

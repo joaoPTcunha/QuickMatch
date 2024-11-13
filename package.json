@@ -20,6 +20,7 @@
         "vite-plugin-laravel": "^0.3.1"
     },
     "dependencies": {
-        "bootstrap": "^5.3.3"
+        "bootstrap": "^5.3.3",
+        "toastr": "^2.1.4"
     }
 }

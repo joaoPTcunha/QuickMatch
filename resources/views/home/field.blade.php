@@ -5,9 +5,9 @@
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Lista de Campos</h1>
             <div class="px-20 mb-6">
-            <form action="{{ url()->current() }}" method="GET" class="flex sm:justify-end space-x-2 sm:ml-auto space-y-4 sm:space-y-0">
-                <div class="flex flex-col sm:w-1/3">
-                    <label for="modality" class="text-gray-700 font-semibold mb-2">Filtrar por Modalidade:</label>
+                <form action="{{ url()->current() }}" method="GET" class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start">
+                    <div class="w-full sm:w-1/3">
+                        <label for="modality" class="text-gray-700 font-semibold mb-2">Filtrar por Modalidade:</label>
                     <div class="relative">
                         <select name="modality" id="modality" class="p-3 pl-10 pr-4 border border-gray-300 rounded-md shadow-md focus:ring-2 focus:ring-blue-500 transition-all duration-300" onchange="this.form.submit()">
                             <option value="">Todas</option>
@@ -26,7 +26,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="flex flex-col sm:w-1/3">
+                <div class="w-full sm:w-1/3">
                     <label for="search" class="text-gray-700 font-semibold mb-2">Pesquisar:</label>
                     <div class="relative">
                         <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Pesquisar por nome, localização..." class="p-3 pl-10 pr-4 border border-gray-300 rounded-md shadow-md focus:ring-2 focus:ring-blue-500 transition-all duration-300" onkeyup="this.form.submit()">
@@ -38,21 +38,28 @@
             </form>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4 px-20">
-            @foreach($fields as $field)
-                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
-                    <h2 class="text-xl font-semibold text-center text-gray-800 mb-2">{{ $field->name }}</h2>
-                    <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-48 object-cover rounded-md mb-6">
-                    <p class="text-gray-600 text-sm mb-4">Descrição: {{ $field->description }}</p>
-                    <p class="text-gray-500 text-sm mb-4">Localização: {{ $field->location }}</p>
-                    <p class="text-gray-700 font-semibold text-lg">Preço: {{ $field->price }}€</p>
-                    <p class="text-gray-700 font-semibold text-lg">Modalidade: {{ $field->modality }}</p>
-                    
-                    <a href="{{ url('/field/'.$field->id) }}" class="text-blue-500 hover:text-blue-700 font-medium mt-4 block">Ver mais</a>
-                </div>
-            @endforeach
+        <!-- Alterar a `grid` para flex column -->
+<div class="flex flex-col space-y-4 p-4 px-20">
+    @foreach($fields as $field)
+        <div class="flex flex-col sm:flex-row bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
+            <!-- Imagem do Campo -->
+            <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full sm:w-1/4 h-48 object-cover rounded-md mb-4 sm:mb-0 sm:mr-4">
+
+            <!-- Detalhes do Campo -->
+            <div class="flex flex-col flex-grow">
+                <h2 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h2>
+                <p class="text-gray-600 text-sm mt-2">Descrição: {{ $field->description }}</p>
+                <p class="text-gray-500 text-sm mt-1">Localização: {{ $field->location }}</p>
+                <p class="text-gray-700 font-semibold mt-2">Preço: {{ $field->price }}€</p>
+                <p class="text-gray-700 font-semibold">Modalidade: {{ $field->modality }}</p>
+
+                <!-- Link para mais detalhes -->
+                <a href="{{ url('/field/'.$field->id) }}" class="text-blue-500 hover:text-blue-700 font-medium mt-4">Ver mais</a>
+            </div>
         </div>
-    </div>
+    @endforeach
+</div>
+
 
     @include('home.footer')
 </body>

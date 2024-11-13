@@ -1,4 +1,4 @@
-<header class="bg-gray-200 py-4 mb-8">
+<header class=" py-4 mb-8">
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-4xl flex items-center space-x-2">
             <a href="{{ url('/') }}" class="flex items-center space-x-2">
