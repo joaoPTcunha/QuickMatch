@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 #ADMIN
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
     Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
     Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
     Route::get('users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');

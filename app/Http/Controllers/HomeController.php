@@ -61,7 +61,6 @@ class HomeController extends Controller
                 'message_data' => $message,
             ]);
         } catch (\Exception $e) {
-            // Caso ocorra um erro, retorna a mensagem de erro
             return response()->json([
                 'status' => 'error',
                 'message' => 'Ocorreu um erro ao enviar a mensagem. Tente novamente.',
@@ -74,11 +73,9 @@ class HomeController extends Controller
     private function getUserConversations()
     {
         $userId = Auth::id();
-        
-        // Buscar todas as mensagens enviadas ou recebidas pelo usuário logado
         return Message::where('sender_id', $userId)
             ->orWhere('receiver_id', $userId)
-            ->with('sender', 'receiver') // Carrega os remetentes e destinatários das mensagens
+            ->with('sender', 'receiver')
             ->get()
             ->groupBy(function ($message) use ($userId) {
                 return $message->sender_id == $userId ? $message->receiver_id : $message->sender_id;
@@ -189,10 +186,16 @@ class HomeController extends Controller
             'location' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'modality' => 'required|string|max:255',
+            'modality' => 'required|array',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
+
+        $modality = $request->input('modality');
+        if (is_array($modality)) {
+            $validatedData['modality'] = implode(',', $modality); 
+        } else {
+            $validatedData['modality'] = ''; 
+        }
         $imageName = $this->storeFieldImage($request);
     
         if ($imageName) {
@@ -232,20 +235,34 @@ class HomeController extends Controller
             'location' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', 
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
+    
+        // Recuperar as modalidades selecionadas
+        $modalities = $request->input('modality', []);
+    
+        // Se a modalidade 'Outro' for selecionada, adiciona o valor customizado
+        if (in_array('outro', $modalities) && $request->filled('customModality')) {
+            $modalities[] = $request->input('customModality');
+        }
+    
+        // Armazenar as modalidades como uma string separada por vírgulas
+        $validatedData['modality'] = implode(',', $modalities);
     
         $field = Field::findOrFail($id);
     
+        // Atualizar os campos do campo
         $field->name = $validated['name'];
         $field->description = $validated['description'];
         $field->location = $validated['location'];
         $field->contact = $validated['contact'];
         $field->price = $validated['price'];
+        $field->modality = $validatedData['modality'];
     
+        // Atualizar a imagem, se foi enviada
         if ($request->hasFile('image')) {
             if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
-                unlink(public_path('Fields/' . $field->image)); 
+                unlink(public_path('Fields/' . $field->image));
             }
     
             $imageName = time() . '.' . $request->image->extension();
@@ -260,6 +277,8 @@ class HomeController extends Controller
     
         return redirect()->route('manage-fields');
     }
+    
+    
 
     public function showFields($id)
     {

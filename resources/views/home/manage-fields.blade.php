@@ -16,13 +16,22 @@
                         <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
                             <img src="{{ asset('Fields/' . $field->image) }}" alt="Imagem do campo" class="w-full h-40 object-cover">
                             <div class="p-4 flex flex-col flex-grow">
-                                <h4 class="text-xl font-semibold text-gray-800">{{ $field->name }}</h4>
-                                <p class="text-gray-600">Localização:{{ $field->location }} </p>
-                                <p class="text-gray-600">Custo: {{ $field->price }}€/hora</p>
-                                <p class="text-gray-600">Tipo de desporto: {{ $field->modality }} </p>
-                                <p class="text-gray-600">Contacto: {{ $field->contact }} ({{ $field->user->name }}) 
+                            <h4 class="text-xl font-semibold text-gray-800 text-center">{{ $field->name }}</h4>
+                            <p class="text-gray-600">
+                                    <span class="font-bold">Localização:</span> {{ $field->location }}
                                 </p>
-                                <p class="text-gray-600">Descrição: {{ $field->description }}</p>
+                                <p class="text-gray-600">
+                                    <span class="font-bold">Custo:</span> {{ $field->price }}€/hora
+                                </p>
+                                <p class="text-gray-600">
+                                    <span class="font-bold">Tipo de desporto:</span> {{ $field->modality }}
+                                </p>
+                                <p class="text-gray-600">
+                                    <span class="font-bold">Contacto:</span> {{ $field->contact }} ({{ $field->user->name }})
+                                </p>
+                                <p class="text-gray-600">
+                                    <span class="font-bold">Descrição:</span> {{ $field->description }}
+                                </p>
 
                                 <div class="mt-4">
                                     <a href="{{ route('edit-fields', $field->id) }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300">

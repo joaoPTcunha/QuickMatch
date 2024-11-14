@@ -59,6 +59,15 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         return view('users.show', compact('user'));
+    }   
+
+    public function fieldsAdmin()
+    {
+        // Pega todos os campos cadastrados no banco de dados
+        //$fields = Field::all(); // Se você quiser adicionar uma ordenação, por exemplo, por nome, use Field::orderBy('name')->get();
+
+        // Retorna a view fields-admin com os campos
+        return view('admin.fields-admin'); //compact('fields')
     }
     
     public function support()
@@ -73,8 +82,7 @@ class AdminController extends Controller
         return view('admin.problems_history', compact('problems'));
     }
 
-    public function markAsSolved(Request $request, $id)
-    {
+    public function markAsSolved(Request $request, $id){
     $problem = Problem::findOrFail($id);
     $problem->is_solved = true;
     $problem->save();
