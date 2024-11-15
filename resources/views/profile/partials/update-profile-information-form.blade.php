@@ -99,15 +99,17 @@ function previewImage(event) {
     if (file) {
         const reader = new FileReader();
         reader.onload = function() {
+            const defaultIcon = document.querySelector('#profile-picture-preview svg');
+            if (defaultIcon) {
+                defaultIcon.remove();
+            }
             let output = document.getElementById('profile-picture');
-            
             if (!output) {
                 output = document.createElement('img');
                 output.id = 'profile-picture';
                 output.className = 'w-32 h-32 rounded-full object-cover shadow-md border-2 border-blue-500';
                 document.getElementById('profile-picture-preview').appendChild(output);
             }
-
             output.src = reader.result;
         };
         reader.readAsDataURL(file);

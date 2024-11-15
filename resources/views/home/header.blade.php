@@ -22,10 +22,17 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path>
                     </svg>
                 </a>
-                <div class="absolute hidden group-hover:block bg-white shadow-md rounded" id="play-dropdown-content">
-                    <a href="{{ url('/newmatch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
-                    <a href="{{ url('/seematch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                <div class="absolute hidden group-hover:block bg-white border border-gray-200 rounded-lg shadow-lg top-full left-0 w-48 transition-all duration-300 ease-in-out">
+                    <a href="{{ url('/newmatch') }}" 
+                    class="block px-4 py-2 text-gray-700  hover:bg-gray-100 rounded-t-lg transition duration-200 ease-in-out">
+                        Criar um evento
+                    </a>
+                    <a href="{{ url('/seematch') }}" 
+                    class="block px-4 py-2 text-gray-700  hover:bg-gray-100 rounded-b-lg transition duration-200 ease-in-out">
+                        Ver eventos criados
+                    </a>
                 </div>
+
             </div>
             <a href="{{ url('/field') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
             <a href="{{ url('/spinwheel') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Roleta</a>
