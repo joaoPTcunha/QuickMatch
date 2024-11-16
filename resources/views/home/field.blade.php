@@ -38,26 +38,25 @@
             </form>
         </div>
 
-        <div class="flex flex-col space-y-4 p-4 px-20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 px-20">
             @foreach($fields as $field)
-                <div class="flex flex-col sm:flex-row bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
-                    <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full sm:w-1/3 h-48 object-cover rounded-md mb-4 sm:mb-0 sm:mr-6">
-                    <div class="flex flex-col sm:w-2/3 flex-grow">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="flex flex-col bg-white p-4 rounded-md border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
+                    <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md mb-3">
+                    <div class="flex flex-col flex-grow">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ $field->name }}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <h2 class="text-4xl font-bold text-gray-800 mb-4 pb-2">{{ $field->name }}</h2>
-                                <p class="text-lg text-gray-700"><strong>Localização:</strong> {{ $field->location }}</p>
-                                <p class="text-lg text-gray-700"><strong>Preço:</strong> {{ $field->price }}€</p>
-                                <p class="text-lg text-gray-700"><strong>Modalidade:</strong> {{ $field->modality }}</p>
-                                <p class="text-lg text-gray-700"><strong>Descrição:</strong> {{ $field->description }}</p>
+                                <p class="text-gray-700"><strong>Localização:</strong> {{ $field->location }}</p>
+                                <p class="text-gray-700"><strong>Preço:</strong> {{ $field->price }}€</p>
+                                <p class="text-gray-700"><strong>Modalidade(s):</strong> {{ $field->modality }}</p>
+                                <p class="text-gray-700"><strong>Descrição:</strong> {{ $field->description }}</p>
                             </div>
-                            <div class="space-y-4">
-                                <p class="text-lg text-gray-700"><strong>Nome do Dono do Campo:</strong> {{ $field->user->name }}</p>
-                                <p class="text-lg text-gray-700"><strong>Email do Dono do Campo:</strong> {{ $field->user->email }}</p>
-                                <p class="text-lg text-gray-700"><strong>Contacto:</strong> {{ $field->contact }}</p>
+                            <div>
+                                <p class="text-gray-700"><strong>Nome do Dono do Campo:</strong> {{ $field->user->name }}</p>
+                                <p class="text-gray-700"><strong>Email do Dono do Campo:</strong> {{ $field->user->email }}</p>
+                                <p class="text-gray-700"><strong>Contacto:</strong> {{ $field->contact }}</p>
                             </div>
                         </div>
-
                         <div class="mt-auto text-right">
                             <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
                                 Marcar Evento
@@ -67,6 +66,7 @@
                 </div>
             @endforeach
         </div>
+
     </div>
     @include('home.footer')
 </body>

@@ -18,14 +18,22 @@ class HomeController extends Controller
 
     public function newMatch()
     {
-        return view('home.newmatch');
-    }    
+        $selectedField = session('selected_field');
     
+        if (!$selectedField) {
+            sweetalert()->info('Escolha o campo que quer para criar um evento.');
+            return redirect('/field');
+        }
+    }
+
     public function newMatchField($id)
     {
         $field = Field::find($id);
-        return view('home.newmatch',compact('field'));
+        $modalities = explode(',', $field->modality); 
+    
+        return view('home.newmatch', compact('field', 'modalities')); 
     }
+    
 
     public function seeMatch()
     {
@@ -73,8 +81,6 @@ class HomeController extends Controller
             ]);
         }
     }
-
-
 
     private function getUserConversations()
     {
