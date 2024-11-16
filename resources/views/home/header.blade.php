@@ -2,13 +2,13 @@
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-4xl flex items-center space-x-2">
             <a href="{{ url('/') }}" class="flex items-center space-x-2">
-                <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-10" />
+                <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-10 px-3" />
                 <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>
             </a>
-    </div>
+        </div>
         <input type="checkbox" id="menu-toggle" class="hidden" />
-        <label for="menu-toggle" class="md:hidden flex items-center cursor-pointer">
-            <div class="flex flex-col space-y-1">
+        <label for="menu-toggle" class="md:hidden flex items-center cursor-pointer ml-4">
+            <div class="flex flex-col space-y-1 px-3">
                 <div class="w-6 h-0.5 bg-gray-700"></div>
                 <div class="w-6 h-0.5 bg-gray-700"></div>   
                 <div class="w-6 h-0.5 bg-gray-700"></div>
@@ -80,8 +80,8 @@
 
     <!-- Menu Mobile -->
     <div class="md:hidden">
-        <div id="menu-items" class="flex-col space-y-2 p-4 bg-gray-200 hidden">
-            <div class="relative">
+    <div id="menu-items" class="flex-col space-y-2 p-4 hidden">
+        <div class="relative">
                 <button 
                     id="mobile-play-dropdown-toggle"
                     class="w-full text-left flex items-center justify-between text-gray-700 hover:text-gray-900 px-2 py-2"
@@ -98,17 +98,12 @@
                     @endauth
                 </div>
             </div>
-
             <a href="{{ url('/field') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
             <a href="{{ url('/spinwheel') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2">Roleta</a>
             <a href="{{ url('/contact') }}" class="block text-gray-700 hover:text-gray-900 px-2 py-2">Contactos</a>
-
             @guest
                 <a href="{{ url('/login') }}" class="block bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-blue-green">Iniciar Sessão</a>
             @else
-
-            
-
                 <div class="relative">
                     <button id="mobile-profile-dropdown-toggle" class="w-full text-left flex items-center justify-between text-gray-700 hover:text-gray-900 px-2 py-2">
                         <span class="flex items-center">

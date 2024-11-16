@@ -1,4 +1,4 @@
-<main class="container mx-auto text-center py-4 flex-grow mt-10">
+<main class="container mx-auto text-center px-6 md:px-0 flex-grow mt-10">
     <h1 class="text-4xl font-bold mb-4">Queres fazer desporto mas não gostas de o fazer sozinho?</h1>
     <p class="text-gray-700 mb-8 text-m">          
         A espera acabou! Através do QuickMatch, podes criar e participar nos eventos desportivos que mais te agradam, expandindo uma ampla comunidade de desporto e <br>

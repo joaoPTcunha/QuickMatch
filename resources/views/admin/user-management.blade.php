@@ -5,7 +5,6 @@
     <div class="flex-grow">
         <div class="container mx-auto py-8">
             <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Gestão de Utilizadores</h1>
-
             <div class="flex items-center mb-6">
                 <form action="{{ route('admin.user-search') }}" method="GET" class="flex w-full max-w-lg mx-auto">
                     <input type="search" name="search" placeholder="Pesquisar utilizadores..." class="border border-gray-300 rounded-l-md px-4 py-2 w-full focus:ring focus:ring-blue-300 focus:outline-none">

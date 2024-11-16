@@ -1,7 +1,5 @@
 @include('home.css')
-
 @include('home.header')
-
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
@@ -27,7 +25,7 @@
                 <div class="mb-4">
                     <label for="campo" class="block text-gray-700">Selecione o campo</label>
                     <select id="campo" name="campo" class="w-full mt-2 p-2 border rounded">
-                        <option value="Campo Municipal da Facha">Campo Municipal da Facha</option>
+                        <option value="{{ $field->name }}" selected>{{ $field->name }}</option>
                     </select>
                 </div>
 
@@ -48,8 +46,15 @@
                     </button>
                 </div>
             </form>
+
+            <div class="mt-6">
+                <a href="{{ url('/fields') }}" class="inline-block bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition duration-200">
+                    Procurar mais campos
+                </a>
+            </div>
         </div>
     </div>
+
     @include('home.footer')
 </body>
 </html>

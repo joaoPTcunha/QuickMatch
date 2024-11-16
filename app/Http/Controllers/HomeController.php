@@ -19,6 +19,12 @@ class HomeController extends Controller
     public function newMatch()
     {
         return view('home.newmatch');
+    }    
+    
+    public function newMatchField($id)
+    {
+        $field = Field::find($id);
+        return view('home.newmatch',compact('field'));
     }
 
     public function seeMatch()
@@ -238,20 +244,16 @@ class HomeController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
     
-        // Recuperar as modalidades selecionadas
         $modalities = $request->input('modality', []);
     
-        // Se a modalidade 'Outro' for selecionada, adiciona o valor customizado
         if (in_array('outro', $modalities) && $request->filled('customModality')) {
             $modalities[] = $request->input('customModality');
         }
     
-        // Armazenar as modalidades como uma string separada por vírgulas
         $validatedData['modality'] = implode(',', $modalities);
     
         $field = Field::findOrFail($id);
     
-        // Atualizar os campos do campo
         $field->name = $validated['name'];
         $field->description = $validated['description'];
         $field->location = $validated['location'];
@@ -259,7 +261,6 @@ class HomeController extends Controller
         $field->price = $validated['price'];
         $field->modality = $validatedData['modality'];
     
-        // Atualizar a imagem, se foi enviada
         if ($request->hasFile('image')) {
             if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
                 unlink(public_path('Fields/' . $field->image));

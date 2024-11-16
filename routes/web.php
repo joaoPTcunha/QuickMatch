@@ -36,7 +36,9 @@ Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
+    Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('new.match');
     Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
+    
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
