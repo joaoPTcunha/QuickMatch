@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Problem;
 use App\Models\Message;
 use App\Models\Field;
+use App\Models\Event;
 
 class HomeController extends Controller
 {
@@ -16,6 +17,10 @@ class HomeController extends Controller
         return view('home.index');
     }
 
+    public function events()
+    {
+        return view('home.events');
+    }
     public function newMatch()
     {
         $selectedField = session('selected_field');
@@ -35,11 +40,12 @@ class HomeController extends Controller
         return view('home.newmatch', compact('field', 'modalities')); 
     }
     
-
     public function seeMatch()
-    {
-        return view('home.seematch');
-    }
+{
+    $events = Event::with('user')->get();  // Buscando os eventos e carregando a relação 'user'
+    return view('home.seematch', compact('events'));  // Passando os eventos para a view
+}
+
 
     public function spinWheel()
     {
@@ -293,5 +299,32 @@ class HomeController extends Controller
         $field = Field::with('user')->findOrFail($id);
         return view('home.show-fields', compact('field')); 
     }
+
+   public function storeEvent(Request $request)
+{
+    $validated = $request->validate([
+        'descricao' => 'required|string|max:255', 
+        'date-time' => 'required|date', 
+        'num_participantes' => 'required|integer|min:1',
+        'price' => 'required|numeric|min:0', // Preço
+        'modality' => 'required|string',
+        'field_id' => 'required|exists:fields,id', // Validação para garantir que o campo existe
+    ]);
+
+    Event::create([
+        'description' => $validated['descricao'],
+        'event_date_time' => $validated['date-time'],
+        'num_participantes' => $validated['num_participantes'],
+        'price' => $validated['price'],
+        'modality' => $validated['modality'],
+        'field_id' => $validated['field_id'], // Associa o evento ao campo
+        'user_id' => Auth::id(),
+    ]);
+
+    toastr()->success('Evento criado com sucesso!');
+    return redirect()->route('seematch');
+}
+
+
 }
 
