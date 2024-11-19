@@ -30,6 +30,7 @@ class HomeController extends Controller
     {
         $field = Field::find($id);
         $modalities = explode(',', $field->modality); 
+
     
         return view('home.newmatch', compact('field', 'modalities')); 
     }

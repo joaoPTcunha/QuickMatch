@@ -4,7 +4,8 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Lista de Campos</h1>
-        <div class="px-20 mb-6">
+        
+        <div class="px-4 md:px-20 mb-6">
             <form action="{{ url()->current() }}" method="GET" class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start">
                 <div class="w-full sm:w-1/3">
                     <label for="modality" class="text-gray-700 font-semibold mb-2">Filtrar por Modalidade:</label>
@@ -38,27 +39,28 @@
             </form>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 px-20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 md:px-20 py-6">
             @foreach($fields as $field)
-                <div class="flex flex-col bg-white p-4 rounded-md border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
-                    <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md mb-3">
-                    <div class="flex flex-col flex-grow">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ $field->name }}</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-gray-700"><strong>Localização:</strong> {{ $field->location }}</p>
-                                <p class="text-gray-700"><strong>Preço:</strong> {{ $field->price }}€</p>
-                                <p class="text-gray-700"><strong>Modalidade(s):</strong> {{ $field->modality }}</p>
-                                <p class="text-gray-700"><strong>Descrição:</strong> {{ $field->description }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-700"><strong>Nome do Dono do Campo:</strong> {{ $field->user->name }}</p>
-                                <p class="text-gray-700"><strong>Email do Dono do Campo:</strong> {{ $field->user->email }}</p>
-                                <p class="text-gray-700"><strong>Contacto:</strong> {{ $field->contact }}</p>
-                            </div>
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+                    <div class="flex flex-col h-full">
+                        <img 
+                            src="{{ asset('Fields/' . $field->image) }}" 
+                            alt="{{ $field->name }}" 
+                            class="w-full h-40 object-cover" 
+                        />
+                        <div class="p-3 flex flex-col flex-grow">
+                        <h1 class="text-3xl font-semibold text-gray-800 mb-2">{{ $field->name }}</h1>
+                        <p class="text-gray-600 mb-2"><strong>Localização:</strong> {{ $field->location }}</p>
+                            <p class="text-gray-600 mb-2"><strong>Preço:</strong> {{ $field->price }}€</p>
+                            <p class="text-gray-600 mb-2"><strong>Modalidade(s):</strong> {{ $field->modality }}</p>
+                            <p class="text-gray-600 mb-2"><strong>Descrição:</strong> {{ $field->description }}</p>
+                            <p class="text-gray-600 mb-2"><strong>Nome do Dono do Campo:</strong> {{ $field->user->name }}</p>
+                            <p class="text-gray-600 mb-2"><strong>Email do Dono do Campo:</strong> {{ $field->user->email }}</p>
+                            <p class="text-gray-600 mb-2"><strong>Contacto:</strong> {{ $field->contact }}</p>
                         </div>
-                        <div class="mt-auto text-right">
-                            <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                        <div class="px-3 pb-3">
+                            <a href="{{ url('/newmatch/'.$field->id) }}" 
+                            class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold shadow-md hover:bg-blue-600 transition-all duration-300 w-full text-center">
                                 Marcar Evento
                             </a>
                         </div>
@@ -66,8 +68,8 @@
                 </div>
             @endforeach
         </div>
-
     </div>
+
     @include('home.footer')
 </body>
 </html>
