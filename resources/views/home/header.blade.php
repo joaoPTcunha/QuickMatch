@@ -23,13 +23,17 @@
                     </svg>
                 </a>
                 <div class="absolute hidden group-hover:block bg-white border border-gray-200 rounded-lg shadow-lg top-full left-0 w-48 transition-all duration-300 ease-in-out">
+                    <a href="{{ url('/events') }}" 
+                    class="block px-4 py-2 text-gray-700  hover:bg-gray-100 rounded-t-lg transition duration-200 ease-in-out">
+                        Ver todos os jogos ativos
+                    </a>
                     <a href="{{ url('/newmatch') }}" 
                     class="block px-4 py-2 text-gray-700  hover:bg-gray-100 rounded-t-lg transition duration-200 ease-in-out">
                         Criar um evento
                     </a>
                     <a href="{{ url('/seematch') }}" 
                     class="block px-4 py-2 text-gray-700  hover:bg-gray-100 rounded-b-lg transition duration-200 ease-in-out">
-                        Ver eventos criados
+                        Ver os meus eventos criados
                     </a>
                 </div>
 

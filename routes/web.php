@@ -27,6 +27,7 @@ Route::get('auth/google/call-back',[GoogleAuthController::class, 'callbackGoogle
 
 #UTILIZADOR SEM ESTAR LOGADO
 Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel');
+Route::get('/events', [HomeController::class, 'events'])->name('events');
 Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
@@ -37,8 +38,8 @@ Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
     Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('new.match');
-    Route::get('/seematch', [HomeController::class, 'seematch'])->name('see.match');
-    
+    Route::post('/store.event', [HomeController::class, 'storeEvent'])->name('store.event');
+    Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');    
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
     Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');
     Route::get('/field/{id}', [HomeController::class, 'showFields'])->name('show-fields');
+
 
 
     Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
