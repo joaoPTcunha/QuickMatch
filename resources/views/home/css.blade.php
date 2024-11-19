@@ -5,13 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuickMatch</title>
     <link rel="shortcut icon" href="/favicon.ico" />
+    <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
+
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
+
+    <!-- Heroicons -->
     <link href="https://unpkg.com/heroicons@1.0.6/outline.css" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
+    <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
     <style>
         .parent {
             position: fixed;
