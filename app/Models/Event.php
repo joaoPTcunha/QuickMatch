@@ -2,15 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Event extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'descricao', 'date_time', 'price', 'modality', 'num_participantes', 'user_id', 'field_id'
+        'description', 
+        'event_date_time', 
+        'num_participantes', 
+        'price', 
+        'modality', 
+        'field_id',
+        'user_id'
     ];
 
+    // Ensure your relationships are set up
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -21,4 +30,3 @@ class Event extends Model
         return $this->belongsTo(Field::class);
     }
 }
-

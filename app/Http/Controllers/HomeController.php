@@ -29,19 +29,18 @@ class HomeController extends Controller
         $selectedField = session('selected_field');
     
         if (!$selectedField) {
-            sweetalert()->info('Escolha o campo que quer para criar um evento.');
+            toastr()->info('Escolha o campo que quer para criar um evento.');
             return redirect('/field');
         }
     }
 
     public function newMatchField($id)
-    {
-        $field = Field::find($id);
-        $modalities = explode(',', $field->modality); 
+{
+    $field = Field::findOrFail($id);
+    $modalities = explode(',', $field->modality); 
 
-    
-        return view('home.newmatch', compact('field', 'modalities')); 
-    }
+    return view('home.newmatch', compact('field', 'modalities')); 
+}
     
     public function seeMatch()
 {
@@ -200,36 +199,59 @@ class HomeController extends Controller
         return view('home.create-field');  
     }
 
+
     public function storeFields(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'contact' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'modality' => 'required|array',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        $modality = $request->input('modality');
-        if (is_array($modality)) {
-            $validatedData['modality'] = implode(',', $modality); 
-        } else {
-            $validatedData['modality'] = ''; 
+        try {
+            // Validar os dados do formulário
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'location' => 'required|string|max:255',
+                'contact' => 'required|string|max:255',
+                'price' => 'required|numeric',
+                'modality' => 'required|array',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+    
+            // Manipular o campo 'modality' para ser uma string separada por vírgulas, se for um array
+            $modality = $request->input('modality');
+            if (is_array($modality)) {
+                $validatedData['modality'] = implode(',', $modality); 
+            } else {
+                $validatedData['modality'] = ''; 
+            }
+    
+            // Armazenar a imagem e obter o nome
+            $imageName = $this->storeFieldImage($request);
+            
+            if ($imageName) {
+                $validatedData['image'] = $imageName;
+            } else {
+                // Se não conseguir armazenar a imagem, exibe mensagem de erro
+                toastr()->error('Erro ao carregar a imagem.');
+                return back(); // Voltar para a página anterior
+            }
+    
+            // Adicionar o ID do usuário autenticado
+            $validatedData['user_id'] = Auth::id();
+    
+            // Criar o novo registro no banco de dados
+            Field::create($validatedData);
+    
+            // Exibir uma mensagem de sucesso usando Toastr
+            toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
+    
+            // Redirecionar para a página de gerenciamento de campos
+            return redirect()->route('manage-fields');
+    
+        } catch (\Exception $e) {
+            // Em caso de erro inesperado, exibe uma mensagem de erro
+            toastr()->error('Ocorreu um erro inesperado. Por favor, tente novamente.');
+            return back(); // Voltar para a página anterior
         }
-        $imageName = $this->storeFieldImage($request);
-    
-        if ($imageName) {
-            $validatedData['image'] = $imageName;
-        }
-        $validatedData['user_id'] = Auth::id();
-    
-        Field::create($validatedData);
-    
-        toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
-        return redirect()->route('manage-fields');
     }
+    
     
     private function storeFieldImage($request)
     {
@@ -303,31 +325,37 @@ class HomeController extends Controller
         return view('home.show-fields', compact('field')); 
     }
 
-   public function storeEvent(Request $request)
+    public function storeEvent(Request $request)
 {
-    $validated = $request->validate([
-        'descricao' => 'required|string|max:255', 
-        'date-time' => 'required|date', 
-        'num_participantes' => 'required|integer|min:1',
-        'price' => 'required|numeric|min:0', // Preço
-        'modality' => 'required|string',
-        'field_id' => 'required|exists:fields,id', // Validação para garantir que o campo existe
-    ]);
+    try {
+        $validated = $request->validate([
+            'descricao' => 'required|string|max:255', 
+            'date-time' => 'required|date', 
+            'num_participantes' => 'required|integer|min:1',
+            'field_id' => 'required|exists:fields,id',
+            'field_name' => 'required|string',
+        ]);
 
-    Event::create([
-        'description' => $validated['descricao'],
-        'event_date_time' => $validated['date-time'],
-        'num_participantes' => $validated['num_participantes'],
-        'price' => $validated['price'],
-        'modality' => $validated['modality'],
-        'field_id' => $validated['field_id'], // Associa o evento ao campo
-        'user_id' => Auth::id(),
-    ]);
+        $field = Field::findOrFail($validated['field_id']);
 
-    toastr()->success('Evento criado com sucesso!');
-    return redirect()->route('seematch');
+        Event::create([
+            'description' => $validated['descricao'],
+            'event_date_time' => $validated['date-time'],
+            'num_participantes' => $validated['num_participantes'],
+            'price' => $field->price,
+            'modality' => $field->modality,
+            'field_id' => $validated['field_id'],
+            'user_id' => Auth::id(),
+        ]);
+
+        toastr()->success('Evento criado com sucesso!');
+        return redirect()->route('seematch');
+
+    } catch (\Exception $e) {
+        toastr()->error('Erro ao criar evento: ' . $e->getMessage());
+        return redirect()->back()->withInput();
+    }
 }
-
 
 // public function getCoordinates($address)
 // {

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('fields', function (Blueprint $table) {
             $table->uuid('id')->primary();           
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->uuid('user_id'); // Ensure this is the correct data type (uuid)
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('location')->nullable();
@@ -28,9 +28,11 @@ return new class extends Migration
             $table->decimal('longitude', 11, 8)->nullable();
 
             $table->timestamps();
+
+            // Foreign key constraint
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
-    
 
     /**
      * Reverse the migrations.
