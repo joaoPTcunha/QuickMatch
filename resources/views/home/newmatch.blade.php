@@ -1,12 +1,13 @@
-@include('home.css')
-@include('home.header')
 
+@include('home.header')
+@include('home.css')
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
         <div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <h1 class="text-2xl font-bold mb-6 text-center">Criar um Evento</h1>
             <form action="{{ route('store.event') }}" method="POST" class="space-y-4">
                 @csrf
+                <input type="hidden" name="field_id" value="{{ $field->id }}">
                 <div class="mb-4">
                     <label for="campo" class="block text-gray-700">Nome do Campo</label>
                     <p class="mt-2 p-2 border rounded">{{ $field->name }}</p>

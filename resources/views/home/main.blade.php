@@ -44,7 +44,7 @@
     <h2 class="text-2xl font-bold mb-4">Pronto para jogar?</h2>
     @auth
         <p class="text-gray-700 mb-6">A tua jornada desportiva começa aqui! Convida amigos e cria um evento agora mesmo!</p>
-        <a href="{{ url('/criarevento') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Criar Evento</a>
+        <a href="{{ url('/newmatch') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Criar Evento</a>
     @else
         <p class="text-gray-700 mb-6">Junta te a nós e começa a tua aventura desportiva!</p>
         <a href="{{ url('/register') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Registe-se!</a>
