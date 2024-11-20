@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('fields', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();           
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
@@ -21,6 +21,12 @@ return new class extends Migration
             $table->decimal('price', 8, 2)->nullable();
             $table->string('modality')->nullable();
             $table->string('image')->nullable();
+            $table->enum('status', ['disponível', 'ocupado', 'manutenção'])->default('disponível');
+
+            //google maps
+            $table->decimal('latitude', 10, 8)->nullable(); 
+            $table->decimal('longitude', 11, 8)->nullable();
+
             $table->timestamps();
         });
     }

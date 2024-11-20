@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+
+use GuzzleHttp\Client;
+
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Message;
@@ -42,8 +45,8 @@ class HomeController extends Controller
     
     public function seeMatch()
 {
-    $events = Event::with('user')->get();  // Buscando os eventos e carregando a relação 'user'
-    return view('home.seematch', compact('events'));  // Passando os eventos para a view
+    $events = Event::with('user')->get();  
+    return view('home.seematch', compact('events'));
 }
 
 
@@ -137,16 +140,16 @@ class HomeController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%")
-                  ->orWhere('modality', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('user_name', 'like', "%{$search}%");
-                  });
+                ->orWhere('location', 'like', "%{$search}%")
+                ->orWhere('modality', 'like', "%{$search}%")
+                ->orWhereHas('user', function($q) use ($search) {
+                    $q->where('user_name', 'like', "%{$search}%");
+                });
             });
         }
     
-        $fields = $query->get();
-    
+        $fields = $query->paginate(4);
+
         return view('home.field', compact('fields'));
     }
     
@@ -224,7 +227,7 @@ class HomeController extends Controller
     
         Field::create($validatedData);
     
-        toastr()->success('Pedido de adição de campo com sucesso');
+        toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
         return redirect()->route('manage-fields');
     }
     
@@ -324,6 +327,30 @@ class HomeController extends Controller
     toastr()->success('Evento criado com sucesso!');
     return redirect()->route('seematch');
 }
+
+
+// public function getCoordinates($address)
+// {
+//     $client = new Client();
+//     $apiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // Substitua pela sua chave de API do Google Maps
+
+//     $response = $client->get("https://maps.googleapis.com/maps/api/geocode/json", [
+//         'query' => [
+//             'address' => $address,
+//             'key' => $apiKey
+//         ]
+//     ]);
+
+//     $data = json_decode($response->getBody(), true);
+
+//     if ($data['status'] == 'OK') {
+//         $latitude = $data['results'][0]['geometry']['location']['lat'];
+//         $longitude = $data['results'][0]['geometry']['location']['lng'];
+//         return ['latitude' => $latitude, 'longitude' => $longitude];
+//     }
+
+//     return null; // Caso a geocodificação falhe
+// }
 
 
 }

@@ -9,7 +9,7 @@ class CreateEventsTable extends Migration
     public function up()
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id(); // ID único
+            $table->uuid('id')->primary(); // ID único
             $table->text('description'); // Descrição (renomeado de 'field_name')
             $table->dateTime('event_date_time'); // Data e hora do evento
             $table->decimal('price', 10, 2); // Preço total

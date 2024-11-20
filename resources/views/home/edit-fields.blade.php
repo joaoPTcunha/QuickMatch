@@ -57,7 +57,6 @@
                     <input type="number" name="price" id="price" value="{{ old('price', $field->price) }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o valor" />
                 </div>
 
-                <!-- Campo Modalidade -->
                 <div class="mb-4">
                     <label for="modality" class="block text-sm font-medium text-gray-700">Modalidades</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
@@ -139,7 +138,6 @@
             }
         });
 
-        // Funcionalidade de troca de foto de avatar
         document.getElementById('image').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {

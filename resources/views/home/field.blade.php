@@ -68,6 +68,9 @@
                 </div>
             @endforeach
         </div>
+        <div class="px-4 md:px-20 py-6">
+            {{ $fields->links() }}
+        </div>
     </div>
 
     @include('home.footer')

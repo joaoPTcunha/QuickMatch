@@ -29,7 +29,7 @@ class AdminController extends Controller
 
     public function userManagement()
     {
-        $users = User::select('id', 'name', 'email', 'usertype')->paginate(4);
+        $users = User::select('id', 'name', 'email', 'usertype')->paginate();
 
         return view('admin.user-management', compact('users'));
     }
@@ -63,12 +63,10 @@ class AdminController extends Controller
 
     public function fieldsAdmin()
     {
-        // Pega todos os campos cadastrados no banco de dados
-        //$fields = Field::all(); // Se você quiser adicionar uma ordenação, por exemplo, por nome, use Field::orderBy('name')->get();
-
-        // Retorna a view fields-admin com os campos
-        return view('admin.fields-admin'); //compact('fields')
+        $fields = Field::all();
+        return view('admin.fields-admin', compact('fields'));
     }
+    
     
     public function support()
     {
@@ -82,7 +80,8 @@ class AdminController extends Controller
         return view('admin.problems_history', compact('problems'));
     }
 
-    public function markAsSolved(Request $request, $id){
+    public function markAsSolved($id)
+    {
     $problem = Problem::findOrFail($id);
     $problem->is_solved = true;
     $problem->save();
@@ -105,14 +104,33 @@ class AdminController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-
-        if ($user->usertype === 'owner') {
-            toastr()->error('O Owner não pode ser apagado.');
+        $loginUser = Auth::user(); 
+    
+        if ($loginUser->usertype === 'admin') {
+            if ($user->usertype === 'admin') {
+                toastr()->timeout(10000)->closeButton()->error('Admin não pode apagar outro Admin');
+                return redirect()->back();
+            }
+    
+            if ($user->usertype === 'owner') {
+                toastr()->timeout(10000)->closeButton()->error('Admin não pode apagar o Owner');
+                return redirect()->back();
+            }
+    
+            if ($loginUser->id === $user->id) {
+                toastr()->timeout(10000)->closeButton()->error('Você não pode apagar sua própria conta.');
+                return redirect()->back();
+            }
+        }
+    
+        if ($loginUser->usertype === 'owner' && $loginUser->id === $user->id) {
+            toastr()->timeout(10000)->closeButton()->error('O Owner não pode apagar a sua própria conta.');
             return redirect()->back();
         }
         $user->delete();
-
-        toastr()->success('Utilizador apagado com sucesso!');
+        toastr()->timeout(10000)->closeButton()->success($user->name . ' (' . $user->usertype . ') apagado com sucesso!');
+        
         return redirect()->route('admin.user-management');
     }
+    
 }
