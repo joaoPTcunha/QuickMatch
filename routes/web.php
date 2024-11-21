@@ -30,6 +30,7 @@ Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel'
 Route::get('/events', [HomeController::class, 'events'])->name('events');
 Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/events', [HomeController::class, 'events'])->name('events');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
 

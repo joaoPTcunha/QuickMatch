@@ -9,11 +9,20 @@ class Field extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'location', 'contact', 'price', 'modality', 'image', 'user_id'];
+    // Defina os campos que podem ser preenchidos em massa
+    protected $fillable = [
+        'user_id', 'name', 'description', 'location', 'contact', 'price', 'modality', 'image'
+    ];
 
-
+    // Relacionamento com o modelo 'User' (campo criado por um usuário)
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relacionamento com o modelo 'Event' (campo pode ter muitos eventos)
+    public function events()
+    {
+        return $this->hasMany(Event::class);
     }
 }
