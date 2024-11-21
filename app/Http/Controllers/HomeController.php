@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Problem;
 use App\Models\Message;
 use App\Models\Field;
+use App\Models\Event;
 
 class HomeController extends Controller
 {
@@ -21,7 +22,7 @@ class HomeController extends Controller
         $selectedField = session('selected_field');
     
         if (!$selectedField) {
-            sweetalert()->info('Escolha o campo que quer para criar um evento.');
+            toastr()->timeout(10000)->closeButton()->info('Escolha o campo que quer para criar um evento.');
             return redirect('/field');
         }
     }
@@ -37,8 +38,14 @@ class HomeController extends Controller
 
     public function seeMatch()
     {
-        return view('home.seematch');
+        // Carrega os eventos e os relacionamentos com 'user' e 'field'
+        $events = Event::with(['user', 'field'])->get();
+    
+        // Passa os eventos para a view
+        return view('home.seematch', compact('events'));
     }
+    
+
 
     public function spinWheel()
     {
@@ -170,7 +177,7 @@ class HomeController extends Controller
             'email' => Auth::user()->email,          
             'description' => $validatedData['description'],
         ]);
-        toastr()->success('Reclamação enviada com sucesso');
+        toastr()->timeout(10000)->closeButton()->success('Reclamação enviada com sucesso');
 
         return redirect()->route('help');
     }
@@ -215,7 +222,7 @@ class HomeController extends Controller
     
         Field::create($validatedData);
     
-        toastr()->success('Pedido de adição de campo com sucesso');
+        toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
         return redirect()->route('manage-fields');
     }
     

@@ -11,35 +11,36 @@
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 px-20">
                     @foreach($events as $event)
-<div class="flex flex-col bg-white p-4 rounded-md border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
-    <div class="flex flex-col flex-grow">
-        <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ $event->description }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <p class="text-gray-700"><strong>Data e Hora:</strong> {{ $event->event_date_time }}</p>
-                <p class="text-gray-700"><strong>Modalidade:</strong> {{ $event->modality }}</p>
-                <p class="text-gray-700"><strong>Número de Participantes:</strong> {{ $event->num_participantes }}</p>
-                <p class="text-gray-700"><strong>Preço:</strong> {{ $event->price }} €</p>
-            </div>
-            <div>
-                <p class="text-gray-700"><strong>Campo:</strong> {{ $event->field->name }}</p>
-                <p class="text-gray-700"><strong>Criado por:</strong> {{ $event->user->name }}</p>
-                <p class="text-gray-700"><strong>Contacto:</strong> {{ $event->user->email }}</p>
-            </div>
-                            </div>
-                            <div class="mt-auto text-right">
-                                <a href="{{ url('/event/'.$event->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
-                                    Ver Detalhes
-                                </a>
+                        <div class="flex flex-col bg-white p-4 rounded-md border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
+                            <div class="flex flex-col flex-grow">
+                                <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ $event->description }}</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-gray-700"><strong>Data e Hora:</strong> {{ $event->event_date_time }}</p>
+                                        <p class="text-gray-700"><strong>Modalidade:</strong> {{ $event->modality }}</p>
+                                        <p class="text-gray-700"><strong>Número de Participantes:</strong> {{ $event->num_participants }}</p>
+                                        <p class="text-gray-700"><strong>Preço:</strong> {{ $event->price }} €</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-700"><strong>Campo:</strong> {{ $event->field->name }}</p>
+                                        <p class="text-gray-700"><strong>Descrição do Campo:</strong> {{ $event->field->description }}</p>
+                                        <p class="text-gray-700"><strong>Localização:</strong> {{ $event->field->location }}</p>
+                                        <p class="text-gray-700"><strong>Contacto:</strong> {{ $event->field->contact }}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-auto text-right">
+                                    <a href="{{ url('/event/'.$event->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                                        Ver Detalhes
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach                
-</div>
-
+                    @endforeach
+                </div>
             @endif
         </div>
     </div>
+
     @include('home.footer')
 </body>
 </html>
