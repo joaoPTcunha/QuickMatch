@@ -37,7 +37,8 @@ Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
-    Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('newmatch');
+    Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('new.match');
+    Route::post('/store.event', [HomeController::class, 'storeEvent'])->name('store.event');
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');    
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
@@ -46,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/store-fields', [HomeController::class, 'storeFields'])->name('store-fields');
     Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
     Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');
-    Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');
+    Route::get('/field/{id}', [HomeController::class, 'showFields'])->name('show-fields');
 
 
 

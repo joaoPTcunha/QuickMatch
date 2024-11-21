@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
-use GuzzleHttp\Client;
-
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Message;
@@ -29,23 +26,23 @@ class HomeController extends Controller
         $selectedField = session('selected_field');
     
         if (!$selectedField) {
-            toastr()->info('Escolha o campo que quer para criar um evento.');
+            sweetalert()->info('Escolha o campo que quer para criar um evento.');
             return redirect('/field');
         }
     }
 
     public function newMatchField($id)
-{
-    $field = Field::findOrFail($id);
-    $modalities = explode(',', $field->modality); 
-
-    return view('home.newmatch', compact('field', 'modalities')); 
-}
+    {
+        $field = Field::find($id);
+        $modalities = explode(',', $field->modality); 
+    
+        return view('home.newmatch', compact('field', 'modalities')); 
+    }
     
     public function seeMatch()
 {
-    $events = Event::with('user')->get();  
-    return view('home.seematch', compact('events'));
+    $events = Event::with('user')->get();  // Buscando os eventos e carregando a relação 'user'
+    return view('home.seematch', compact('events'));  // Passando os eventos para a view
 }
 
 
@@ -139,16 +136,16 @@ class HomeController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                ->orWhere('location', 'like', "%{$search}%")
-                ->orWhere('modality', 'like', "%{$search}%")
-                ->orWhereHas('user', function($q) use ($search) {
-                    $q->where('user_name', 'like', "%{$search}%");
-                });
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('modality', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('user_name', 'like', "%{$search}%");
+                  });
             });
         }
     
-        $fields = $query->paginate(4);
-
+        $fields = $query->get();
+    
         return view('home.field', compact('fields'));
     }
     
@@ -199,59 +196,36 @@ class HomeController extends Controller
         return view('home.create-field');  
     }
 
-
     public function storeFields(Request $request)
     {
-        try {
-            // Validar os dados do formulário
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'description' => 'required|string',
-                'location' => 'required|string|max:255',
-                'contact' => 'required|string|max:255',
-                'price' => 'required|numeric',
-                'modality' => 'required|array',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
-    
-            // Manipular o campo 'modality' para ser uma string separada por vírgulas, se for um array
-            $modality = $request->input('modality');
-            if (is_array($modality)) {
-                $validatedData['modality'] = implode(',', $modality); 
-            } else {
-                $validatedData['modality'] = ''; 
-            }
-    
-            // Armazenar a imagem e obter o nome
-            $imageName = $this->storeFieldImage($request);
-            
-            if ($imageName) {
-                $validatedData['image'] = $imageName;
-            } else {
-                // Se não conseguir armazenar a imagem, exibe mensagem de erro
-                toastr()->error('Erro ao carregar a imagem.');
-                return back(); // Voltar para a página anterior
-            }
-    
-            // Adicionar o ID do usuário autenticado
-            $validatedData['user_id'] = Auth::id();
-    
-            // Criar o novo registro no banco de dados
-            Field::create($validatedData);
-    
-            // Exibir uma mensagem de sucesso usando Toastr
-            toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
-    
-            // Redirecionar para a página de gerenciamento de campos
-            return redirect()->route('manage-fields');
-    
-        } catch (\Exception $e) {
-            // Em caso de erro inesperado, exibe uma mensagem de erro
-            toastr()->error('Ocorreu um erro inesperado. Por favor, tente novamente.');
-            return back(); // Voltar para a página anterior
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'modality' => 'required|array',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $modality = $request->input('modality');
+        if (is_array($modality)) {
+            $validatedData['modality'] = implode(',', $modality); 
+        } else {
+            $validatedData['modality'] = ''; 
         }
-    }
+        $imageName = $this->storeFieldImage($request);
     
+        if ($imageName) {
+            $validatedData['image'] = $imageName;
+        }
+        $validatedData['user_id'] = Auth::id();
+    
+        Field::create($validatedData);
+    
+        toastr()->success('Pedido de adição de campo com sucesso');
+        return redirect()->route('manage-fields');
+    }
     
     private function storeFieldImage($request)
     {
@@ -325,60 +299,30 @@ class HomeController extends Controller
         return view('home.show-fields', compact('field')); 
     }
 
-    public function storeEvent(Request $request)
+   public function storeEvent(Request $request)
 {
-    try {
-        $validated = $request->validate([
-            'descricao' => 'required|string|max:255', 
-            'date-time' => 'required|date', 
-            'num_participantes' => 'required|integer|min:1',
-            'field_id' => 'required|exists:fields,id',
-            'field_name' => 'required|string',
-        ]);
+    $validated = $request->validate([
+        'descricao' => 'required|string|max:255', 
+        'date-time' => 'required|date', 
+        'num_participantes' => 'required|integer|min:1',
+        'price' => 'required|numeric|min:0', // Preço
+        'modality' => 'required|string',
+        'field_id' => 'required|exists:fields,id', // Validação para garantir que o campo existe
+    ]);
 
-        $field = Field::findOrFail($validated['field_id']);
+    Event::create([
+        'description' => $validated['descricao'],
+        'event_date_time' => $validated['date-time'],
+        'num_participantes' => $validated['num_participantes'],
+        'price' => $validated['price'],
+        'modality' => $validated['modality'],
+        'field_id' => $validated['field_id'], // Associa o evento ao campo
+        'user_id' => Auth::id(),
+    ]);
 
-        Event::create([
-            'description' => $validated['descricao'],
-            'event_date_time' => $validated['date-time'],
-            'num_participantes' => $validated['num_participantes'],
-            'price' => $field->price,
-            'modality' => $field->modality,
-            'field_id' => $validated['field_id'],
-            'user_id' => Auth::id(),
-        ]);
-
-        toastr()->success('Evento criado com sucesso!');
-        return redirect()->route('seematch');
-
-    } catch (\Exception $e) {
-        toastr()->error('Erro ao criar evento: ' . $e->getMessage());
-        return redirect()->back()->withInput();
-    }
+    toastr()->success('Evento criado com sucesso!');
+    return redirect()->route('seematch');
 }
-
-// public function getCoordinates($address)
-// {
-//     $client = new Client();
-//     $apiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // Substitua pela sua chave de API do Google Maps
-
-//     $response = $client->get("https://maps.googleapis.com/maps/api/geocode/json", [
-//         'query' => [
-//             'address' => $address,
-//             'key' => $apiKey
-//         ]
-//     ]);
-
-//     $data = json_decode($response->getBody(), true);
-
-//     if ($data['status'] == 'OK') {
-//         $latitude = $data['results'][0]['geometry']['location']['lat'];
-//         $longitude = $data['results'][0]['geometry']['location']['lng'];
-//         return ['latitude' => $latitude, 'longitude' => $longitude];
-//     }
-
-//     return null; // Caso a geocodificação falhe
-// }
 
 
 }
