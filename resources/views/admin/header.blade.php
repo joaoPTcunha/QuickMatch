@@ -1,7 +1,7 @@
 <header class="py-4 mb-8">
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-4xl flex items-center space-x-2">
-            <a href="{{ url('/') }}" class="flex items-center space-x-2">
+            <a href="{{ url('admin/index') }}" class="flex items-center space-x-2">
                 <img src="{{ asset('Logo.png') }}" alt="Logo" class="h-10 px-3" />
                 <h1 class="text-4xl text-gray-800 drop-shadow-md">QuickMatch</h1>
             </a>

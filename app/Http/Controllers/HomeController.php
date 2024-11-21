@@ -61,14 +61,12 @@ class HomeController extends Controller
         ]);
 
         try {
-            // Crie a nova mensagem
             $message = Message::create([
                 'sender_id' => Auth::id(),
                 'receiver_id' => $validatedData['receiver_id'],
                 'content' => $validatedData['content'],
             ]);
 
-            // Retorne uma resposta de sucesso
             return response()->json([
                 'status' => 'success',
                 'message' => 'Mensagem enviada com sucesso!',
@@ -119,29 +117,29 @@ class HomeController extends Controller
     }
 
     public function field(Request $request)
-    {
-        $query = Field::query();
-    
-        if ($request->filled('modality')) {
-            $query->where('modality', $request->modality);
-        }
-    
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%")
-                  ->orWhere('modality', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('user_name', 'like', "%{$search}%");
-                  });
-            });
-        }
-    
-        $fields = $query->get();
-    
-        return view('home.field', compact('fields'));
+{
+    $query = Field::query();
+
+    if ($request->filled('modality')) {
+        $query->where('modality', $request->modality);
     }
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('location', 'like', "%{$search}%")
+              ->orWhere('modality', 'like', "%{$search}%")
+              ->orWhereHas('user', function($q) use ($search) {
+                  $q->where('user_name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    $fields = $query->paginate(10); // Add pagination here
+
+    return view('home.field', compact('fields'));
+}
     
 
     public function contact()

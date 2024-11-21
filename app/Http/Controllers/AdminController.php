@@ -62,11 +62,11 @@ class AdminController extends Controller
     }   
 
     public function fieldsAdmin()
-    {
-        $fields = Field::all();
-        return view('admin.fields-admin', compact('fields'));
-    }
-    
+{
+    $fields = Field::all(); // Você pode adicionar ordenação ou filtros conforme necessário.
+    return view('admin.fields-admin', compact('fields'));
+}
+
     
     public function support()
     {

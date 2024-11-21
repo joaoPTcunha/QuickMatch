@@ -71,4 +71,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
     Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
+// Em web.php (dentro do middleware admin)
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
+    Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('fields.edit');
+    Route::put('/fields/{field}', [AdminController::class, 'updateField'])->name('fields.update');
+    Route::delete('/fields/{field}', [AdminController::class, 'destroyField'])->name('fields.destroy');
+});
+
 });
