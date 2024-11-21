@@ -7,27 +7,23 @@
             <form action="{{ route('store.event') }}" method="POST">
                 @csrf
                 <input type="hidden" name="field_id" value="{{ $field->id }}">           
-                <!-- Nome do Campo -->
                 <div class="mb-4">
                     <label for="campo" class="block text-gray-700">Nome do Campo</label>
                     <input type="hidden" name="field_name" value="{{ $field->name }}">
                     <p class="mt-2 p-2 border rounded">{{ $field->name }}</p>
                 </div>
             
-                <!-- Botão para procurar outro campo -->
                 <div class="mb-6 text-center">
                     <a href="{{ url('/field') }}" class="inline-block text-blue-700 px-6 py-2 rounded">
                         Procurar por outro campo
                     </a>
                 </div>
             
-                <!-- Descrição do Evento -->
                 <div class="mb-4">
                     <label for="descricao" class="block text-gray-700">Descrição</label>
                     <textarea id="descricao" name="descricao" rows="3" class="w-full mt-2 p-2 border rounded" placeholder="Descrição do evento" required></textarea>
                 </div>
             
-                <!-- Data e Hora do Evento -->
                 <div class="mb-4">
                     <label for="date-time" class="block text-gray-700">Data e Hora</label>
                     <input type="datetime-local" id="date-time" name="date-time" class="w-full mt-2 p-2 border rounded" value="{{ now()->addDay()->startOfDay()->format('Y-m-d\TH:i') }}" required>
@@ -39,7 +35,6 @@
                     <p class="w-full mt-2 p-2 border rounded text-gray-600">{{ $field->price }} €</p>
                 </div>
                 
-                <!-- Modalidade -->
                 <div class="mb-4">
                     <label for="modality" class="block text-gray-700">Modalidade</label>
                     <input type="hidden" name="modality" value="{{ $modalities[0] }}">
@@ -52,14 +47,12 @@
                     </select>
                 </div>
             
-                <!-- Número de Participantes -->
                 <div class="mb-4 flex items-center">
                     <label for="num-participantes" class="block text-gray-700 mr-4">Número de Participantes</label>
                     <input type="number" id="num-participantes" name="num_participantes" class="w-20 p-2 border rounded" value="5" min="1" required>
                     <span class="ml-2">Participantes</span>
                 </div>
             
-                <!-- Botão para Enviar -->
                 <div class="text-right">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
                         Publicar Evento

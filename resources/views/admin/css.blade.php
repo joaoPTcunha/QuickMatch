@@ -22,7 +22,6 @@
             height: 100vh;
             overflow: hidden;
             z-index: -1;
-            /* Coloca o elemento atrás de todos */
         }
 
         .magicpattern {

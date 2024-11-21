@@ -9,16 +9,16 @@ class CreateEventsTable extends Migration
     public function up()
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id(); // ID único
-            $table->text('description'); // Descrição (renomeado de 'field_name')
-            $table->dateTime('event_date_time'); // Data e hora do evento
-            $table->decimal('price', 10, 2); // Preço total
-            $table->string('modality'); // Modalidade
-            $table->unsignedInteger('num_participantes'); // Número de participantes (renomeado de 'participants')
-            $table->unsignedBigInteger('user_id'); // ID do usuário (se necessário)
-            $table->timestamps(); // Campos created_at e updated_at
+            $table->id(); 
+            $table->text('description'); 
+            $table->dateTime('event_date_time'); 
+            $table->decimal('price', 10, 2); 
+            $table->string('modality'); 
+            $table->unsignedInteger('num_participantes'); 
+            $table->unsignedBigInteger('user_id'); 
+            $table->timestamps(); 
 
-            // Relacionamento com a tabela users (se necessário)
+           
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

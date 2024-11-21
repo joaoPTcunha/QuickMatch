@@ -4,15 +4,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .faq-answer {
-            display: none; /* Respostas inicialmente ocultas */
+            display: none; 
         }
         .toggle-icon {
             transition: transform 0.3s;
-            font-size: 20px; /* Ajuste o tamanho da seta */
-            margin-left: 10px; /* Espaço entre o texto e a seta */
+            font-size: 20px; 
+            margin-left: 10px; 
         }
         .rotated {
-            transform: rotate(180deg); /* Rotaciona a seta */
+            transform: rotate(180deg); 
         }
     </style>
 </head>
@@ -39,7 +39,7 @@
                 @endforeach
             </div>
         </section>
-        <!-- Complaint Form Section -->
+
         <section>
             <h2 class="text-2xl font-semibold mb-4">Envie uma Reclamação</h2>
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -70,13 +70,13 @@
             const answer = document.getElementById(faqId);
             const toggleIcon = element.querySelector('.toggle-icon');
             if (answer.style.display === "none" || answer.style.display === "") {
-                answer.style.display = "block"; // Mostra a resposta
-                toggleIcon.innerHTML = '˅'; // Muda a seta para baixo
-                toggleIcon.classList.add('rotated'); // Adiciona a classe para rotacionar
+                answer.style.display = "block"; 
+                toggleIcon.innerHTML = '˅'; 
+                toggleIcon.classList.add('rotated'); 
             } else {
-                answer.style.display = "none"; // Oculta a resposta
-                toggleIcon.innerHTML = '^'; // Muda a seta para cima
-                toggleIcon.classList.remove('rotated'); // Remove a classe de rotação
+                answer.style.display = "none"; 
+                toggleIcon.innerHTML = '^'; 
+                toggleIcon.classList.remove('rotated'); 
             }
         }
     </script>

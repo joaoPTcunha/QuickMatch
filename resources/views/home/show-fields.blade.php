@@ -7,7 +7,6 @@
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-48 object-contain mb-4 mt-4  rounded-lg">
             
-            <!-- Conteúdo do card -->
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
                     <p class="text-lg text-gray-700"><strong>Descrição:</strong> {{ $field->description }}</p>
@@ -21,12 +20,10 @@
                 </div>
             </div>
 
-            <!-- Botões -->
             <div class="p-6 flex justify-between items-center">
                 <!-- Botão de Voltar -->
                 <a href="{{ url()->previous() }}" class="text-blue-500 hover:text-blue-700">Voltar</a>
 
-                <!-- Botão de Criar Evento -->
                 <a href="{{ route('create-field', ['field_id' => $field->id]) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
                     Criar Evento com este campo
                 </a>

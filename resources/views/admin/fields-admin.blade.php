@@ -6,7 +6,6 @@
         <div class="container mx-auto py-8">
             <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Gestão de Campos</h1>
 
-            <!-- Exibição de todos os campos -->
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
                     <thead class="bg-blue-600 text-white">
@@ -41,7 +40,6 @@
             </div>
         </div>
 
-        <!-- Modal de Detalhes de Campo -->
         @foreach($fields as $field)
             <div id="modal-{{ $field->id }}" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">

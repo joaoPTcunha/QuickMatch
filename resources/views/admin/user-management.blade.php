@@ -15,7 +15,6 @@
                     </button>
                 </form>
 
-                <!-- Filtros por Tipo de Utilizador -->
                 <div class="flex space-x-2 flex-wrap">
                     <form action="{{ route('admin.user-search') }}" method="GET" class="mb-4 md:mb-0">
                         <input type="hidden" name="usertype" value="user">
@@ -38,7 +37,6 @@
                 </div>
             </div>
 
-            <!-- Tabela de Utilizadores -->
             <div class="overflow-x-auto shadow-lg rounded-lg">
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead class="bg-blue-600 text-white">

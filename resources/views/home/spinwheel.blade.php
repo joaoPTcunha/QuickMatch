@@ -33,7 +33,6 @@
 
 
 <body class="bg-gray-200 flex flex-col min-h-screen">
-    <!-- Primeira Linha: Texto de Boas-vindas -->
     <div class="flex justify-center w-full max-w-6xl mx-auto p-4">
         <div class="text-center">
             <h1 class="font-bold text-3xl sm:text-4xl text-green-600">Bem-vindo à Roleta</h1>
@@ -43,7 +42,6 @@
         </div>
     </div>
 
-    <!-- Segunda Linha: Divisão em duas colunas -->
     <div class="flex flex-col lg:flex-row items-start w-full max-w-6xl mx-auto p-4 space-y-8 lg:space-y-2 flex-grow">
         <!-- Coluna 1: Roleta -->
         <div class="lg:w-1/2 w-full flex justify-center lg:justify-start">
@@ -56,7 +54,6 @@
             </div>
         </div>
 
-        <!-- Coluna 2: Formulários para Número de Equipas e Tipo de Desporto -->
         <div class="lg:w-1/2 w-full space-y-8">
             <div class="flex flex-wrap justify-center gap-5 mb-5 bg-gray-800 p-4 rounded-lg shadow-md">
                 <input type="number" id="team-count" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto" placeholder="Número de equipas" min="2" value="2">
@@ -73,7 +70,6 @@
                 </select>
             </div>
 
-            <!-- Adicionar Jogador -->
             <div class="w-full max-w-lg space-y-4">
                 <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-600 text-white border-none placeholder-gray-400" placeholder="Adicione jogadores separados por linha..."></textarea>
             
@@ -82,7 +78,6 @@
                 </div>
             </div>
 
-            <!-- Exibição das Equipas -->
             <div class="team-table-container w-full max-w-lg bg-gray-800 rounded-lg p-4 shadow-md mt-4 mx-auto overflow-x-auto">
                 <h2 class="text-center text-lg font-bold text-white mb-3">Distribuição de Jogadores</h2>
                 <table id="team-table" class="min-w-full table-auto bg-gray-700 text-sm">
@@ -93,14 +88,12 @@
                         </tr>
                     </thead>
                     <tbody id="team-body">
-                        <!-- Jogadores adicionados aqui -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Footer fixado na parte inferior -->
         @include('home.footer')
 </body>
 
@@ -112,7 +105,6 @@
 
     <script>
         
-        // Funções para manipulação de cores e graus
         function randomColor() {
             r = Math.floor(Math.random() * 255);
             g = Math.floor(Math.random() * 255);
@@ -120,7 +112,6 @@
             return { r, g, b };
         }
 
-        // Lista de cores disponíveis
     const availableColors = [
         "#FF0000", // Vermelho
         "#00FF00", // Verde
@@ -137,7 +128,6 @@
         "#6B8E23", // Verde Oliva
     ];
 
-    // Objeto para rastrear cores em uso
     let usedColors = new Map();
     let availableColorsList = [...availableColors];
 
@@ -176,14 +166,14 @@ function getRandomUnusedColor() {
         const radius = width / 2.10;
 
         let items = []; // Lista de jogadores
-        let teams = []; // Equipes criadas
+        let teams = []; // Equipas criadas
         let colors = ["#FF5733", "#33FF57", "#3357FF", "#FFC300", "#DAF7A6", "#581845", "#C70039"]; // Lista de cores fixas
         let currentDeg = 0;
         let itemDegs = {};
-        let currentPlayer = ""; // Para armazenar o jogador atualmente selecionado
+        let currentPlayer = ""; // Para armazenar o jogador
 
         function createWheel() {
-            step = 360 / items.length; // Mover este cálculo para dentro da função
+            step = 360 / items.length; 
             draw();
         }  
                 
@@ -237,12 +227,12 @@ function getRandomUnusedColor() {
                 ctx.fillStyle = "#fff";
         
                 // Ajuste do tamanho da fonte
-                let fontSize = 24; // Tamanho padrão da fonte
+                let fontSize = 24; 
                 ctx.font = `bold ${fontSize}px "Segoe UI"`;
         
                 // Verifica se o texto excede o limite e ajusta o tamanho da fonte
                 while (ctx.measureText(player).width > radius * 0.5 && fontSize > 10) {
-                    fontSize -= 1; // Reduz o tamanho da fonte
+                    fontSize -= 1; 
                     ctx.font = `bold ${fontSize}px "Segoe UI"`; // Atualiza a fonte
                 }
         
@@ -272,23 +262,19 @@ function getRandomUnusedColor() {
         let lastAngle = 0;
     
         function selectPlayer() {
-            // The pointer is at 270 degrees (top position)
+
             const pointerAngle = 270;
             
-            // Calculate the current wheel position relative to the pointer
             let normalizedAngle = (currentDeg % 360 + 360) % 360;
             
-            // Calculate which slice is at the pointer position
             const stepAngle = 360 / items.length;
             
-            // Calculate the index of the selected item
             let selectedIndex = Math.floor(((360 - normalizedAngle + pointerAngle) % 360) / stepAngle);
             selectedIndex = selectedIndex % items.length;
             
-            // Set the current player if the index is valid
             if (selectedIndex >= 0 && selectedIndex < items.length) {
                 currentPlayer = items[selectedIndex];
-                allocateToRandomTeam(currentPlayer); // Atribui o jogador a uma equipe aleatória
+                allocateToRandomTeam(currentPlayer); 
 
             }
         }
@@ -312,15 +298,12 @@ function getRandomUnusedColor() {
                 pause = true;
         
                 // Chama a função para selecionar o jogador
-                selectPlayer(); // Atribui o jogador que deve ser selecionado
+                selectPlayer(); 
         
-                // Remove o jogador da lista de jogadores disponíveis
                 removeItem(currentPlayer);
         
-                // Atualiza a tabela de exibição de equipes
                 updateTeamDisplay();
         
-                // Exibir SweetAlert com confetes modernos para o jogador vencedor
                 Swal.fire({
                     title: `🎉 Jogador selecionado: ${currentPlayer}!`,
                     icon: 'success',
@@ -357,15 +340,13 @@ function getRandomUnusedColor() {
 
     
 function allocateToRandomTeam(player) {
-    // Primeiro, garantimos que todas as equipes sejam criadas, se ainda não houver equipes
     if (teams.length === 0) {
-        const numTeams = 2; // Ou outro número desejado de equipes
+        const numTeams = 2; 
         for (let i = 0; i < numTeams; i++) {
-            teams.push([]); // Cria as equipes vazias
+            teams.push([]);
         }
     }
 
-    // Encontramos a equipe com o menor número de jogadores
     let minTeamIndex = 0;
     let minTeamSize = teams[0].length;
 
@@ -376,13 +357,10 @@ function allocateToRandomTeam(player) {
         }
     }
 
-    // Atribui o jogador à equipe com o menor número de jogadores
     teams[minTeamIndex].push(player);
 
-    // Remove o jogador da lista de jogadores disponíveis
     removeItem(player);
 
-    // Atualiza a exibição das equipes
     updateTeamDisplay();
 }
 
@@ -395,7 +373,6 @@ function updatePlayersFromTextarea() {
     // Remove jogadores que não estão mais na textarea da roleta
     items = items.filter(player => updatedPlayers.includes(player));
     
-    // Atualiza a roleta e a visualização das equipes
     createWheel();
     updateTeamDisplay();
 }
@@ -446,7 +423,6 @@ function addPlayer() {
     const totalTeams = parseInt(document.getElementById("team-count").value);
     const totalPlayers = items.length + newNames.length;
 
-    // Exibe SweetAlert se o número de jogadores for insuficiente
     if (totalPlayers < minPlayersPerTeam * totalTeams) {
         Swal.fire({
             icon: 'error',
@@ -505,16 +481,15 @@ function removeItem(item) {
     
         function updateTeamDisplay() {
             const teamBody = document.getElementById("team-body");
-            teamBody.innerHTML = ""; // Limpa a lista atual das equipes
+            teamBody.innerHTML = ""; 
         
             teams.forEach((team, index) => {
                 const row = document.createElement("tr");
                 const teamCell = document.createElement("td");
                 const playerCell = document.createElement("td");
                 teamCell.textContent = `Equipa ${index + 1}`;
-                playerCell.textContent = team.join(", ") || "Nenhum jogador"; // Exibe "Nenhum jogador" se não houver jogadores
+                playerCell.textContent = team.join(", ") || "Nenhum jogador"; 
                 
-                // Adiciona as classes para centralização
                 teamCell.className = "text-center";
                 playerCell.className = "text-center";
         

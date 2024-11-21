@@ -5,7 +5,6 @@
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Eventos Criados</h1>
 
-        <!-- Verificar se existem eventos -->
         <div class="px-20 mb-6">
             @if($events->isEmpty())
                 <p class="text-center text-gray-500">Nenhum evento criado ainda.</p>

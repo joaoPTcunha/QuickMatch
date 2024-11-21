@@ -7,7 +7,6 @@
         <div class="w-full bg-white shadow-lg rounded-lg p-8 h-full">
             <h1 class="text-3xl mb-8 text-gray-800 border-b pb-4">Manutenção e Outros</h1>
 
-            <!-- Agendar uma Manutenção -->
             <div class="mb-6 border rounded-lg p-6 hover:bg-blue-4000">
                 <h2 class="text-xl font-semibold text-gray-800 mb-3">Agendar uma manutenção</h2>
                 <p class="text-gray-600 mb-4">
@@ -18,7 +17,6 @@
                 </button>
             </div>
 
-            <!-- Agendar uma Interrupção da Plataforma -->
             <div class="mb-6 border rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-3">Agendar uma interrupção da plataforma</h2>
                 <p class="text-gray-600 mb-4">
@@ -29,7 +27,6 @@
                 </button>
             </div>
 
-            <!-- Criar um Comunicado Global -->
             <div class="border rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-3">Criar um comunicado global</h2>
                 <p class="text-gray-600 mb-4">
@@ -44,7 +41,6 @@
 
     @include('admin.footer')
 
-    <!-- SweetAlert2 Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
