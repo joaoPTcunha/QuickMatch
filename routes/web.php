@@ -22,8 +22,8 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 #google
-Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
-Route::get('auth/google/call-back',[GoogleAuthController::class, 'callbackGoogle']);
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
 #UTILIZADOR SEM ESTAR LOGADO
 Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel');
@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
     Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('new.match');
     Route::post('/store.event', [HomeController::class, 'storeEvent'])->name('store.event');
-    Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');    
+    Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
@@ -54,7 +54,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
     Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
     Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
-
 });
 
 #ADMIN
@@ -63,7 +62,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
     Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
     Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
-    Route::get('users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
@@ -71,12 +70,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
     Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
-// Em web.php (dentro do middleware admin)
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
-    Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('fields.edit');
-    Route::put('/fields/{field}', [AdminController::class, 'updateField'])->name('fields.update');
-    Route::delete('/fields/{field}', [AdminController::class, 'destroyField'])->name('fields.destroy');
-});
-
+    // Em web.php (dentro do middleware admin)
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
+        Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('fields.edit');
+        Route::put('/fields/{field}', [AdminController::class, 'updateField'])->name('fields.update');
+        Route::delete('/fields/{field}', [AdminController::class, 'destroyField'])->name('fields.destroy');
+    });
 });

@@ -13,17 +13,17 @@ class AdminController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user) {
             $usertype = $user->usertype;
             $name = $user->name;
-    
+
             $userCount = User::whereIn('usertype', ['user', 'user_field'])->count();
             $fieldCount = Field::count();
-    
-            return view('admin.index', compact('usertype', 'name', 'userCount','fieldCount'));
+
+            return view('admin.index', compact('usertype', 'name', 'userCount', 'fieldCount'));
         }
-    
+
         return redirect()->route('login');
     }
 
@@ -38,20 +38,20 @@ class AdminController extends Controller
     {
         $search = $request->input('search');
         $usertype = $request->input('usertype');
-        
+
         $query = User::query();
-    
+
         if ($usertype) {
             $query->where('usertype', $usertype);
         }
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'LIKE', '%' . $search . '%')->orWhere('usertype', 'LIKE', '%' . $search . '%');
             });
         }
-    
+
         $users = $query->paginate(5);
-    
+
         return view('admin.user-management', compact('users'));
     }
 
@@ -59,15 +59,15 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         return view('users.show', compact('user'));
-    }   
+    }
 
     public function fieldsAdmin()
-{
-    $fields = Field::all(); // Você pode adicionar ordenação ou filtros conforme necessário.
-    return view('admin.fields-admin', compact('fields'));
-}
+    {
+        $fields = Field::all();
+        return view('admin.fields-admin', compact('fields'));
+    }
 
-    
+
     public function support()
     {
         $problems = Problem::where('is_solved', false)->get();
@@ -82,55 +82,65 @@ class AdminController extends Controller
 
     public function markAsSolved($id)
     {
-    $problem = Problem::findOrFail($id);
-    $problem->is_solved = true;
-    $problem->save();
+        $problem = Problem::findOrFail($id);
+        $problem->is_solved = true;
+        $problem->save();
 
-    return response()->json(['status' => 'success', 'message' => 'Problem marked as solved']);
+        return response()->json(['status' => 'success', 'message' => 'Problem marked as solved']);
     }
 
 
-    public function maintenance(){
-        
+    public function maintenance()
+    {
+
         return view('admin.maintenance');
     }
 
-    public function edit($id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'usertype' => 'required|in:user,user_field,admin',
+        ]);
+
+        $user->update($validated);
+
+        toastr()->timeout(10000)->closeButton()->success('Perfil de ' . $user->name . ' atualizado com sucesso!');
+
+        return redirect()->route('admin.users.index');
     }
+
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $loginUser = Auth::user(); 
-    
+        $loginUser = Auth::user();
+
         if ($loginUser->usertype === 'admin') {
             if ($user->usertype === 'admin') {
                 toastr()->timeout(10000)->closeButton()->error('Admin não pode apagar outro Admin');
                 return redirect()->back();
             }
-    
+
             if ($user->usertype === 'owner') {
                 toastr()->timeout(10000)->closeButton()->error('Admin não pode apagar o Owner');
                 return redirect()->back();
             }
-    
+
             if ($loginUser->id === $user->id) {
                 toastr()->timeout(10000)->closeButton()->error('Você não pode apagar sua própria conta.');
                 return redirect()->back();
             }
         }
-    
+
         if ($loginUser->usertype === 'owner' && $loginUser->id === $user->id) {
             toastr()->timeout(10000)->closeButton()->error('O Owner não pode apagar a sua própria conta.');
             return redirect()->back();
         }
         $user->delete();
         toastr()->timeout(10000)->closeButton()->success($user->name . ' (' . $user->usertype . ') apagado com sucesso!');
-        
+
         return redirect()->route('admin.user-management');
     }
-    
 }
