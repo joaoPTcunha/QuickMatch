@@ -60,22 +60,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
 #ADMIN
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
+
     Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
     Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
     Route::put('/users/{user}', [AdminController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
+
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
     Route::post('/store-problem', [AdminController::class, 'storeProblem'])->name('storeProblem');
     Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
     Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
-    // Em web.php (dentro do middleware admin)
-    Route::middleware(['auth', 'admin'])->group(function () {
-        Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
-        Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('fields.edit');
-        Route::put('/fields/{field}', [AdminController::class, 'updateField'])->name('fields.update');
-        Route::delete('/fields/{field}', [AdminController::class, 'destroyField'])->name('fields.destroy');
-    });
+
+    Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
+    Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('fields.edit');
+    Route::put('/fields/{field}', [AdminController::class, 'updateField'])->name('fields.update');
+    Route::delete('/fields/{field}', [AdminController::class, 'destroyField'])->name('fields.destroy');
 });

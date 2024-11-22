@@ -72,7 +72,7 @@
                             <td class="px-6 py-4">{{ $user->usertype }}</td>
                             <td class="px-6 py-4">{{ $user->email }}</td>
                             <td class="px-6 py-4 text-center">
-                                <a href="javascript:void(0);" class="text-blue-500 hover:underline" onclick="openModal('modal-{{ $user->id }}')">Ver</a>
+                                <a href="javascript:void(0);" class="text-blue-500 hover:underline" onclick="openModal('modal-{{ $user->id }}')">Ver mais</a>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center space-x-4">
@@ -99,66 +99,191 @@
             </div>
 
             @foreach($users as $user)
-            <!-- Modal de Detalhes -->
-            <div id="modal-{{ $user->id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-                <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
+            <div id="modal-{{ $user->id }}"
+                class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300">
+                <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full relative">
+                    <button onclick="closeModal('modal-{{ $user->id }}')"
+                        class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
                     <h2 class="text-xl font-semibold text-gray-800 mb-6">Detalhes do Utilizador</h2>
-                    <p><strong>Nome:</strong> {{ $user->name }}</p>
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
+
+                    <div class="flex justify-center mb-4">
+                        @if($user->profile_picture)
+                        <img src="{{ asset('Profile_Photo/' . $user->profile_picture) }}"
+                            alt="Foto de perfil de {{ $user->name }}"
+                            class="w-24 h-24 rounded-full border-2 border-blue-500 shadow-md">
+                        @else
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor"
+                            class="w-24 h-24 text-gray-400 border-2 border-blue-500 rounded-full p-2 shadow-md">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+                        @endif
+                    </div>
+
+                    <p class="mb-2"><strong>Nome:</strong> {{ $user->name }}</p>
+                    <p class="mb-2"><strong>Sobrenome:</strong> {{ $user->surname ?? 'NULL' }}</p>
+                    <p class="mb-2"><strong>Nome de Utilizador:</strong> {{ $user->user_name ?? 'NULL' }}</p>
+                    <p class="mb-2"><strong>Data de Nascimento:</strong> {{ $user->date_birth ?? 'NULL' }}</p>
+                    <p class="mb-2"><strong>Genero:</strong> {{ $user->gender ?? 'NULL' }}</p>
+                    <p class="mb-2"><strong>Email:</strong> {{ $user->email }}</p>
+                    <p class="mb-2"><strong>Telefone:</strong> {{ $user->phone ?? 'NULL' }}</p>
+                    <p class="mb-2"><strong>Endereço:</strong> {{ $user->address ?? 'NULL' }}</p>
                     <p><strong>Tipo de Utilizador:</strong> {{ $user->usertype }}</p>
-                    <button onclick="closeModal('modal-{{ $user->id }}')" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800">Fechar</button>
                 </div>
             </div>
 
-            <!-- Modal de Edição -->
-            <div id="edit-modal-{{ $user->id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-                <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-6">Editar Utilizador</h2>
-                    <form action="{{ route('users.update', $user->id) }}" method="POST">
+
+
+            <div id="edit-modal-{{ $user->id }}"
+                class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300">
+                <div class="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full relative">
+                    <button onclick="closeModal('edit-modal-{{ $user->id }}')"
+                        class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Editar Utilizador</h2>
+                    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <div class="mb-4">
-                            <label for="name" class="block text-sm text-gray-700">Nome</label>
-                            <input type="text" name="name" value="{{ $user->name }}" class="w-full px-4 py-2 border rounded-md shadow-sm" required>
+                        <div class="flex flex-col items-center mb-8">
+                            <label for="profile_picture" class="block text-sm font-medium text-gray-700">Foto de Perfil</label>
+                            <div class="w-32 h-32 mb-4 flex items-center justify-center bg-gray-200 rounded-full overflow-hidden">
+                                @if($user->profile_picture)
+                                <img id="profile-preview" src="{{ asset('Profile_Photo/' . $user->profile_picture) }}"
+                                    alt="Foto de perfil de {{ $user->name }}" class="w-full h-full object-cover">
+                                @else
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-gray-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                                @endif
+                            </div>
+                            <label for="profile_picture" class="w-full text-center text-blue-600 font-medium cursor-pointer hover:text-blue-800">
+                                Alterar Imagem
+                            </label>
+                            <input type="file" name="profile_picture" id="profile_picture" class="hidden" onchange="previewImage(event)">
                         </div>
-                        <div class="mb-4">
-                            <label for="email" class="block text-sm text-gray-700">Email</label>
-                            <input type="email" name="email" value="{{ $user->email }}" class="w-full px-4 py-2 border rounded-md shadow-sm" required>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col space-y-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
+                                    <input type="text" name="name" value="{{ $user->name }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                </div>
+                                <div>
+                                    <label for="surname" class="block text-sm font-medium text-gray-700">Sobrenome</label>
+                                    <input type="text" name="surname" value="{{ $user->surname }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="user_name" class="block text-sm font-medium text-gray-700">Nome de Utilizador</label>
+                                    <input type="text" name="user_name" value="{{ $user->user_name }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="date_birth" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                                    <input type="date" name="date_birth" value="{{ $user->date_birth }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="gender" class="block text-sm font-medium text-gray-700">Gênero</label>
+                                    <select name="gender"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="Masculino" {{ $user->gender == 'Masculino' ? 'selected' : '' }}>Masculino</option>
+                                        <option value="Feminino" {{ $user->gender == 'Feminino' ? 'selected' : '' }}>Feminino</option>
+                                        <option value="Outro" {{ $user->gender == 'Outro' ? 'selected' : '' }}>Outro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex flex-col space-y-6">
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input type="email" name="email" value="{{ $user->email }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                                    <input type="text" name="phone" value="{{ $user->phone }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço</label>
+                                    <input type="text" name="address" value="{{ $user->address }}"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="usertype" class="block text-sm font-medium text-gray-700">Tipo de Utilizador</label>
+                                    <select name="usertype"
+                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                        <option value="admin" {{ $user->usertype == 'admin' ? 'selected' : '' }}>Admin</option>
+                                        <option value="user" {{ $user->usertype == 'user' ? 'selected' : '' }}>Utilizador</option>
+                                        <option value="user_field" {{ $user->usertype == 'user_field' ? 'selected' : '' }}>Utilizador Campo</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-4">
-                            <label for="usertype" class="block text-sm text-gray-700">Tipo de Utilizador</label>
-                            <select name="usertype" class="w-full px-4 py-2 border rounded-md shadow-sm" required>
-                                <option value="admin" {{ $user->usertype == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="user" {{ $user->usertype == 'user' ? 'selected' : '' }}>Utilizador</option>
-                                <option value="user_field" {{ $user->usertype == 'user_field' ? 'selected' : '' }}>Utilizador Campo</option>
-                            </select>
-                        </div>
-                        <div class="flex justify-between">
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Salvar</button>
-                            <button type="button" onclick="closeModal('edit-modal-{{ $user->id }}')" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Cancelar</button>
+                        <div class="mt-6">
+                            <button type="submit"
+                                class="w-full bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                Salvar Alterações
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
+
+
             @endforeach
         </div>
     </div>
-
-    <script>
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-
-        // Toggle dropdown visibility
-        document.getElementById('dropdownButton').addEventListener('click', function() {
-            const menu = document.getElementById('dropdownMenu');
-            menu.classList.toggle('hidden');
-        });
-    </script>
 </body>
 
 @include('admin.footer')
+<script>
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
+    }
+
+    function openEditModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.opacity = '1';
+            modal.style.pointerEvents = 'auto';
+        } else {
+            console.error(`Modal com ID '${modalId}' não encontrado.`);
+        }
+    }
+
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('profile-preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+    document.getElementById('dropdownButton').addEventListener('click', function() {
+        const menu = document.getElementById('dropdownMenu');
+        menu.classList.toggle('hidden');
+    });
+</script>
