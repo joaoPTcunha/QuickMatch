@@ -18,8 +18,8 @@
             <div class="relative group">
                 <a id="desktop-play-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center cursor-pointer">
                     Jogar
-                    <svg class="w-4 h-4 ml-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path>
+                    <svg class="w-4 h-4 ml-1 text-gray-500 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </a>
                 <div class="absolute hidden group-hover:block bg-white border border-gray-200 rounded-lg shadow-lg top-full left-0 w-48 transition-all duration-300 ease-in-out">

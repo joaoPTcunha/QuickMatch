@@ -66,6 +66,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/users/{user}', [AdminController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
+    Route::delete('/users/{user}/ProfilePictureDelete', [AdminController::class, 'ProfilePictureDelete'])->name('users.ProfilePictureDelete');
+
+
+
 
     Route::get('/support', [AdminController::class, 'support'])->name('admin.support');
     Route::post('/store-problem', [AdminController::class, 'storeProblem'])->name('storeProblem');

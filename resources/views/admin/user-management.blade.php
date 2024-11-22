@@ -6,7 +6,6 @@
         <div class="container mx-auto py-8 px-4">
             <h1 class="text-4xl font-semibold text-center text-gray-900 mb-10">Gestão de Utilizadores</h1>
             <div class="flex items-center justify-between mb-8 flex-wrap">
-                <!-- Formulário de Pesquisa -->
                 <form action="{{ route('admin.user-search') }}" method="GET" class="flex w-full md:max-w-lg space-x-2 mb-4 md:mb-0">
                     <input type="search" name="search" placeholder="Pesquisar utilizadores..."
                         class="border border-gray-300 rounded-l-md px-4 py-2 w-full focus:ring focus:ring-blue-300 focus:outline-none shadow-sm">
@@ -16,48 +15,47 @@
                 </form>
 
                 <div class="relative inline-block text-left">
-                    <button id="dropdownButton" type="button" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition shadow-sm inline-flex items-center">
-                        <span class="mr-2">Todos</span>
+                    <button id="dropdownButton" type="button" class="px-6 py-2 bg-blue-600 hover:bg-blue-400 text-white rounded-md transition shadow-sm inline-flex items-center">
+                        <span id="dropdownLabel" class="mr-2">Todos</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
 
+
                     <div id="dropdownMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
-                        <div class="py-1">
-                            <form action="{{ route('admin.user-search') }}" method="GET">
-                                <input type="hidden" name="usertype">
-                                <button type="submit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Todos
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.user-search') }}" method="GET">
-                                <input type="hidden" name="usertype" value="user">
-                                <button type="submit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Utilizador
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.user-search') }}" method="GET">
-                                <input type="hidden" name="usertype" value="user_field">
-                                <button type="submit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Utilizador Campo
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.user-search') }}" method="GET">
-                                <input type="hidden" name="usertype" value="admin">
-                                <button type="submit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Admin
-                                </button>
-                            </form>
-                        </div>
+                        <form action="{{ route('admin.user-search') }}" method="GET" class="dropdown-option">
+                            <input type="hidden" name="usertype">
+                            <button type="submit" data-label="Todos" class="w-full block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100">
+                                Todos
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.user-search') }}" method="GET" class="dropdown-option">
+                            <input type="hidden" name="usertype" value="user">
+                            <button type="submit" data-label="Utilizador" class="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Utilizador
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.user-search') }}" method="GET" class="dropdown-option">
+                            <input type="hidden" name="usertype" value="user_field">
+                            <button type="submit" data-label="Utilizador Campo" class="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Utilizador Campo
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.user-search') }}" method="GET" class="dropdown-option">
+                            <input type="hidden" name="usertype" value="admin">
+                            <button type="submit" data-label="Admin" class="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Admin
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-
             <div class="overflow-x-auto shadow-lg rounded-lg">
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead class="bg-blue-600 text-white">
                         <tr>
+                            <th class="px-6 py-3 text-left font-semibold w-24">Foto</th>
                             <th class="px-6 py-3 text-left font-semibold">Nome</th>
                             <th class="px-6 py-3 text-left font-semibold">Tipo de Utilizador</th>
                             <th class="px-6 py-3 text-left font-semibold">Email</th>
@@ -68,6 +66,20 @@
                     <tbody>
                         @foreach($users as $user)
                         <tr class="border-t hover:bg-gray-100 transition duration-200">
+                            <td class="px-3 py-4 w-24">
+                                @if($user->profile_picture)
+                                <img src="{{ asset('Profile_Photo/' . $user->profile_picture) }}"
+                                    alt="Foto de perfil de {{ $user->name }}"
+                                    class="w-16 h-16 rounded-full border-2 shadow-md">
+                                @else
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor"
+                                    class="w-16 h-16 text-gray-400 border-2 rounded-full p-2 shadow-md">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                                @endif
                             <td class="px-6 py-4">{{ $user->name }}</td>
                             <td class="px-6 py-4">{{ $user->usertype }}</td>
                             <td class="px-6 py-4">{{ $user->email }}</td>
@@ -98,6 +110,7 @@
                 </table>
             </div>
 
+            <!-- modal ver -->
             @foreach($users as $user)
             <div id="modal-{{ $user->id }}"
                 class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300">
@@ -116,18 +129,17 @@
                         @if($user->profile_picture)
                         <img src="{{ asset('Profile_Photo/' . $user->profile_picture) }}"
                             alt="Foto de perfil de {{ $user->name }}"
-                            class="w-24 h-24 rounded-full border-2 border-blue-500 shadow-md">
+                            class="w-24 h-24 rounded-full shadow-md">
                         @else
                         <svg xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24"
                             stroke-width="1.5" stroke="currentColor"
-                            class="w-24 h-24 text-gray-400 border-2 border-blue-500 rounded-full p-2 shadow-md">
+                            class="w-24 h-24 text-gray-400 rounded-full p-2 shadow-md">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
                         @endif
                     </div>
-
                     <p class="mb-2"><strong>Nome:</strong> {{ $user->name }}</p>
                     <p class="mb-2"><strong>Sobrenome:</strong> {{ $user->surname ?? 'NULL' }}</p>
                     <p class="mb-2"><strong>Nome de Utilizador:</strong> {{ $user->user_name ?? 'NULL' }}</p>
@@ -140,62 +152,54 @@
                 </div>
             </div>
 
-
-
-            <div id="edit-modal-{{ $user->id }}"
-                class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300">
+            <!-- modal editar -->
+            <div id="edit-modal-{{ $user->id }}" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
                 <div class="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full relative">
-                    <button onclick="closeModal('edit-modal-{{ $user->id }}')"
-                        class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <button onclick="closeModal('edit-modal-{{ $user->id }}')" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                     <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Editar Utilizador</h2>
+                    <div class="flex flex-col items-center mb-8">
+                        <div class="w-32 h-32 mb-4 flex items-center justify-center bg-gray-200 rounded-full overflow-hidden">
+                            @if($user->profile_picture)
+                            <img id="profile-preview-{{ $user->id }}" src="{{ asset('Profile_Photo/' . $user->profile_picture) }}" alt="Foto de perfil de {{ $user->name }}" class="w-full h-full object-cover">
+                            @else
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                            @endif
+                        </div>
+                        @if($user->profile_picture)
+                        <form id="delete-profile-picture-form-{{ $user->id }}" action="{{ route('users.ProfilePictureDelete', $user->id) }}" method="POST" data-user-name="{{ $user->name }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 hover:text-red-800">Remover Imagem</button>
+                        </form>
+                        @endif
+                    </div>
+
                     <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <div class="flex flex-col items-center mb-8">
-                            <label for="profile_picture" class="block text-sm font-medium text-gray-700">Foto de Perfil</label>
-                            <div class="w-32 h-32 mb-4 flex items-center justify-center bg-gray-200 rounded-full overflow-hidden">
-                                @if($user->profile_picture)
-                                <img id="profile-preview" src="{{ asset('Profile_Photo/' . $user->profile_picture) }}"
-                                    alt="Foto de perfil de {{ $user->name }}" class="w-full h-full object-cover">
-                                @else
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-gray-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                </svg>
-                                @endif
-                            </div>
-                            <label for="profile_picture" class="w-full text-center text-blue-600 font-medium cursor-pointer hover:text-blue-800">
-                                Alterar Imagem
-                            </label>
-                            <input type="file" name="profile_picture" id="profile_picture" class="hidden" onchange="previewImage(event)">
-                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="flex flex-col space-y-6">
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
-                                    <input type="text" name="name" value="{{ $user->name }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <input type="text" name="name" value="{{ $user->name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                                 </div>
                                 <div>
                                     <label for="surname" class="block text-sm font-medium text-gray-700">Sobrenome</label>
-                                    <input type="text" name="surname" value="{{ $user->surname }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="text" name="surname" value="{{ $user->surname }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
                                     <label for="user_name" class="block text-sm font-medium text-gray-700">Nome de Utilizador</label>
-                                    <input type="text" name="user_name" value="{{ $user->user_name }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="text" name="user_name" value="{{ $user->user_name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
                                     <label for="date_birth" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                                    <input type="date" name="date_birth" value="{{ $user->date_birth }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="date" name="date_birth" value="{{ $user->date_birth }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
                                     <label for="gender" class="block text-sm font-medium text-gray-700">Gênero</label>
@@ -210,23 +214,19 @@
                             <div class="flex flex-col space-y-6">
                                 <div>
                                     <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" name="email" value="{{ $user->email }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <input type="email" name="email" value="{{ $user->email }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                                 </div>
                                 <div>
                                     <label for="phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                                    <input type="text" name="phone" value="{{ $user->phone }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="text" name="phone" value="{{ $user->phone }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
                                     <label for="address" class="block text-sm font-medium text-gray-700">Endereço</label>
-                                    <input type="text" name="address" value="{{ $user->address }}"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="text" name="address" value="{{ $user->address }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
                                     <label for="usertype" class="block text-sm font-medium text-gray-700">Tipo de Utilizador</label>
-                                    <select name="usertype"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <select name="usertype" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                                         <option value="admin" {{ $user->usertype == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="user" {{ $user->usertype == 'user' ? 'selected' : '' }}>Utilizador</option>
                                         <option value="user_field" {{ $user->usertype == 'user_field' ? 'selected' : '' }}>Utilizador Campo</option>
@@ -235,8 +235,7 @@
                             </div>
                         </div>
                         <div class="mt-6">
-                            <button type="submit"
-                                class="w-full bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 Salvar Alterações
                             </button>
                         </div>
@@ -244,9 +243,12 @@
                 </div>
             </div>
 
-
-            @endforeach
         </div>
+        @endforeach
+    </div>
+    <div class="mt-6">
+        {{ $users->links() }}
+    </div>
     </div>
 </body>
 
@@ -282,8 +284,55 @@
         };
         reader.readAsDataURL(event.target.files[0]);
     }
-    document.getElementById('dropdownButton').addEventListener('click', function() {
+
+    // Dropdown toggle logic
+    document.getElementById('dropdownButton').addEventListener('click', function(e) {
+        e.stopPropagation(); // Impede que o clique feche imediatamente
         const menu = document.getElementById('dropdownMenu');
         menu.classList.toggle('hidden');
+    });
+
+    // Atualizar o texto do botão ao selecionar uma opção
+    document.querySelectorAll('.dropdown-option button').forEach(option => {
+        option.addEventListener('click', function(e) {
+            const label = e.currentTarget.getAttribute('data-label');
+            const dropdownLabel = document.getElementById('dropdownLabel');
+            dropdownLabel.textContent = label;
+
+            // Fechar o menu após a seleção
+            document.getElementById('dropdownMenu').classList.add('hidden');
+        });
+    });
+
+    // Fechar o dropdown ao clicar fora dele
+    document.addEventListener('click', function(e) {
+        const dropdownButton = document.getElementById('dropdownButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        // Se o clique não for no botão ou no menu, fecha o menu
+        if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+
+    // Confirmação antes de remover a foto de perfil
+    document.querySelectorAll('form[id^="delete-profile-picture-form-"]').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userName = this.dataset.userName;
+            Swal.fire({
+                title: `Tem certeza que quer remover a foto de perfil de ${userName}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, quero!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
     });
 </script>
