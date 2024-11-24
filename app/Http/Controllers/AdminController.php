@@ -43,7 +43,7 @@ class AdminController extends Controller
             'profile_picture'
         ])->get();
 
-        $users = User::paginate(6);
+        $users = User::paginate(10);
 
         return view('admin.user-management', compact('users'));
     }
@@ -64,7 +64,7 @@ class AdminController extends Controller
             });
         }
 
-        $users = $query->paginate(5);
+        $users = $query->paginate(10);
 
         return view('admin.user-management', compact('users'));
     }
@@ -111,6 +111,18 @@ class AdminController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $authUser = Auth::user();
+
+        if ($user->usertype === 'owner' && $authUser->usertype !== 'owner') {
+            toastr()->timeout(10000)->closeButton()->error('Não tem permissão para alterar as informações do proprietário.');
+            return redirect()->back();
+        }
+
+        if ($user->usertype === 'admin' && $authUser->usertype !== 'owner') {
+            toastr()->timeout(10000)->closeButton()->error('Não tem permissão para alterar as informações de outro administrador.');
+            return redirect()->back();
+        }
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'surname' => 'nullable|string|max:255',
@@ -123,6 +135,11 @@ class AdminController extends Controller
             'usertype' => 'required|in:admin,user,user_field',
         ]);
 
+        if ($authUser->usertype === 'admin' && $validatedData['usertype'] === 'admin') {
+            toastr()->timeout(10000)->closeButton()->error('Não tem permissão para promover utilizadores a administrador.');
+            return redirect()->back();
+        }
+
         $user->name = $validatedData['name'];
         $user->surname = $validatedData['surname'];
         $user->user_name = $validatedData['user_name'];
@@ -132,11 +149,17 @@ class AdminController extends Controller
         $user->phone = $validatedData['phone'];
         $user->address = $validatedData['address'];
 
+        if ($authUser->usertype === 'owner') {
+            $user->usertype = $validatedData['usertype'];
+        }
+
         $user->save();
 
         toastr()->timeout(10000)->closeButton()->success('Perfil de ' . $user->name . ' atualizado com sucesso!');
         return redirect()->route('admin.user-management');
     }
+
+
 
     public function ProfilePictureDelete(User $user)
     {

@@ -16,7 +16,7 @@
 
                 <div class="relative inline-block text-left">
                     <button id="dropdownButton" type="button" class="px-6 py-2 bg-blue-600 hover:bg-blue-400 text-white rounded-md transition shadow-sm inline-flex items-center">
-                        <span id="dropdownLabel" class="mr-2">Todos</span>
+                        <span id="dropdownLabel" class="mr-2">Tipo de utlizador</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -285,37 +285,31 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    // Dropdown toggle logic
     document.getElementById('dropdownButton').addEventListener('click', function(e) {
-        e.stopPropagation(); // Impede que o clique feche imediatamente
+        e.stopPropagation();
         const menu = document.getElementById('dropdownMenu');
         menu.classList.toggle('hidden');
     });
 
-    // Atualizar o texto do botão ao selecionar uma opção
     document.querySelectorAll('.dropdown-option button').forEach(option => {
         option.addEventListener('click', function(e) {
             const label = e.currentTarget.getAttribute('data-label');
             const dropdownLabel = document.getElementById('dropdownLabel');
             dropdownLabel.textContent = label;
 
-            // Fechar o menu após a seleção
             document.getElementById('dropdownMenu').classList.add('hidden');
         });
     });
 
-    // Fechar o dropdown ao clicar fora dele
     document.addEventListener('click', function(e) {
         const dropdownButton = document.getElementById('dropdownButton');
         const dropdownMenu = document.getElementById('dropdownMenu');
 
-        // Se o clique não for no botão ou no menu, fecha o menu
         if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
             dropdownMenu.classList.add('hidden');
         }
     });
 
-    // Confirmação antes de remover a foto de perfil
     document.querySelectorAll('form[id^="delete-profile-picture-form-"]').forEach(form => {
         form.addEventListener('submit', function(event) {
             event.preventDefault();
