@@ -12,7 +12,7 @@ Route::get('/', [HomeController::class, 'index'])->name('index');
 
 Route::get('/index', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
 
-### LOGIN/REGISTOS
+### Perfil
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

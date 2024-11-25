@@ -1,15 +1,17 @@
 @include('home.css')
-@include('home.header')<body class="bg-gray-100 flex flex-col min-h-screen">
+@include('home.header')
+
+<body class="bg-gray-100 flex flex-col min-h-screen">
     <main class="container mx-auto px-4 py-6 flex-grow">
         <h2 class="text-2xl font-semibold text-gray-800 leading-tight mb-4 text-center">
             {{ __('Adicionar Novo Campo') }}
         </h2>
-            <div class="p-6 bg-white shadow-md rounded-lg max-w-2xl mx-auto">
+        <div class="p-6 bg-white shadow-md rounded-lg max-w-2xl mx-auto">
             <form action="{{ route('store-fields') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+                @csrf
                 <div class="flex justify-center mb-4">
                     <label for="image" class="cursor-pointer">
-                        <img id="avatar" src="https://via.placeholder.com/150" alt="Avatar" class="w-32 h-32 object-cover border-4 border-gray-300 rounded-md">
+                        <img id="avatar" src="https://via.placeholder.com/150" alt="Avatar" class="w-full h-36 object-cover rounded-md mb-3">
                     </label>
                     <input type="file" id="image" name="image" class="hidden" accept="image/*">
                 </div>
@@ -95,4 +97,5 @@
     </script>
     @include('home.footer')
 </body>
+
 </html>

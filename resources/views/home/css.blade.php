@@ -4,12 +4,18 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="QuickMatch - Sua plataforma ideal para organizar e participar de eventos!" />
     <title>QuickMatch</title>
-    <link rel="shortcut icon" href="/favicon.ico" />
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
-    <link href="https://unpkg.com/heroicons@1.0.6/outline.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+    <link href="https://unpkg.com/heroicons@1.0.6/outline.css" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
     <style>
         .parent {
             position: fixed;
