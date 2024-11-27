@@ -69,6 +69,11 @@
             {{ $fields->links() }}
         </div>
     </div>
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;" onclick="closeModal(event)">
+        <div class="relative">
+            <img id="modalImage" src="" alt="Imagem ampliada" class="max-w-screen-md max-h-screen-md rounded-md cursor-pointer" onclick="event.stopPropagation();">
+        </div>
+    </div>
     @include('home.footer')
     <script>
         function openModal(element) {
@@ -87,13 +92,9 @@
             }
         }
     </script>
+    j
 </body>
 
-<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;" onclick="closeModal(event)">
-    <div class="relative">
-        <img id="modalImage" src="" alt="Imagem ampliada" class="max-w-screen-md max-h-screen-md rounded-md cursor-pointer" onclick="event.stopPropagation();">
-    </div>
-</div>
 
 
 
