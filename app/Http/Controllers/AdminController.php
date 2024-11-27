@@ -195,7 +195,7 @@ class AdminController extends Controller
         return view('admin.fields-admin', compact('fields'));
     }
 
-    public function editField($id)
+    public function editFields($id)
     {
         $field = Field::findOrFail($id);
         return view('admin.edit-fields-admin', compact('field'));
@@ -252,35 +252,23 @@ class AdminController extends Controller
             'modality' => implode(', ', $validated['modality'] ?? []),
         ]);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('fields', 'public');
-            $field->image_url = $imagePath;
+
+        //remove
+        if ($request->input('remove_image') == 1) {
+            if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
+                unlink(public_path('Fields/' . $field->image));
+            }
+            $field->image = null;
             $field->save();
         }
+
+
         toastr()->timeout(10000)->closeButton()->success('Dados do campo "' . $field->name . '" foram alterados com sucesso!');
         return redirect()->route('admin.fields');
     }
 
 
-    public function removeImageField($id)
-    {
-        $field = Field::findOrFail($id);
-
-        if ($field->image) {
-            $imagePath = public_path('Fields/' . $field->image);
-
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
-            $field->image = null;
-            $field->save();
-
-            toastr()->timeout(10000)->closeButton()->success('A imagem do campo "' . $field->name . '" foi removida com sucesso!');
-        }
-        return redirect()->route('admin.fields');
-    }
-
-    public function destroyField($id)
+    public function destroyFields($id)
     {
         $field = Field::findOrFail($id);
 

@@ -38,7 +38,7 @@ Route::get('/help', [HomeController::class, 'help'])->name('help');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
     Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('newmatch.field');
-    Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');    
+    Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
@@ -48,7 +48,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('edit-fields/{id}', [HomeController::class, 'editFields'])->name('edit-fields');
     Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');
     Route::get('/field/{id}', [HomeController::class, 'showFields'])->name('show-fields');
-
 });
 
 #ADMIN
@@ -70,8 +69,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
 
+
     Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
-    Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('admin.fields-edit');
+    Route::get('/fields/{field}/edit', [AdminController::class, 'editFields'])->name('admin.fields-edit');
     Route::get('/admin/fields/search', [AdminController::class, 'searchFields'])->name('admin.fields.search');
     Route::put('/fields/{id}', [AdminController::class, 'updateFields'])->name('fields.update');
+    Route::delete('/fields/{id}', [AdminController::class, 'destroyFields'])->name('fields.destroy');
 });

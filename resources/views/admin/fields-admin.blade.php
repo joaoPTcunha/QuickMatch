@@ -41,16 +41,15 @@
                         <p><strong>Contacto:</strong> <span id="field_contact_{{ $field->id }}">{{ $field->contact }}</span></p>
 
                     </div>
-
-                    <div class="flex justify-between items-center">
-                        <a href="{{ route('fields.edit', $field->id) }}">
-                            <button type="button" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">
-                                Editar
-                            </button>
+                    <div class="flex justify-end items-center cursor-pointer">
+                        <a href="{{ route('admin.fields-edit', $field->id) }}" class="text-yellow-500 hover:text-yellow-700 transition mr-4">
+                            Editar
                         </a>
-
-                        <button type="button" data-field-id="{{ $field->id }}" onclick="confirmDelete(this)" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Apagar</button>
+                        <a type="button" data-field-id="{{ $field->id }}" onclick="confirmDelete(this)" class="text-red-500 hover:text-red-700 transition">
+                            Apagar
+                        </a>
                     </div>
+
                 </div>
                 @endforeach
             </div>
@@ -80,38 +79,6 @@
                     `;
                     document.body.appendChild(form);
                     form.submit();
-                }
-            });
-        }
-
-        function removeImage(fieldId) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: 'Você deseja remover apenas a imagem deste campo?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sim, remover',
-                cancelButtonText: 'Cancelar',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/fields/${fieldId}/remove-image`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            },
-                        })
-                        .then((response) => {
-                            if (response.ok) {
-                                document.getElementById('fieldImagePreview').src = '';
-                                Swal.fire('Removido!', 'A imagem foi removida com sucesso.', 'success');
-                            } else {
-                                Swal.fire('Erro!', 'Ocorreu um erro ao remover a imagem.', 'error');
-                            }
-                        })
-                        .catch(() => {
-                            Swal.fire('Erro!', 'Ocorreu um erro ao remover a imagem.', 'error');
-                        });
                 }
             });
         }
