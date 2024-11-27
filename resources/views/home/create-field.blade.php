@@ -30,8 +30,12 @@
                 </div>
                 <div class="mb-4">
                     <label for="location" class="block text-sm font-medium text-gray-700">Localização</label>
-                    <input type="text" name="location" id="location" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Localização" />
+                    <input type="text" name="location" id="location" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Localização" autocomplete="off" />
                 </div>
+
+                <!-- Seção do Mapa do Mapbox -->
+                <div id="map" class="mb-4 w-full h-64"></div>
+
                 <div class="mb-4">
                     <label for="contact" class="block text-sm font-medium text-gray-700">Contato</label>
                     <input type="text" name="contact" id="contact" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o contacto" />
@@ -82,20 +86,112 @@
         </div>
     </main>
 
+    <!-- Inclui o CSS do Mapbox -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' rel='stylesheet' />
+    <style>
+        #map {
+            height: 600px;
+        }
+    </style>
 
+    <!-- Scripts -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
     <script>
-        document.getElementById('image').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('avatar').src = e.target.result;
-                }
-                reader.readAsDataURL(file);
+        let map, marker;
+
+        // Chave de API do Mapbox
+        const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
+
+        // Função para inicializar o mapa
+        function initMap() {
+            mapboxgl.accessToken = mapboxApiKey;
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11', // Estilo de satélite com rótulos
+                center: [-8.2242, 39.3999], // Coordenadas do centro de Portugal
+                zoom: 7
+            });
+
+            // Adiciona marcador padrão
+            marker = new mapboxgl.Marker({ draggable: true })
+                .setLngLat([-8.2242, 39.3999])
+                .addTo(map)
+                .on('dragend', function() {
+                    const lngLat = marker.getLngLat();
+                    reverseGeocode(lngLat);
+                });
+
+            // Adiciona o Geocoder do Mapbox
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxApiKey,
+                mapboxgl: mapboxgl,
+                placeholder: 'Pesquisar localização',
+                countries: 'pt'
+            });
+
+            // Adiciona o Geocoder ao mapa
+            map.addControl(geocoder, 'top-right');
+
+            // Ouvinte de clique no mapa
+            map.on('click', function(event) {
+                placeMarker(event.lngLat);
+            });
+
+            // Ouvinte de seleção de localização pelo Geocoder
+            geocoder.on('result', function(event) {
+                const lngLat = event.result.geometry.coordinates;
+                placeMarker(lngLat);
+            });
+        }
+
+        // Função para colocar o marcador e preencher o campo de localização
+        function placeMarker(lngLat) {
+            if (marker) {
+                marker.remove();
             }
+            marker = new mapboxgl.Marker({ draggable: true })
+                .setLngLat(lngLat)
+                .addTo(map)
+                .on('dragend', function() {
+                    const lngLat = marker.getLngLat();
+                    reverseGeocode(lngLat);
+                });
+
+            reverseGeocode(lngLat);
+        }
+
+        // Função para obter o endereço a partir das coordenadas
+        function reverseGeocode(lngLat) {
+            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxApiKey}&country=pt`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features.length > 0) {
+                        document.getElementById("location").value = data.features[0].place_name;
+                    } else {
+                        document.getElementById("location").value = 'Localização desconhecida';
+                    }
+                })
+                .catch(error => console.error("Erro ao obter o endereço:", error));
+        }
+
+        // Inicializa o mapa
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+
+            // Script para exibir a imagem selecionada
+            document.getElementById('image').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('avatar').src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
         });
     </script>
-    @include('home.footer')
 </body>
-
 </html>

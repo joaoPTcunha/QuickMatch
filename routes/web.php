@@ -30,16 +30,15 @@ Route::get('/spinwheel', [HomeController::class, 'spinwheel'])->name('spinwheel'
 Route::get('/events', [HomeController::class, 'events'])->name('events');
 Route::get('/field', [HomeController::class, 'field'])->name('field');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::get('/events', [HomeController::class, 'events'])->name('events');
+Route::get('/events', [HomeController::class, 'showEvents'])->name('events');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
-Route::get('/chat', [HomeController::class, 'chat'])->name('chat')->middleware('auth');
 
 
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
-    Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('new.match');
-    Route::post('/store.event', [HomeController::class, 'storeEvent'])->name('store.event');
+    Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('newmatch.field');
+    Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');    
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
 
@@ -50,11 +49,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/field/{id}', [HomeController::class, 'updateFields'])->name('update-fields');
     Route::get('/field/{id}', [HomeController::class, 'showFields'])->name('show-fields');
 
-
-
-    Route::get('/get-messages/{receiverId}', [HomeController::class, 'getMessages']);
-    Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
-    Route::get('/conversations', [HomeController::class, 'conversations'])->name('conversations');
 });
 
 #ADMIN

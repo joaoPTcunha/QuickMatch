@@ -5,7 +5,7 @@
         facilitando a procura por pessoas que gostam de se exercitar assim como tu!
     </p>
     @auth
-        <a href="{{ url('/seematch') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Ver eventos criados</a>
+        <a href="{{ url('/events') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Visitar os jogos ativos</a>
     @else
         <a href="{{ url('/login') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Começar agora</a>
     @endauth

@@ -4,35 +4,37 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Eventos Criados</h1>
-
-        <div class="px-20 mb-6">
+        <div class="px-10 sm:px-20 mb-6">
             @if($events->isEmpty())
                 <p class="text-center text-gray-500">Nenhum evento criado ainda.</p>
             @else
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 px-20">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 px-10 sm:px-20">
                     @foreach($events as $event)
-                        <div class="flex flex-col bg-white p-4 rounded-md border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
-                            <div class="flex flex-col flex-grow">
-                                <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ $event->description }}</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <p class="text-gray-700"><strong>Data e Hora:</strong> {{ $event->event_date_time }}</p>
-                                        <p class="text-gray-700"><strong>Modalidade:</strong> {{ $event->modality }}</p>
-                                        <p class="text-gray-700"><strong>Número de Participantes:</strong> {{ $event->num_participants }}</p>
-                                        <p class="text-gray-700"><strong>Preço:</strong> {{ $event->price }} €</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-gray-700"><strong>Campo:</strong> {{ $event->field->name }}</p>
-                                        <p class="text-gray-700"><strong>Descrição do Campo:</strong> {{ $event->field->description }}</p>
-                                        <p class="text-gray-700"><strong>Localização:</strong> {{ $event->field->location }}</p>
-                                        <p class="text-gray-700"><strong>Contacto:</strong> {{ $event->field->contact }}</p>
-                                    </div>
-                                </div>
-                                <div class="mt-auto text-right">
-                                    <a href="{{ url('/event/'.$event->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
-                                        Ver Detalhes
-                                    </a>
-                                </div>
+                        <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
+                            <div class="flex justify-center mb-4">
+                                <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-36 object-cover rounded-md shadow-md">
+                            </div>
+                            <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
+                            <div class="text-gray-700 text-sm space-y-1">
+                                <p><strong>Data e Hora:</strong> {{ $event->event_date_time }}</p>
+                                <p><strong>Modalidade:</strong> {{ $event->modality }}</p>
+                                <p><strong>Número de Participantes:</strong> {{ $event->num_participantes }}</p>
+                                <p><strong>Preço:</strong> {{ $event->price }} €</p>
+                                <p><strong>Campo:</strong> {{ $event->field->name }}</p>
+                                <p><strong>Descrição do Campo:</strong> {{ $event->field->description }}</p>
+                                <p><strong>Localização:</strong> {{ $event->field->location }}</p>
+                                <p><strong>Contacto:</strong> {{ $event->field->contact }}</p>
+                            </div>
+                            <div class="mt-4 text-center">
+                                @php
+                                    $contactNumber = preg_replace('/[^0-9]/', '', $event->field->contact); // Remove caracteres não numéricos
+                                    $whatsappMessage = urlencode("Olá, estou interessado no evento realizado no campo: {$event->field->name}. Gostaria de mais informações.");
+                                @endphp
+                                <a href="https://wa.me/{{ $contactNumber }}?text={{ $whatsappMessage }}" 
+                                   target="_blank" 
+                                   class="inline-block bg-green-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-600 transition-all duration-300">
+                                    Conversar com o Dono
+                                </a>
                             </div>
                         </div>
                     @endforeach

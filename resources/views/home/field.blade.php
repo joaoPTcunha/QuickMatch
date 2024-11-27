@@ -43,9 +43,7 @@
                 <div class="flex justify-center mb-4">
                     <label for="field_image_{{ $field->id }}" class="cursor-pointer">
                         <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md cursor-pointer" data-image-url="{{ asset('Fields/' . $field->image) }}" onclick="openModal(this)">
-
                     </label>
-
                 </div>
                 <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $field->name }}</h2>
                 <div class="text-gray-700 text-sm space-y-1">
@@ -58,12 +56,15 @@
                     <p><strong>Contacto:</strong> {{ $field->contact }}</p>
                 </div>
                 <div class="mt-4 text-center">
+                    @if($from === 'newmatch')
                     <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
-                        Marcar Evento
+                        Usar este Campo
                     </a>
+                    @endif
                 </div>
             </div>
             @endforeach
+            
         </div>
         <div class="mt-6 px-10 sm:px-20">
             {{ $fields->links() }}
@@ -94,8 +95,4 @@
         <img id="modalImage" src="" alt="Imagem ampliada" class="max-w-screen-md max-h-screen-md rounded-md cursor-pointer" onclick="event.stopPropagation();">
     </div>
 </div>
-
-
-
-
 </html>

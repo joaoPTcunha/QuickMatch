@@ -33,7 +33,7 @@
 <body class="bg-gray-200 flex flex-col min-h-screen">
     <div class="flex justify-center w-full max-w-6xl mx-auto p-4">
         <div class="text-center">
-            <h1 class="font-bold text-3xl sm:text-4xl text-green-600">Bem-vindo à Roleta</h1>
+            <h1 class="font-semibold text-3xl sm:text-4xl text-black">Bem-vindo à Roleta</h1>
             <p class="text-lg text-gray-800 mt-2 mx-auto max-w-xl leading-relaxed">
                 Adicione os jogadores à lista, escolha o número de equipas e o tipo de desporto. Ao girar a roleta, os jogadores serão distribuídos automaticamente entre as equipas. Divirta-se e boa sorte!
             </p>
@@ -51,10 +51,10 @@
             </div>
         </div>
 
-        <div class="lg:w-1/2 w-full space-y-8">
+        <div class="lg:w-1/2 w-full">
             <div class="flex flex-wrap justify-center gap-5 mb-5 bg-gray-800 p-4 rounded-lg shadow-md">
-                <input type="number" id="team-count" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto" placeholder="Número de equipas" min="2" value="2">
-                <select id="sport-type" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto">
+                <label for="team-count" class="text-white mt-2">Número de Equipas:</label>
+                <input type="number" id="team-count" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto" placeholder="Número de equipas" min="2" value="2">                <select id="sport-type" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto">
                     <option value="futebol">Futebol</option>
                     <option value="futebol 7">Futebol 7</option>
                     <option value="futsal">Futsal</option>
@@ -64,24 +64,25 @@
                     <option value="ténis">Ténis</option>
                     <option value="raguebi">Raguebi</option>
                     <option value="padel">Padel</option>
+                    <option value="outro">Outro</option>
                 </select>
             </div>
 
-            <div class="w-full max-w-lg space-y-4">
-                <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-600 text-white border-none placeholder-gray-400" placeholder="Adicione jogadores separados por linha..."></textarea>
+            <div class="w-full space-y-4">
+                <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-800 text-white border-none placeholder-gray-400" placeholder="Adiciona os jogadores aqui.."></textarea>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
-                    <button class="btn p-3 bg-blue-600 text-white rounded shadow transition duration-300 hover:bg-blue-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogador</button>
+                    <button class="btn p-3 bg-green-500 text-white rounded shadow transition duration-300 hover:bg-green-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogadores</button>
                 </div>
             </div>
 
-            <div class="team-table-container w-full max-w-lg bg-gray-800 rounded-lg p-4 shadow-md mt-4 mx-auto overflow-x-auto">
-                <h2 class="text-center text-lg font-bold text-white mb-3">Distribuição de Jogadores</h2>
-                <table id="team-table" class="min-w-full table-auto bg-gray-700 text-sm">
+            <div class="team-table-container w-full  p-4 mx-auto overflow-x-auto">
+                <h2 class="text-center text-lg font-semibold text-black mb-3">Distribuição de Jogadores</h2>
+                <table id="team-table" class="min-w-full table-auto bg-gray-800 text-sm">
                     <thead>
                         <tr>
-                            <th class="border-b border-blue-600 text-white p-2 bg-blue-600">Equipa</th>
-                            <th class="border-b border-blue-600 text-white p-2 bg-blue-600">Jogadores</th>
+                            <th class="border-blue-600 text-white p-2 bg-blue-700">Equipa</th>
+                            <th class="border-blue-600 text-white p-2 bg-blue-700">Jogadores</th>
                         </tr>
                     </thead>
                     <tbody id="team-body">
@@ -418,7 +419,7 @@
                 minPlayersPerTeam = 2;
                 break;
             default:
-                minPlayersPerTeam = 1;
+                minPlayersPerTeam = 0;
         }
 
         const totalTeams = parseInt(document.getElementById("team-count").value);

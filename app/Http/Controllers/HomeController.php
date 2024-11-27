@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Problem;
-use App\Models\Message;
 use App\Models\Field;
 use App\Models\Event;
 
@@ -16,34 +15,41 @@ class HomeController extends Controller
     {
         return view('home.index');
     }
+    public function newMatch(Request $request)
+{
+    $field = null;
+    $modalities = [];
 
-    public function newMatch()
-    {
-        $selectedField = session('selected_field');
-    
-        if (!$selectedField) {
-            toastr()->timeout(10000)->closeButton()->info('Escolha o campo que quer para criar um evento.');
-            return redirect('/field');
-        }
+    if ($request->filled('field_id')) {
+        $field = Field::findOrFail($request->field_id);
+        $modalities = explode(',', $field->modality); // Converte modalidades para array
     }
 
-    public function newMatchField($id)
-    {
-        $field = Field::find($id);
-        $modalities = explode(',', $field->modality); 
+    return view('home.newmatch', compact('field', 'modalities'));
+}
+
+
+public function newMatchField($id)
+{
+    $field = Field::findOrFail($id);
+    $modalities = explode(',', $field->modality); // Converte modalidades para array
     
-        return view('home.newmatch', compact('field', 'modalities')); 
-    }
+    return view('home.newmatch', compact('field', 'modalities'));
+}
+
+
     
 
-    public function seeMatch()
-    {
-        // Carrega os eventos e os relacionamentos com 'user' e 'field'
-        $events = Event::with(['user', 'field'])->get();
+public function seeMatch()
+{
+    $userId = Auth::id(); // Obtém o ID do usuário autenticado
+    $events = Event::with(['user', 'field'])
+        ->where('user_id', $userId) // Filtra apenas eventos do usuário logado
+        ->get();
     
-        // Passa os eventos para a view
-        return view('home.seematch', compact('events'));
-    }
+    return view('home.seematch', compact('events'));
+}
+
     
 
 
@@ -52,103 +58,34 @@ class HomeController extends Controller
         return view('home.spinwheel');
     }
 
-    public function chat()
-    {
-        $users = User::where('id', '!=', Auth::id())->get(); // Carrega todos os usuários, exceto o logado
-        $conversations = $this->getUserConversations(); // Carrega as conversas do usuário
-        
-        return view('home.chat', compact('users', 'conversations')); // Passa as conversas e usuários para a view
-    }
-
-    public function sendMessage(Request $request)
-    {
-        $validatedData = $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'content' => 'required|string',
-        ]);
-
-        try {
-            $message = Message::create([
-                'sender_id' => Auth::id(),
-                'receiver_id' => $validatedData['receiver_id'],
-                'content' => $validatedData['content'],
-            ]);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Mensagem enviada com sucesso!',
-                'message_data' => $message,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Ocorreu um erro ao enviar a mensagem. Tente novamente.',
-            ]);
-        }
-    }
-
-    private function getUserConversations()
-    {
-        $userId = Auth::id();
-        return Message::where('sender_id', $userId)
-            ->orWhere('receiver_id', $userId)
-            ->with('sender', 'receiver')
-            ->get()
-            ->groupBy(function ($message) use ($userId) {
-                return $message->sender_id == $userId ? $message->receiver_id : $message->sender_id;
-            });
-    }
-    
-
-    public function getMessages($receiverId)
-    {
-        $userId = Auth::id();
-        $messages = $this->getMessagesBetweenUsers($userId, $receiverId);
-
-        return response()->json($messages);
-    }
-
-    private function getMessagesBetweenUsers($userId, $receiverId)
-    {
-        return Message::where(function ($query) use ($userId, $receiverId) {
-                $query->where('sender_id', $userId)
-                    ->where('receiver_id', $receiverId);
-            })
-            ->orWhere(function ($query) use ($userId, $receiverId) {
-                $query->where('sender_id', $receiverId)
-                    ->where('receiver_id', $userId);
-            })
-            ->with('sender')
-            ->orderBy('created_at', 'asc')
-            ->get();
-    }
-
     public function field(Request $request)
-{
-    $query = Field::query();
+    {
+        $query = Field::query();
 
-    if ($request->filled('modality')) {
-        $query->where('modality', $request->modality);
+        if ($request->filled('modality')) {
+            $query->where('modality', $request->modality);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('modality', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $fields = $query->paginate(10); // Paginação
+
+        $from = $request->input('from', null); // Pega o parâmetro 'from' da URL
+        $redirect = $request->input('redirect', null); // Pega o parâmetro 'redirect'
+
+        return view('home.field', compact('fields', 'from', 'redirect'));
     }
-
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('location', 'like', "%{$search}%")
-              ->orWhere('modality', 'like', "%{$search}%")
-              ->orWhereHas('user', function($q) use ($search) {
-                  $q->where('user_name', 'like', "%{$search}%");
-              });
-        });
-    }
-
-    $fields = $query->paginate(10); // Add pagination here
-
-    return view('home.field', compact('fields'));
-}
     
-
     public function contact()
     {
         return view('home.contact');
@@ -195,7 +132,33 @@ class HomeController extends Controller
         return view('home.create-field');  
     }
 
-    public function storeFields(Request $request)
+    public function storeEvent(Request $request)
+{
+    $validatedData = $request->validate([
+        'field_id' => 'required|exists:fields,id', // Verifica se o campo existe
+        'descricao' => 'required|string',
+        'date-time' => 'required|date',
+        'price' => 'required|numeric|min:0',
+        'modality' => 'required|string',
+        'num_participantes' => 'required|integer|min:1',
+    ]);
+
+    $event = new Event();
+    $event->field_id = $validatedData['field_id']; // Use field_id
+    $event->description = $validatedData['descricao'];
+    $event->event_date_time = $validatedData['date-time'];
+    $event->price = $validatedData['price'];
+    $event->modality = $validatedData['modality'];
+    $event->num_participantes = $validatedData['num_participantes'];
+    $event->user_id = Auth::id();
+
+    $event->save();
+
+    toastr()->success('Evento publicado com sucesso!');
+    return redirect()->route('seematch');
+}
+
+public function storeFields(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -225,7 +188,7 @@ class HomeController extends Controller
         toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
         return redirect()->route('manage-fields');
     }
-    
+
     private function storeFieldImage($request)
     {
         if ($request->hasFile('image')) {
@@ -292,10 +255,11 @@ class HomeController extends Controller
     
     
 
-    public function showFields($id)
+    public function showEvents()
     {
-        $field = Field::with('user')->findOrFail($id);
-        return view('home.show-fields', compact('field')); 
+        $events = Event::with(['field', 'user'])->paginate(9); 
+        return view('home.events', compact('events'));
     }
+    
 }
 
