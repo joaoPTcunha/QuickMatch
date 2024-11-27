@@ -21,7 +21,6 @@
             <a href="{{ url('/fields-admin') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
             <a href="{{ url('/user-management') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Gestão de Utilizadores</a>
             <a href="{{ url('/support') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Suporte ao Cliente</a>
-            <a href="{{ url('/maintenance') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Manutenção</a>
             <div class="relative group">
                 <button id="desktop-profile-dropdown-toggle" class="text-gray-700 hover:text-gray-900 px-2 py-2 flex items-center">
                     @if(auth()->user()->profile_picture)
@@ -59,7 +58,7 @@
                 <a href="{{ url('/fields-admin') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Campos</a>
                 <a href="{{ url('/user-management') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Gestão de Utilizadores</a>
                 <a href="{{ url('/support') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Suporte ao Cliente</a>
-                <a href="{{ url('/maintenance') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Manutenção</a>
+
             </div>
             <div class="relative">
                 <button id="mobile-profile-dropdown-toggle" class="w-full text-left flex items-center justify-between text-gray-700 hover:text-gray-900 px-2 py-2">
@@ -74,6 +73,7 @@
                     </svg>
                 </button>
                 <div id="mobile-profile-dropdown-content" class="hidden bg-white rounded-lg shadow-lg mt-2">
+                    <a href="{{ url('/profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver Perfil</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="block px-4 py-2 text-red-700 hover:bg-red-500 hover:text-white w-full text-left">

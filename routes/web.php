@@ -60,8 +60,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/users/{user}', [AdminController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::get('/user-management/search', [AdminController::class, 'user_search'])->name('admin.user-search');
+    Route::put('/users/{user}/updateProfilePicture', [AdminController::class, 'updateProfilePicture'])->name('users.updateProfilePicture');
     Route::delete('/users/{user}/ProfilePictureDelete', [AdminController::class, 'ProfilePictureDelete'])->name('users.ProfilePictureDelete');
-
 
 
 
@@ -69,10 +69,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/store-problem', [AdminController::class, 'storeProblem'])->name('storeProblem');
     Route::get('/problems_history', [AdminController::class, 'problems_history'])->name('admin.problems_history');
     Route::post('/problems/{id}/mark-as-solved', [AdminController::class, 'markAsSolved'])->name('markAsSolved');
-    Route::get('/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
 
     Route::get('/fields-admin', [AdminController::class, 'fieldsAdmin'])->name('admin.fields');
-    Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('fields.edit');
-    Route::put('/fields/{field}', [AdminController::class, 'updateField'])->name('fields.update');
-    Route::delete('/fields/{field}', [AdminController::class, 'destroyField'])->name('fields.destroy');
+    Route::get('/fields/{field}/edit', [AdminController::class, 'editField'])->name('admin.fields-edit');
+    Route::get('/admin/fields/search', [AdminController::class, 'searchFields'])->name('admin.fields.search');
+    Route::put('/fields/{id}', [AdminController::class, 'updateFields'])->name('fields.update');
 });

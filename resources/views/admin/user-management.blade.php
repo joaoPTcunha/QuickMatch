@@ -171,6 +171,19 @@
                             </svg>
                             @endif
                         </div>
+
+                        @if($user->usertype === 'owner' || Auth::user()->usertype === 'owner')
+                        <form id="profile-picture-form-{{ $user->id }}" action="{{ route('users.updateProfilePicture', $user->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-4">
+                                <label for="profile_picture" class="block text-sm font-medium text-gray-700">Alterar Foto de Perfil</label>
+                                <input type="file" id="profile_picture" name="profile_picture" class="w-full p-2 border border-gray-300 rounded">
+                            </div>
+                            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Atualizar Foto</button>
+                        </form>
+                        @endif
+
                         @if($user->profile_picture)
                         <form id="delete-profile-picture-form-{{ $user->id }}" action="{{ route('users.ProfilePictureDelete', $user->id) }}" method="POST" data-user-name="{{ $user->name }}">
                             @csrf
@@ -179,6 +192,7 @@
                         </form>
                         @endif
                     </div>
+
 
                     <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
