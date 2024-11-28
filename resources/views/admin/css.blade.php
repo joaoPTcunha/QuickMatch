@@ -13,6 +13,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         .parent {
             position: fixed;
@@ -34,11 +36,6 @@
         }
     </style>
 </head>
-
-<body>
-    <div class='parent'>
-        <div class="magicpattern"></div>
-    </div>
-</body>
-
-</html>
+<div class='parent'>
+    <div class="magicpattern"></div>
+</div>
