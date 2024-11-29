@@ -51,10 +51,15 @@ class AdminController extends Controller
 
             $problemsByMonth = array_replace(array_fill(1, 12, 0), $problemsByMonth);
 
-            return view('admin.index', compact('usertype', 'name', 'userCount', 'problemCount', 'fieldCount', 'eventCount', 'eventsByMonth', 'usersByMonth', 'problemsByMonth'));
+            // Obtenha os anos distintos para o dropdown
+            $years = Event::selectRaw('YEAR(created_at) as year')
+                ->distinct()
+                ->orderBy('year', 'desc')
+                ->pluck('year');
+
+            return view('admin.index', compact('usertype', 'name', 'userCount', 'problemCount', 'fieldCount', 'eventCount', 'eventsByMonth', 'usersByMonth', 'problemsByMonth', 'years'));
         }
     }
-
 
     public function getChartData(Request $request)
     {
@@ -64,7 +69,6 @@ class AdminController extends Controller
 
         switch ($filter) {
             case 'day':
-                // Logica para dados diários
                 $users = User::selectRaw('DAY(created_at) as period, COUNT(*) as count')
                     ->whereMonth('created_at', $month)
                     ->whereYear('created_at', $year)
@@ -123,7 +127,7 @@ class AdminController extends Controller
                     ->toArray();
 
                 $problems = Problem::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
-                    ->whereYear('created_at', date('Y'))
+                    ->whereYear('created_at', $year)
                     ->groupBy('month')
                     ->orderBy('month')
                     ->pluck('count', 'month')
@@ -142,10 +146,36 @@ class AdminController extends Controller
             'eventsByPeriod' => array_values($eventsByPeriod),
             'usersByPeriod' => array_values($usersByPeriod),
             'fieldsByPeriod' => array_values($fieldsByPeriod),
-            'problemsByPeriod' => array_values($problemsByPeriod), // Retorna os problemas também
+            'problemsByPeriod' => array_values($problemsByPeriod),
             'labels' => $labels,
         ]);
     }
+
+    public function availableYears()
+    {
+        $eventYears = Event::selectRaw('YEAR(created_at) as year')
+            ->distinct();
+
+        $problemYears = Problem::selectRaw('YEAR(created_at) as year')
+            ->distinct();
+
+        $fieldYears = Field::selectRaw('YEAR(created_at) as year')
+            ->distinct();
+
+        $userYears = User::selectRaw('YEAR(created_at) as year')
+            ->distinct();
+
+        $years = $eventYears->union($problemYears)
+            ->union($fieldYears)
+            ->union($userYears)
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+
+        return response()->json(['years' => $years]);
+    }
+
+
 
     public function userManagement()
     {

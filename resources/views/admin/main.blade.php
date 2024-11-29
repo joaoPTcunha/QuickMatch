@@ -22,6 +22,10 @@
             <a id="filter-month" class="text-blue-500 py-1 px-3 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 transition duration-300">Mês</a>
             <a id="filter-day" class="text-green-500 py-1 px-3 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 transition duration-300">Dia</a>
         </div>
+        <div class="absolute top-2 left-2">
+            <select id="year-dropdown" class="py-2 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition duration-300">
+            </select>
+        </div>
         <canvas id="activityChart" class="w-full h-64"></canvas>
     </div>
 </div>
@@ -29,16 +33,46 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('activityChart').getContext('2d');
-
         let chart;
+        let currentYear = new Date().getFullYear();
         let currentPeriod = 'month';
 
+        function loadYears() {
+            fetch('/admin/available-years')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Falha ao carregar os anos');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const dropdown = document.getElementById('year-dropdown');
+                    dropdown.innerHTML = '';
+
+                    if (data.years && Array.isArray(data.years)) {
+                        data.years.forEach(year => {
+                            const option = document.createElement('option');
+                            option.value = year;
+                            option.textContent = year;
+                            if (year == currentYear) option.selected = true;
+                            dropdown.appendChild(option);
+                        });
+                    } else {
+                        console.error('Dados de anos não encontrados');
+                    }
+                    dropdown.addEventListener('change', () => {
+                        currentYear = dropdown.value;
+                        updateChart(currentPeriod);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar anos:', error);
+                });
+        }
+
         function updateChart(period, month = null) {
-            const year = new Date().getFullYear();
-            let url = `/admin/chart-data?filter=${period}&year=${year}`;
-            if (month) {
-                url += `&month=${month}`;
-            }
+            let url = `/admin/chart-data?filter=${period}&year=${currentYear}`;
+            if (month) url += `&month=${month}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -51,122 +85,82 @@
                         labels
                     } = data;
 
-                    if (chart) {
-                        chart.destroy();
-                    }
-                    const allData = [
+                    if (chart) chart.destroy();
+
+                    const maxValue = Math.max(
                         ...usersByPeriod,
                         ...fieldsByPeriod,
                         ...eventsByPeriod,
                         ...problemsByPeriod
-                    ];
-
-                    const maxValue = Math.max(...allData);
+                    );
 
                     let suggestedMax = 20;
-                    while (suggestedMax < maxValue) {
-                        suggestedMax *= 2;
-                    }
+                    while (suggestedMax < maxValue) suggestedMax *= 2;
 
                     chart = new Chart(ctx, {
                         type: 'line',
                         data: {
-                            labels: labels.map((label, index) => `${label} ${year}`),
+                            labels: labels,
                             datasets: [{
-                                label: 'Utilizadores Criados',
-                                data: usersByPeriod,
-                                borderColor: 'rgba(59, 130, 246, 1)',
-                                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                                fill: true,
-                                borderWidth: 2,
-                                tension: 0.4,
-                            }, {
-                                label: 'Campos Criados',
-                                data: fieldsByPeriod,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                fill: true,
-                                borderWidth: 2,
-                                tension: 0.4,
-                            }, {
-                                label: 'Eventos Criados',
-                                data: eventsByPeriod,
-                                borderColor: 'rgba(245, 158, 11, 1)',
-                                backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                                fill: true,
-                                borderWidth: 2,
-                                tension: 0.4,
-                            }, {
-                                label: 'Problemas Criados',
-                                data: problemsByPeriod,
-                                borderColor: 'rgba(220, 38, 38, 1)',
-                                backgroundColor: 'rgba(220, 38, 38, 0.2)',
-                                fill: true,
-                                borderWidth: 2,
-                                tension: 0.4,
-                            }],
+                                    label: 'Utilizadores Criados',
+                                    data: usersByPeriod,
+                                    borderColor: 'rgba(59, 130, 246, 1)',
+                                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                    fill: true,
+                                    tension: 0.4,
+                                },
+                                {
+                                    label: 'Campos Criados',
+                                    data: fieldsByPeriod,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    fill: true,
+                                    tension: 0.4,
+                                },
+                                {
+                                    label: 'Eventos Criados',
+                                    data: eventsByPeriod,
+                                    borderColor: 'rgba(245, 158, 11, 1)',
+                                    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                                    fill: true,
+                                    tension: 0.4,
+                                },
+                                {
+                                    label: 'Problemas Criados',
+                                    data: problemsByPeriod,
+                                    borderColor: 'rgba(220, 38, 38, 1)',
+                                    backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                                    fill: true,
+                                    tension: 0.4,
+                                },
+                            ],
                         },
                         options: {
                             responsive: true,
                             scales: {
-                                x: {
-                                    ticks: {
-                                        font: {
-                                            size: 12,
-                                        },
-                                    },
-                                },
                                 y: {
                                     beginAtZero: true,
                                     suggestedMax: suggestedMax,
-                                    title: {
-                                        display: true,
-                                    },
-                                    ticks: {
-                                        stepSize: 5,
-                                    },
-                                }
-                            },
-                            plugins: {
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            return `${context.raw} registos`;
-                                        },
-                                    },
                                 },
                             },
                         },
                     });
-                })
+                });
         }
 
+        // Inicializa os anos disponíveis e o gráfico
+        loadYears();
         updateChart(currentPeriod);
 
-        ctx.canvas.addEventListener('click', function(e) {
-            const activePoints = chart.getElementsAtEventForMode(e, 'nearest', {
-                intersect: true
-            }, false);
-
-            if (activePoints.length > 0) {
-                const clickedIndex = activePoints[0].index;
-                if (currentPeriod === 'month') {
-                    const clickedMonth = clickedIndex + 1;
-                    currentPeriod = 'day';
-                    updateChart('day', clickedMonth);
-                }
-            }
-        });
-
-        document.getElementById('filter-month').addEventListener('click', function() {
+        // Eventos de filtro
+        document.getElementById('filter-month').addEventListener('click', () => {
             currentPeriod = 'month';
             updateChart(currentPeriod);
         });
 
-        document.getElementById('filter-day').addEventListener('click', function() {
-            const currentMonth = new Date().getMonth() + 1;
+        document.getElementById('filter-day').addEventListener('click', () => {
             currentPeriod = 'day';
-            updateChart(currentPeriod, currentMonth);
+            updateChart(currentPeriod);
         });
     });
 </script>

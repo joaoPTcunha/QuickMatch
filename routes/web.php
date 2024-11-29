@@ -54,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/chart-data', [AdminController::class, 'getChartData'])->name('admin.chart-data');
+    Route::get('/admin/available-years', [AdminController::class, 'availableYears']);
+
 
 
     Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin.user-management');
