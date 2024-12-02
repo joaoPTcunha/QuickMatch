@@ -17,65 +17,63 @@
             <p class="text-gray-600">Total de Problemas por Responder</p>
         </div>
     </div>
-    <div class="bg-white p-6 rounded-lg shadow-lg mt-6 relative">
-        <div class="absolute top-2 right-2 flex space-x-2">
-            <a id="filter-month" class="text-blue-500 py-1 px-3 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 transition duration-300">Mês</a>
-            <a id="filter-day" class="text-green-500 py-1 px-3 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 transition duration-300">Dia</a>
+    <div class="text-center mb-6 my-5">
+        <select id="year-dropdown" class="py-2 px-4 rounded-lg bg-white text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200 border border-gray-300"></select>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div class="bg-white p-6 rounded-lg shadow-lg relative">
+            <canvas id="activityChart" class="w-full h-96"></canvas>
         </div>
-        <div class="absolute top-2 left-2">
-            <select id="year-dropdown" class="py-2 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition duration-300">
-            </select>
+        <div class="bg-white p-6 rounded-lg shadow-lg relative">
+            <div class="w-full h-96 mx-auto flex justify-center">
+                <canvas id="eventStatusChart" class="w-4/5 h-auto"></canvas>
+            </div>
         </div>
-        <canvas id="activityChart" class="w-full h-64"></canvas>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('activityChart').getContext('2d');
-        let chart;
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        const eventStatusCtx = document.getElementById('eventStatusChart').getContext('2d');
+        let activityChart, eventStatusChart;
         let currentYear = new Date().getFullYear();
         let currentPeriod = 'month';
 
         function loadYears() {
             fetch('/admin/available-years')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Falha ao carregar os anos');
-                    }
+                    if (!response.ok) throw new Error('Erro ao carregar anos');
                     return response.json();
                 })
                 .then(data => {
                     const dropdown = document.getElementById('year-dropdown');
                     dropdown.innerHTML = '';
-
-                    if (data.years && Array.isArray(data.years)) {
+                    if (Array.isArray(data.years)) {
                         data.years.forEach(year => {
                             const option = document.createElement('option');
                             option.value = year;
                             option.textContent = year;
-                            if (year == currentYear) option.selected = true;
+                            option.selected = year === currentYear;
                             dropdown.appendChild(option);
                         });
                     } else {
-                        console.error('Dados de anos não encontrados');
+                        console.error('Formato inesperado de dados ao carregar anos.');
                     }
                     dropdown.addEventListener('change', () => {
                         currentYear = dropdown.value;
-                        updateChart(currentPeriod);
+                        updateCharts();
                     });
                 })
-                .catch(error => {
-                    console.error('Erro ao carregar anos:', error);
-                });
+                .catch(error => console.error(error.message));
         }
 
-        function updateChart(period, month = null) {
-            let url = `/admin/chart-data?filter=${period}&year=${currentYear}`;
-            if (month) url += `&month=${month}`;
-
+        function updateActivityChart() {
+            const url = `/admin/chart-data?filter=${currentPeriod}&year=${currentYear}`;
             fetch(url)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar os dados do gráfico');
+                    return response.json();
+                })
                 .then(data => {
                     const {
                         eventsByPeriod,
@@ -85,7 +83,7 @@
                         labels
                     } = data;
 
-                    if (chart) chart.destroy();
+                    if (activityChart) activityChart.destroy();
 
                     const maxValue = Math.max(
                         ...usersByPeriod,
@@ -94,10 +92,9 @@
                         ...problemsByPeriod
                     );
 
-                    let suggestedMax = 20;
-                    while (suggestedMax < maxValue) suggestedMax *= 2;
+                    const suggestedMax = maxValue > 20 ? Math.ceil(maxValue * 1.2) : 20;
 
-                    chart = new Chart(ctx, {
+                    activityChart = new Chart(activityCtx, {
                         type: 'line',
                         data: {
                             labels: labels,
@@ -145,22 +142,76 @@
                             },
                         },
                     });
-                });
+                })
+                .catch(error => console.error(error.message));
         }
 
-        // Inicializa os anos disponíveis e o gráfico
-        loadYears();
-        updateChart(currentPeriod);
+        function updateEventStatusChart() {
+            const url = `/admin/event-status-data?year=${currentYear}`;
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar dados do estado dos eventos');
+                    return response.json();
+                })
+                .then(data => {
+                    const {
+                        succeeded,
+                        failed,
+                        pending
+                    } = data;
 
-        // Eventos de filtro
+                    if (eventStatusChart) eventStatusChart.destroy();
+
+                    eventStatusChart = new Chart(eventStatusCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Sucesso', 'Falha', 'Pendente'],
+                            datasets: [{
+                                data: [succeeded, failed, pending],
+                                backgroundColor: [
+                                    'rgba(34, 197, 94, 0.7)',
+                                    'rgba(220, 38, 38, 0.7)',
+                                    'rgba(255, 165, 0, 0.7)',
+                                ],
+                                borderColor: [
+                                    'rgba(34, 197, 94, 1)',
+                                    'rgba(220, 38, 38, 1)',
+                                    'rgba(255, 165, 0, 1)',
+                                ],
+                                borderWidth: 2,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 25,
+                                    },
+                                },
+                            },
+                        },
+                    });
+                })
+                .catch(error => console.error(error.message));
+        }
+
+
+
+        function updateCharts() {
+            updateActivityChart();
+            updateEventStatusChart();
+        }
+
+        loadYears();
+        updateCharts();
+
         document.getElementById('filter-month').addEventListener('click', () => {
             currentPeriod = 'month';
-            updateChart(currentPeriod);
+            updateActivityChart();
         });
 
-        document.getElementById('filter-day').addEventListener('click', () => {
-            currentPeriod = 'day';
-            updateChart(currentPeriod);
-        });
     });
 </script>

@@ -51,15 +51,36 @@ class AdminController extends Controller
 
             $problemsByMonth = array_replace(array_fill(1, 12, 0), $problemsByMonth);
 
-            // Obtenha os anos distintos para o dropdown
             $years = Event::selectRaw('YEAR(created_at) as year')
                 ->distinct()
                 ->orderBy('year', 'desc')
                 ->pluck('year');
 
-            return view('admin.index', compact('usertype', 'name', 'userCount', 'problemCount', 'fieldCount', 'eventCount', 'eventsByMonth', 'usersByMonth', 'problemsByMonth', 'years'));
+            $EventsSucceeded = Event::where('status', 'succeeded')->whereYear('event_date_time', date('Y'))->count();
+            $EventsFailed = Event::where('status', 'failed')->whereYear('event_date_time', date('Y'))->count();
+            $EventsPending = Event::where('status', 'pending')->whereYear('event_date_time', date('Y'))->count();
+
+            $statusLabels = ['Sucesso', 'Falha', 'Pendente'];
+
+            return view('admin.index', compact(
+                'usertype',
+                'name',
+                'userCount',
+                'problemCount',
+                'fieldCount',
+                'eventCount',
+                'eventsByMonth',
+                'usersByMonth',
+                'problemsByMonth',
+                'years',
+                'EventsSucceeded',
+                'EventsFailed',
+                'EventsPending',
+                'statusLabels'
+            ));
         }
     }
+
 
     public function getChartData(Request $request)
     {
@@ -149,6 +170,17 @@ class AdminController extends Controller
             'problemsByPeriod' => array_values($problemsByPeriod),
             'labels' => $labels,
         ]);
+    }
+
+    public function getEventStatusData(Request $request)
+    {
+        $year = $request->query('year', date('Y'));
+
+        $succeeded = Event::where('status', 'succeeded')->whereYear('event_date_time', $year)->count();
+        $failed = Event::where('status', 'failed')->whereYear('event_date_time', $year)->count();
+        $pending = Event::where('status', 'pending')->whereYear('event_date_time', $year)->count();
+
+        return response()->json(['succeeded' => $succeeded, 'failed' => $failed, "pending" => $pending]);
     }
 
     public function availableYears()
