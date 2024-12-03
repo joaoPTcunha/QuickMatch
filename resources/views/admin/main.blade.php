@@ -25,15 +25,13 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 px-3">
-        <!-- Gráfico de Linhas -->
         <div class="bg-white p-8 rounded-lg shadow-lg relative">
-            <canvas id="activityChart" class="w-full h-[300px] sm:h-[400px] md:h-96"></canvas>
+            <canvas id="activityChart" class="w-full h-[100px] sm:h-[400px] md:h-96"></canvas>
         </div>
-        <!-- Gráfico de Pizza -->
         <div class="bg-white p-8 rounded-lg shadow-lg relative">
             <h2 class="text-xl font-semibold text-gray-700 text-center mb-4">Estado dos Eventos</h2>
             <div class="w-full flex justify-center">
-                <canvas id="eventStatusChart" class="w-3/4 h-[250px] md:w-2/3 md:h-60"></canvas>
+                <canvas id="eventStatusChart" class="w-full h-[250px] md:w-2/3 md:h-60"></canvas>
             </div>
         </div>
     </div>
@@ -203,7 +201,10 @@
             function updateEventStatusChart() {
                 const url = `/admin/event-status-data?year=${currentYear}`;
                 fetch(url)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) throw new Error('Erro ao carregar os dados do gráfico');
+                        return response.json();
+                    })
                     .then(data => {
                         const {
                             succeeded,
@@ -226,23 +227,30 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
                                     legend: {
                                         position: 'right',
                                         labels: {
                                             font: {
-                                                size: 12,
+                                                size: window.innerWidth < 768 ? 10 : 12, // Ajusta o tamanho da fonte
                                             },
                                         },
                                     },
                                 },
-                                maintainAspectRatio: false,
-                                aspectRatio: 1,
                             },
                         });
+
+                        // Ajusta a altura do gráfico com base no tamanho da janela
+                        if (window.innerWidth < 768) {
+                            document.querySelector('#eventStatusChart').style.height = '300px';
+                        } else {
+                            document.querySelector('#eventStatusChart').style.height = '400px';
+                        }
                     })
                     .catch(error => console.error(error.message));
             }
+
 
             function updateCharts() {
                 updateActivityChart();
