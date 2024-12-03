@@ -45,7 +45,7 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
 
     <!-- Modal -->
-    <div id="locationModal" class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 hidden">
+    <div id="locationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
             <div class="flex justify-between items-center mb-4">
                 <h5 class="text-lg font-bold">Localização do Campo</h5>
@@ -55,7 +55,11 @@
                     </svg>
                 </button>
             </div>
-            <div id="modalMap" class="h-96"></div>
+            <div id="distanceInfo" class="mt-4 text-gray-700 text-center">
+                <p id="distanceText" class="text-xl font-bold"></p>
+                <p id="durationText" class="text-lg"></p>
+            </div>
+            <div id="modalMap" class="h-96 mt-4"></div>
             <div class="mt-4 flex justify-end">
                 <button id="closeModalButton" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
                     Fechar
@@ -112,11 +116,104 @@
                     zoom: 15
                 });
 
-                // Adiciona marcador
-                new mapboxgl.Marker()
+                // Adiciona marcador do campo
+                var fieldMarker = new mapboxgl.Marker({ color: 'green' })
                     .setLngLat(lngLat)
                     .addTo(map);
+
+                // Obtém a localização do usuário
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const userLngLat = [position.coords.longitude, position.coords.latitude];
+
+                        // Adiciona marcador do usuário
+                        var userMarker = new mapboxgl.Marker({ color: 'red' })
+                            .setLngLat(userLngLat)
+                            .addTo(map);
+
+                        // Calcula a distância entre o usuário e o campo
+                        const distance = calculateDistance(userLngLat, lngLat);
+                        document.getElementById('distanceText').innerText = `Distância: ${distance.toFixed(2)} km`;
+
+                        // Obtém a rota e as informações de tempo de viagem
+                        getRoute(userLngLat, lngLat, map);
+
+                        // Exibe a informação de distância
+                        document.getElementById('distanceInfo').classList.remove('hidden');
+                    }, function(error) {
+                        console.error("Erro ao obter a localização do usuário:", error);
+                        document.getElementById('distanceText').innerText = 'Não foi possível obter a sua localização.';
+                        document.getElementById('distanceInfo').classList.remove('hidden');
+                    });
+                } else {
+                    console.error("Geolocalização não suportada pelo navegador.");
+                    document.getElementById('distanceText').innerText = 'Geolocalização não suportada pelo navegador.';
+                    document.getElementById('distanceInfo').classList.remove('hidden');
+                }
             }
+
+            // Função para calcular a distância entre dois pontos (Haversine Formula)
+            function calculateDistance(point1, point2) {
+                const R = 6371; // Raio da Terra em km
+                const dLat = toRadians(point2[1] - point1[1]);
+                const dLon = toRadians(point2[0] - point1[0]);
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(toRadians(point1[1])) * Math.cos(toRadians(point2[1])) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const distance = R * c;
+                return distance;
+            }
+
+            // Função para converter graus para radianos
+            function toRadians(degrees) {
+                return degrees * (Math.PI / 180);
+            }
+            function getRoute(userLngLat, fieldLngLat, map) {
+                fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${userLngLat[0]},${userLngLat[1]};${fieldLngLat[0]},${fieldLngLat[1]}?access_token=${mapboxApiKey}&geometries=geojson`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.routes.length > 0) {
+                            const route = data.routes[0];
+                            const durationMinutes = Math.round(route.duration / 60); // Tempo em minutos, arredondado
+            
+                            let durationText;
+                            if (durationMinutes >= 60) {
+                                const hours = Math.floor(durationMinutes / 60);
+                                const minutes = durationMinutes % 60;
+                                durationText = `${hours}h ${minutes}min`;
+                            } else {
+                                durationText = `${durationMinutes} min`;
+                            }
+            
+                            // Exibe o tempo de viagem
+                            document.getElementById('durationText').innerText = `Tempo de Viagem: ${durationText}`;
+            
+                            // Adiciona a rota ao mapa
+                            map.addLayer({
+                                id: 'route',
+                                type: 'line',
+                                source: {
+                                    type: 'geojson',
+                                    data: route.geometry
+                                },
+                                layout: {
+                                    'line-join': 'round',
+                                    'line-cap': 'round'
+                                },
+                                paint: {
+                                    'line-color': 'blue',
+                                    'line-width': 6,
+                                    'line-opacity': 1
+                                }
+                            });
+                        } else {
+                            alert('Não foi possível obter a rota.');
+                        }
+                    })
+                    .catch(error => console.error("Erro ao obter a rota:", error));
+            }
+            
         });
     </script>
 </body>
