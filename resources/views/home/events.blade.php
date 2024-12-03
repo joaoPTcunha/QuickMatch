@@ -23,9 +23,12 @@
                     <p><strong>Nome do Dono:</strong> {{ $event->user->name }}</p>
                 </div>
                 <div class="mt-4 text-center">
-                    <a href="{{ route('new.match', ['id' => $event->field->id]) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                    <a href="{{ route('new.match', ['id' => $event->field->id]) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300">
                         Participar
                     </a>
+                    <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 ml-2" data-location="{{ $event->field->location }}">
+                        Ver Localização
+                    </button>
                 </div>
             </div>
             @endforeach
@@ -35,5 +38,86 @@
         </div>
     </div>
     @include('home.footer')
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+
+    <!-- Modal -->
+    <div id="locationModal" class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-lg font-bold">Localização do Campo</h5>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="modalMap" class="h-96"></div>
+            <div class="mt-4 flex justify-end">
+                <button id="closeModalButton" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('locationModal');
+            const closeModalButtons = document.querySelectorAll('#closeModal, #closeModalButton');
+            const openModalButtons = document.querySelectorAll('button[data-location]');
+
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const location = button.getAttribute('data-location');
+                    geocodeAddress(location);
+                    modal.classList.remove('hidden');
+                });
+            });
+
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modal.classList.add('hidden');
+                });
+            });
+
+            // Chave de API do Mapbox
+            const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
+
+            // Função para obter as coordenadas a partir do endereço
+            function geocodeAddress(address) {
+                fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxApiKey}&country=pt`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.features.length > 0) {
+                            const lngLat = data.features[0].center;
+                            initMap(lngLat);
+                        } else {
+                            alert('Localização não encontrada.');
+                        }
+                    })
+                    .catch(error => console.error("Erro ao obter as coordenadas:", error));
+            }
+
+            // Função para inicializar o mapa
+            function initMap(lngLat) {
+                mapboxgl.accessToken = mapboxApiKey;
+                var map = new mapboxgl.Map({
+                    container: 'modalMap',
+                    style: 'mapbox://styles/mapbox/satellite-streets-v11', // Estilo de satélite com rótulos
+                    center: lngLat,
+                    zoom: 15
+                });
+
+                // Adiciona marcador
+                new mapboxgl.Marker()
+                    .setLngLat(lngLat)
+                    .addTo(map);
+            }
+        });
+    </script>
 </body>
 </html>
