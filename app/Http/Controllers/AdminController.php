@@ -174,14 +174,23 @@ class AdminController extends Controller
 
     public function getEventStatusData(Request $request)
     {
-        $year = $request->query('year', date('Y'));
+        $year = $request->get('year', now()->year);
 
-        $succeeded = Event::where('status', 'succeeded')->whereYear('event_date_time', $year)->count();
-        $failed = Event::where('status', 'failed')->whereYear('event_date_time', $year)->count();
-        $pending = Event::where('status', 'pending')->whereYear('event_date_time', $year)->count();
+        $events = Event::whereYear('created_at', $year)
+            ->selectRaw("
+                COUNT(CASE WHEN status = 'succeeded' THEN 1 END) as succeeded,
+                COUNT(CASE WHEN status = 'failed' THEN 1 END) as failed,
+                COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending
+            ")
+            ->first();
 
-        return response()->json(['succeeded' => $succeeded, 'failed' => $failed, "pending" => $pending]);
+        return response()->json([
+            'succeeded' => $events->succeeded ?? 0,
+            'failed' => $events->failed ?? 0,
+            'pending' => $events->pending ?? 0,
+        ]);
     }
+
 
     public function availableYears()
     {
