@@ -233,7 +233,7 @@
                                         position: 'right',
                                         labels: {
                                             font: {
-                                                size: window.innerWidth < 768 ? 10 : 12, // Ajusta o tamanho da fonte
+                                                size: window.innerWidth < 768 ? 10 : 12,
                                             },
                                         },
                                     },
@@ -241,7 +241,6 @@
                             },
                         });
 
-                        // Ajusta a altura do gráfico com base no tamanho da janela
                         if (window.innerWidth < 768) {
                             document.querySelector('#eventStatusChart').style.height = '300px';
                         } else {

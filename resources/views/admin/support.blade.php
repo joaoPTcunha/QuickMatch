@@ -2,60 +2,64 @@
 @include('admin.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow container mx-auto p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl">Suporte ao Cliente</h1>
-            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline">
-                Ver Histórico de Problemas
+    <div class="flex-grow container mx-auto p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
+            <h1 class="text-2xl sm:text-3xl font-bold text-center sm:text-left">Suporte ao Cliente</h1>
+            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline text-center">
+                Histórico de Problemas
             </a>
         </div>
 
         <div id="clientes-list" class="space-y-4">
             @foreach ($problems as $problem)
-                <div class="problem-item bg-white shadow rounded-lg p-4 flex items-center justify-between" data-id="{{ $problem->id }}">
-                    <div>
-                        <h2 class="font-bold">{{ $problem->subject }}</h2>
-                        <p>{{ $problem->description }}</p>
-                        <p class="text-gray-500">{{ $problem->email }}</p>
-                        <p class="text-gray-400">{{ $problem->created_at->format('d/m/Y H:i') }}</p>
-                    </div>
-                    <div>
-                        @if (!$problem->is_solved)
-                            <button onclick="openModal('{{ addslashes($problem->subject) }}', '{{ addslashes($problem->description) }}', '{{ $problem->id }}')" class="bg-purple-500 text-white px-4 py-2 rounded">Ver Detalhes</button>
-                        @else
-                            <span class="text-green-500">Resolvido</span>
-                        @endif
-                    </div>
+            <div class="problem-item bg-white shadow rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0" data-id="{{ $problem->id }}">
+                <div class="space-y-2">
+                    <h2 class="font-bold text-lg sm:text-xl text-gray-800">{{ $problem->subject }}</h2>
+                    <p class="text-sm sm:text-base text-gray-600">{{ $problem->description }}</p>
+                    <p class="text-sm sm:text-base text-gray-500">{{ $problem->email }}</p>
+                    <p class="text-xs sm:text-sm text-gray-400">{{ $problem->created_at->format('d/m/Y H:i') }}</p>
                 </div>
+                <div class="flex justify-end">
+                    @if (!$problem->is_solved)
+                    <button onclick="openModal('{{ addslashes($problem->subject) }}', '{{ addslashes($problem->description) }}', '{{ $problem->id }}')" class="bg-purple-500 text-white text-sm sm:text-base px-4 py-2 rounded hover:bg-purple-600 transition">
+                        Ver Detalhes
+                    </button>
+                    @else
+                    <span class="text-green-500 text-sm sm:text-base font-medium">Resolvido</span>
+                    @endif
+                </div>
+            </div>
             @endforeach
         </div>
 
-        <div id="page-numbers" class="mt-6 flex justify-center space-x-2"></div>
+        <div id="page-numbers" class="mt-6 flex justify-center space-x-2 text-sm"></div>
     </div>
 
     @include('admin.footer')
+</body>
 
-    <script>
-        function openModal(subject, description, problemId) {
-            Swal.fire({
-                title: `Descrição do Problema - ${subject}`,
-                text: description,
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonText: 'Solucionado',
-                cancelButtonText: 'Falar com Cliente',
-                reverseButtons: true,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    markAsSolved(problemId);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    window.location.href = "{{ url('/chat') }}"; 
-                }
-            });
-        }
 
-        function markAsSolved(problemId) {
-            fetch(`/problems/${problemId}/mark-as-solved`, {
+<script>
+    function openModal(subject, description, problemId) {
+        Swal.fire({
+            title: `Descrição do Problema - ${subject}`,
+            text: description,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Solucionado',
+            cancelButtonText: 'Falar com Cliente',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                markAsSolved(problemId);
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                window.location.href = "{{ url('/chat') }}";
+            }
+        });
+    }
+
+    function markAsSolved(problemId) {
+        fetch(`/problems/${problemId}/mark-as-solved`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,6 +97,6 @@
                     'error'
                 );
             });
-        }
-    </script>
+    }
+</script>
 </body>
