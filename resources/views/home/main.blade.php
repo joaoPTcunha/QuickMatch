@@ -56,7 +56,7 @@
 
                 <p class="mb-4 text-center">Tem algum campo que dê para praticar modalidades? Registe o seu campo aqui!</p>
                 @auth
-                <a href="{{ url('/registerfield') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-400 transition duration-300 shadow-lg">Registar Campo</a>
+                <a href="{{ url('/manage-fields') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-400 transition duration-300 shadow-lg">Registar Campo</a>
                 @else
                 <a href="{{ url('/register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-400 transition duration-300 shadow-lg">Registe-se!</a>
                 @endauth
