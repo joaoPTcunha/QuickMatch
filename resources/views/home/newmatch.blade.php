@@ -30,7 +30,6 @@
                     </div>
                 </div>
                 
-                             
                 <div class="mb-4">
                     <label for="descricao" class="block text-gray-700">Descrição</label>
                     <textarea id="descricao" name="descricao" rows="3" class="w-full mt-2 p-2 border rounded" placeholder="Descrição do evento" required>{{ old('descricao') }}</textarea>
@@ -68,12 +67,18 @@
                     </select>
                 </div>
             
+                <div class="mb-4">
+                    <label for="participar" class="inline-flex items-center">
+                        <input type="checkbox" id="participar" name="participar" class="form-checkbox h-5 w-5 text-blue-600" {{ old('participar') ? 'checked' : '' }}>
+                        <span class="ml-2 text-gray-700">Participar neste evento</span>
+                    </label>
+                </div>
+
                 <div class="mb-4 flex items-center">
                     <label for="num-participantes" class="block text-gray-700 mr-4">Número de Participantes</label>
                     <input type="number" id="num-participantes" name="num_participantes" class="w-20 p-2 border rounded" value="{{ old('num_participantes', 5) }}" min="1" required>
-                    <span class="ml-2">Participantes</span>
                 </div>
-            
+
                 <div class="text-right">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
                         Publicar Evento

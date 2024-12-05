@@ -9,6 +9,8 @@
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 
     <link href="https://unpkg.com/heroicons@1.0.6/outline.css" rel="stylesheet" />

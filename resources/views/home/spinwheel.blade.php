@@ -95,10 +95,6 @@
     @include('home.footer')
 </body>
 
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 
 <script>

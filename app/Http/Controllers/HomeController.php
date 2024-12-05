@@ -260,6 +260,6 @@ public function storeFields(Request $request)
         $events = Event::with(['field', 'user'])->paginate(9); 
         return view('home.events', compact('events'));
     }
-    
+
 }
 
