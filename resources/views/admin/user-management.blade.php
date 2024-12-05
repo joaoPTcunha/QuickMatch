@@ -251,7 +251,6 @@
     <div class="mt-6">
         {{ $users->links() }}
     </div>
-    </div>
 </body>
 
 @include('admin.footer')

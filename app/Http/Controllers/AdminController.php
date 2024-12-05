@@ -174,14 +174,31 @@ class AdminController extends Controller
 
     public function getEventStatusData(Request $request)
     {
-        $year = $request->query('year', date('Y'));
+        $year = $request->get('year', now()->year);
 
-        $succeeded = Event::where('status', 'succeeded')->whereYear('event_date_time', $year)->count();
-        $failed = Event::where('status', 'failed')->whereYear('event_date_time', $year)->count();
-        $pending = Event::where('status', 'pending')->whereYear('event_date_time', $year)->count();
+        $events = Event::whereYear('created_at', $year)
+            ->selectRaw("
+                MONTH(created_at) as month,
+                COUNT(CASE WHEN status = 'succeeded' THEN 1 END) as succeeded,
+                COUNT(CASE WHEN status = 'failed' THEN 1 END) as failed,
+                COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending
+            ")
+            ->groupBy('month')
+            ->get();
 
-        return response()->json(['succeeded' => $succeeded, 'failed' => $failed, "pending" => $pending]);
+        $formattedData = [];
+        foreach ($events as $event) {
+            $formattedData[] = [
+                'month' => $event->month,
+                'succeeded' => $event->succeeded,
+                'failed' => $event->failed,
+                'pending' => $event->pending,
+            ];
+        }
+
+        return response()->json($formattedData);
     }
+
 
     public function availableYears()
     {
@@ -206,7 +223,6 @@ class AdminController extends Controller
 
         return response()->json(['years' => $years]);
     }
-
 
 
     public function userManagement()
@@ -371,7 +387,8 @@ class AdminController extends Controller
 
     public function fieldsAdmin()
     {
-        $fields = Field::all();
+        $fields = Field::paginate(6);
+
         return view('admin.fields-admin', compact('fields'));
     }
 
@@ -387,6 +404,7 @@ class AdminController extends Controller
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction', 'asc');
 
+        // Realiza a pesquisa e a paginação dos campos
         $fields = Field::query()
             ->when($query, function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%$query%")
@@ -400,10 +418,11 @@ class AdminController extends Controller
             })
             ->orderBy($sort, $direction)
             ->with('user')
-            ->get();
+            ->paginate(6);  // Adicionando a paginação com 6 itens por página
 
         return view('admin.fields-admin', compact('fields'));
     }
+
 
     public function updateFields(Request $request, $id)
     {

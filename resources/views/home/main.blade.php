@@ -1,13 +1,13 @@
 <main class="container mx-auto text-center px-6 md:px-0 flex-grow mt-10">
     <h1 class="text-4xl font-bold mb-4">Queres fazer desporto mas não gostas de o fazer sozinho?</h1>
-    <p class="text-gray-700 mb-8 text-m">          
+    <p class="text-gray-700 mb-8 text-m">
         A espera acabou! Através do QuickMatch, podes criar e participar nos eventos desportivos que mais te agradam, expandindo uma ampla comunidade de desporto e <br>
         facilitando a procura por pessoas que gostam de se exercitar assim como tu!
     </p>
     @auth
-        <a href="{{ url('/events') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Visitar os jogos ativos</a>
+    <a href="{{ url('/events') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Visitar os jogos ativos</a>
     @else
-        <a href="{{ url('/login') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Começar agora</a>
+    <a href="{{ url('/login') }}" class="bg-blue-700 text-white text-m px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">Começar agora</a>
     @endauth
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
         <div class="bg-blue-300 p-6 rounded shadow text-center">
@@ -37,18 +37,39 @@
             </svg>
             <h2 class="text-xl font-semibold">Exercita</h2>
             <p class="text-gray-600 mt-2">O nosso objetivo é atrair todos para o desporto e para exercitar com diversão!</p>
-        </div>        
+        </div>
     </div>
 
     <div class="mt-16">
-    <h2 class="text-2xl font-bold mb-4">Pronto para jogar?</h2>
-    @auth
-        <p class="text-gray-700 mb-6">A tua jornada desportiva começa aqui! Convida amigos e cria um evento agora mesmo!</p>
-        <a href="{{ url('/newmatch') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Criar Evento</a>
-    @else
-        <p class="text-gray-700 mb-6">Junta te a nós e começa a tua aventura desportiva!</p>
-        <a href="{{ url('/register') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Registe-se!</a>
-    @endauth
-</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
+            <div class="flex flex-col items-center text-gray-700">
+                <h2 class="text-2xl font-bold text-center">Pronto para jogar?</h2>
+                <p class="mb-4 text-center">A tua jornada desportiva começa aqui! Convida amigos e cria um evento agora mesmo!</p>
+                @auth
+                <a href="{{ url('/newmatch') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Criar Evento</a>
+                @else
+                <a href="{{ url('/register') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Registe-se!</a>
+                @endauth
+            </div>
+            <div class="flex flex-col items-center text-gray-700">
+                <h2 class="text-2xl font-bold text-center">Para donos de campos</h2>
+
+                <p class="mb-4 text-center">Tem algum campo que dê para praticar modalidades? Registe o seu campo aqui!</p>
+                @auth
+                <a href="{{ url('/manage-fields') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-400 transition duration-300 shadow-lg">Registar Campo</a>
+                @else
+                <a href="{{ url('/register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-400 transition duration-300 shadow-lg">Registe-se!</a>
+                @endauth
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
 
 </main>

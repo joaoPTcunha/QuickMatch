@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>QuickMatch</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])

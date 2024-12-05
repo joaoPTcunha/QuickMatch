@@ -2,7 +2,7 @@
 @include('admin.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow">
+    <div class="flex-grow px-3">
         <h2 class="text-2xl font-semibold text-gray-800 leading-tight mb-4 text-center">
             Editar Campo
         </h2>
