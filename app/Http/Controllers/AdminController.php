@@ -178,17 +178,25 @@ class AdminController extends Controller
 
         $events = Event::whereYear('created_at', $year)
             ->selectRaw("
+                MONTH(created_at) as month,
                 COUNT(CASE WHEN status = 'succeeded' THEN 1 END) as succeeded,
                 COUNT(CASE WHEN status = 'failed' THEN 1 END) as failed,
                 COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending
             ")
-            ->first();
+            ->groupBy('month')
+            ->get();
 
-        return response()->json([
-            'succeeded' => $events->succeeded ?? 0,
-            'failed' => $events->failed ?? 0,
-            'pending' => $events->pending ?? 0,
-        ]);
+        $formattedData = [];
+        foreach ($events as $event) {
+            $formattedData[] = [
+                'month' => $event->month,
+                'succeeded' => $event->succeeded,
+                'failed' => $event->failed,
+                'pending' => $event->pending,
+            ];
+        }
+
+        return response()->json($formattedData);
     }
 
 
@@ -215,7 +223,6 @@ class AdminController extends Controller
 
         return response()->json(['years' => $years]);
     }
-
 
 
     public function userManagement()
@@ -380,7 +387,8 @@ class AdminController extends Controller
 
     public function fieldsAdmin()
     {
-        $fields = Field::all();
+        $fields = Field::paginate(6);
+
         return view('admin.fields-admin', compact('fields'));
     }
 
@@ -396,6 +404,7 @@ class AdminController extends Controller
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction', 'asc');
 
+        // Realiza a pesquisa e a paginação dos campos
         $fields = Field::query()
             ->when($query, function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%$query%")
@@ -409,10 +418,11 @@ class AdminController extends Controller
             })
             ->orderBy($sort, $direction)
             ->with('user')
-            ->get();
+            ->paginate(6);  // Adicionando a paginação com 6 itens por página
 
         return view('admin.fields-admin', compact('fields'));
     }
+
 
     public function updateFields(Request $request, $id)
     {

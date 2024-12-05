@@ -51,11 +51,14 @@
                         <p><strong>Contacto:</strong> <span id="field_contact_{{ $field->id }}">{{ $field->contact }}</span></p>
                     </div>
                     <div class="flex justify-end items-center cursor-pointer">
-                        <a href="{{ route('admin.fields-edit', $field->id) }}" class="text-yellow-500 hover:text-yellow-700 transition r-4">Editar</a>
+                        <a href="{{ route('admin.fields-edit', $field->id) }}" class="text-yellow-500 hover:text-yellow-700 transition r-4 px-3">Editar</a>
                         <a type="button" data-field-id="{{ $field->id }}" onclick="confirmDelete(this)" class="text-red-500 hover:text-red-700 transition">Apagar</a>
                     </div>
                 </div>
                 @endforeach
+            </div>
+            <div class="mt-6">
+                {{ $fields->links() }}
             </div>
         </div>
     </div>

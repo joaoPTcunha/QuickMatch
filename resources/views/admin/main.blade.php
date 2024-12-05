@@ -194,10 +194,6 @@
                     .catch(error => console.error(error.message));
             }
 
-
-
-
-
             function updateEventStatusChart() {
                 const url = `/admin/event-status-data?year=${currentYear}`;
                 fetch(url)
@@ -206,23 +202,39 @@
                         return response.json();
                     })
                     .then(data => {
-                        const {
-                            succeeded,
-                            failed,
-                            pending
-                        } = data;
+                        const months = Array.from({
+                                length: 12
+                            }, (_, i) =>
+                            new Date(0, i).toLocaleString('pt-PT', {
+                                month: 'long'
+                            })
+                        );
+                        const succeededData = Array(12).fill(0);
+                        const failedData = Array(12).fill(0);
+                        const pendingData = Array(12).fill(0);
+
+                        data.forEach(event => {
+                            const monthIndex = event.month - 1; // Meses começam em 0 no JavaScript
+                            succeededData[monthIndex] = event.succeeded;
+                            failedData[monthIndex] = event.failed;
+                            pendingData[monthIndex] = event.pending;
+                        });
 
                         if (eventStatusChart) eventStatusChart.destroy();
 
                         eventStatusChart = new Chart(eventStatusCtx, {
                             type: 'pie',
                             data: {
-                                labels: ['Sucesso', 'Falha', 'Pendente'],
+                                labels: ['Eventos Realizados', 'Eventos Falhados', 'Eventos Pendentes'],
                                 datasets: [{
-                                    data: [succeeded, failed, pending],
-                                    backgroundColor: ['#22C55E', '#DC2626', '#F59E0B'],
-                                    borderColor: ['#16A34A', '#B91C1C', '#D97706'],
-                                    borderWidth: 2,
+                                    data: [
+                                        succeededData.reduce((a, b) => a + b, 0),
+                                        failedData.reduce((a, b) => a + b, 0),
+                                        pendingData.reduce((a, b) => a + b, 0),
+                                    ],
+                                    backgroundColor: ['#A7F3D0', '#FECACA', '#FDE68A'],
+                                    borderColor: ['#FFFFFF', '#FFFFFF', '#FFFFFF'],
+                                    borderWidth: 4,
                                 }],
                             },
                             options: {
@@ -230,10 +242,40 @@
                                 maintainAspectRatio: false,
                                 plugins: {
                                     legend: {
-                                        position: 'right',
+                                        position: 'top',
+                                        align: 'center',
                                         labels: {
                                             font: {
                                                 size: window.innerWidth < 768 ? 10 : 12,
+                                            },
+                                        },
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                const dataset = context.chart.data.datasets[0];
+                                                const total = dataset.data.reduce((sum, value) => sum + value, 0);
+                                                const percentage = ((context.raw / total) * 100).toFixed(1);
+
+                                                let detailedInfo = '';
+                                                if (context.label === 'Eventos Realizados') {
+                                                    detailedInfo = succeededData
+                                                        .map((val, i) => val > 0 ? `${months[i]}: ${val} evento(s)` : null)
+                                                        .filter(item => item !== null)
+                                                        .join(', ');
+                                                } else if (context.label === 'Eventos Falhados') {
+                                                    detailedInfo = failedData
+                                                        .map((val, i) => val > 0 ? `${months[i]}: ${val} evento(s)` : null)
+                                                        .filter(item => item !== null)
+                                                        .join(', ');
+                                                } else if (context.label === 'Eventos Pendentes') {
+                                                    detailedInfo = pendingData
+                                                        .map((val, i) => val > 0 ? `${months[i]}: ${val} evento(s)` : null)
+                                                        .filter(item => item !== null)
+                                                        .join(', ');
+                                                }
+
+                                                return `${context.label}: ${context.raw} (${percentage}%)\nMeses: ${detailedInfo}`;
                                             },
                                         },
                                     },
@@ -241,14 +283,24 @@
                             },
                         });
 
+                        const chartContainer = document.querySelector('#eventStatusChart');
                         if (window.innerWidth < 768) {
-                            document.querySelector('#eventStatusChart').style.height = '300px';
+                            chartContainer.style.height = '300px';
                         } else {
-                            document.querySelector('#eventStatusChart').style.height = '400px';
+                            chartContainer.style.height = '400px';
                         }
+
+                        chartContainer.style.display = 'flex';
+                        chartContainer.style.justifyContent = 'center';
+                        chartContainer.style.alignItems = 'center';
+                        chartContainer.style.marginTop = '8px';
                     })
                     .catch(error => console.error(error.message));
             }
+
+
+
+
 
 
             function updateCharts() {

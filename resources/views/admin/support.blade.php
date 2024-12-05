@@ -16,12 +16,12 @@
                 <div class="space-y-2">
                     <h2 class="font-bold text-lg sm:text-xl text-gray-800">{{ $problem->subject }}</h2>
                     <p class="text-sm sm:text-base text-gray-600">{{ $problem->description }}</p>
-                    <p class="text-sm sm:text-base text-gray-500">{{ $problem->email }}</p>
+                    <p class="text-sm sm:text-base text-gray-500">{{ $problem->email }}</p> <!-- E-mail do cliente -->
                     <p class="text-xs sm:text-sm text-gray-400">{{ $problem->created_at->format('d/m/Y H:i') }}</p>
                 </div>
                 <div class="flex justify-end">
                     @if (!$problem->is_solved)
-                    <button onclick="openModal('{{ addslashes($problem->subject) }}', '{{ addslashes($problem->description) }}', '{{ $problem->id }}')" class="bg-purple-500 text-white text-sm sm:text-base px-4 py-2 rounded hover:bg-purple-600 transition">
+                    <button onclick="openModal('{{ addslashes($problem->subject) }}', '{{ addslashes($problem->description) }}', '{{ $problem->id }}', '{{ $problem->email }}')" class="bg-purple-500 text-white text-sm sm:text-base px-4 py-2 rounded hover:bg-purple-600 transition">
                         Ver Detalhes
                     </button>
                     @else
@@ -31,7 +31,6 @@
             </div>
             @endforeach
         </div>
-
         <div id="page-numbers" class="mt-6 flex justify-center space-x-2 text-sm"></div>
     </div>
 
@@ -40,7 +39,7 @@
 
 
 <script>
-    function openModal(subject, description, problemId) {
+    function openModal(subject, description, problemId, customerEmail) {
         Swal.fire({
             title: `Descrição do Problema - ${subject}`,
             text: description,
@@ -53,7 +52,9 @@
             if (result.isConfirmed) {
                 markAsSolved(problemId);
             } else if (result.dismiss === Swal.DismissReason.cancel) {
-                window.location.href = "{{ url('/chat') }}";
+                let emailSubject = `Problema: ${subject}`;
+                let mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${customerEmail}&su=${encodeURIComponent(emailSubject)}`;
+                window.open(mailtoLink, '_blank');
             }
         });
     }
@@ -74,7 +75,6 @@
             })
             .then(data => {
                 if (data.status === 'success') {
-                    // Remover o problema da lista
                     document.querySelector(`.problem-item[data-id="${problemId}"]`).remove();
                     Swal.fire(
                         'Marcado como Solucionado!',
