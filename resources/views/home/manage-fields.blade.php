@@ -45,14 +45,16 @@
                                 Editar
                             </a>
 
-                            <form action="{{ route('delete-field', $field->id) }}" method="POST">
+                            <form action="{{ route('delete-field', $field->id) }}" method="POST" class="delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
+                                <button type="button"
+                                    onclick="confirmDelete(this)"
                                     class="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded transition duration-300">
                                     Apagar
                                 </button>
                             </form>
+
                         </div>
 
                     </div>
@@ -73,3 +75,21 @@
 </body>
 
 </html>
+<script>
+    function confirmDelete(button) {
+        Swal.fire({
+            title: 'Tem a certeza?',
+            text: "Esta ação não pode ser desfeita!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, apagar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                button.closest('form').submit();
+            }
+        });
+    }
+</script>
