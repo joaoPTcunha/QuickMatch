@@ -31,7 +31,7 @@
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex justify-end gap-4">
             <x-primary-button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md">
                 {{ __('Guardar') }}
             </x-primary-button>

@@ -51,9 +51,9 @@
                 <a href="{{ url('/register') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-400 transition duration-300 shadow-lg">Registe-se!</a>
                 @endauth
             </div>
+
             <div class="flex flex-col items-center text-gray-700">
                 <h2 class="text-2xl font-bold text-center">Para donos de campos</h2>
-
                 <p class="mb-4 text-center">Tem algum campo que dê para praticar modalidades? Registe o seu campo aqui!</p>
                 @auth
                 <a href="{{ url('/manage-fields') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-400 transition duration-300 shadow-lg">Registar Campo</a>
@@ -63,13 +63,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
 
 
 </main>

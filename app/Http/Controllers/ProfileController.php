@@ -35,6 +35,7 @@ class ProfileController extends Controller
             'gender' => 'nullable|string|in:Male,Female,Other',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
+            'usertype' => 'nullable|string|in:user,user_field',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:1024',
         ]);
 
@@ -49,6 +50,21 @@ class ProfileController extends Controller
             $user->phone = $request->input('phone');
             $user->address = $request->input('address');
 
+            if ($request->has('usertype')) {
+                $newUsertype = $request->input('usertype');
+
+                if ($user->usertype === 'user_field' && $newUsertype === 'user') {
+                    if ($user->fields()->exists()) {
+                        toastr()->timeout(10000)->closeButton()->error('Por favor, apague os campos associados antes de mudar de tipo de  utilizador.');
+                        return back()->withInput();
+                    }
+                }
+
+                if (in_array($user->usertype, ['user', 'user_field'])) {
+                    $user->usertype = $newUsertype;
+                }
+            }
+
             if ($request->hasFile('profile_picture')) {
                 $this->storeUserProfileImage($request, $user);
             }
@@ -60,6 +76,7 @@ class ProfileController extends Controller
             return back()->with('status', 'profile-updated');
         }
     }
+
 
     private function storeUserProfileImage($request, $user)
     {

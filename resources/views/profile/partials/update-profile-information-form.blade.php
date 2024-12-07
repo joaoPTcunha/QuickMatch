@@ -78,8 +78,20 @@
                 <x-input-error class="mt-2" :messages="$errors->get('address')" />
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <x-primary-button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            @if (in_array(Auth::user()->usertype, ['user', 'user_field']))
+            <div>
+                <x-input-label for="usertype" :value="__('Tipo de Utilizador')" class="ml-2" />
+                <select id="usertype" name="usertype" class="mt-1 block w-full rounded-sm pl-1">
+                    <option value="user" {{ old('usertype', $user->usertype) === 'user' ? 'selected' : '' }}>Utilizador</option>
+                    <option value="user_field" {{ old('usertype', $user->usertype) === 'user_field' ? 'selected' : '' }}>Dono de Campo</option>
+                </select>
+                <x-input-error class="mt-2" :messages="$errors->get('usertype')" />
+            </div>
+            @endif
+        </div>
+        <div class="flex justify-end gap-4">
+            <x-primary-button>
                 {{ __('Guardar') }}
             </x-primary-button>
         </div>

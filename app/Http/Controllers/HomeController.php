@@ -23,7 +23,7 @@ class HomeController extends Controller
 
         if ($request->filled('field_id')) {
             $field = Field::findOrFail($request->field_id);
-            $modalities = explode(',', $field->modality); // Converte modalidades para array
+            $modalities = explode(',', $field->modality);
         }
 
         return view('home.newmatch', compact('field', 'modalities'));
@@ -117,7 +117,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->type !== 'user_field') {
+        if ($user->usertype !== 'user_field') {
             toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
 
             return redirect()->route('profile.edit');
@@ -127,6 +127,7 @@ class HomeController extends Controller
 
         return view('home.manage-fields', compact('fields'));
     }
+
 
 
 
@@ -260,5 +261,4 @@ class HomeController extends Controller
         $events = Event::with(['field', 'user'])->paginate(9);
         return view('home.events', compact('events'));
     }
-
 }

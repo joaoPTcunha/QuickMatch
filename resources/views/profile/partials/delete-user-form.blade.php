@@ -1,18 +1,23 @@
-<section class="space-y-6">
+<section class="space-y-1">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-gray-900 mt-5">
             {{ __('Eliminar Conta') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __('Uma vez que a sua conta for eliminada, todos os recursos e dados serão permanentemente apagados. Antes de eliminar a sua conta, faça o download de qualquer dado ou informação que deseja manter.') }}
+            {{ __('Uma vez que a sua conta seja eliminada, todos os recursos, dados e informações associados serão permanentemente apagados e não poderão ser recuperados. Certifique-se de que faz o download de quaisquer dados importantes que deseje guardar antes de prosseguir com esta ação irreversível.') }}
         </p>
     </header>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Eliminar Conta') }}</x-danger-button>
+    <div class="w-full flex justify-end gap-4">
+        <x-danger-button
+            x-data="{}"
+            x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
+            class="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md ml-0 mt-3">
+            {{ __('Eliminar Conta') }}
+        </x-danger-button>
+    </div>
+
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
@@ -34,19 +39,18 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Palavra-passe') }}"
-                />
+                    class="mt-1 block w-full"
+                    placeholder="{{ __('Palavra-passe') }}" />
 
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
-            <div class="mt-6 flex justify-end">
+            <div class="mt-6 flex justify-end gap-3">
                 <x-secondary-button x-on:click="$dispatch('close')">
                     {{ __('Cancelar') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3">
+                <x-danger-button>
                     {{ __('Eliminar Conta') }}
                 </x-danger-button>
             </div>
