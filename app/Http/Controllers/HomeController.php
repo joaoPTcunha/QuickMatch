@@ -128,9 +128,6 @@ class HomeController extends Controller
         return view('home.manage-fields', compact('fields'));
     }
 
-
-
-
     public function createField()
     {
         return view('home.create-field');
@@ -162,7 +159,7 @@ class HomeController extends Controller
         return redirect()->route('seematch');
     }
 
-    public function storeFields(Request $request)
+    public function storeField(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -204,13 +201,13 @@ class HomeController extends Controller
         return null;
     }
 
-    public function editFields($id)
+    public function editField($id)
     {
         $field = Field::findOrFail($id);
         return view('home.edit-fields', compact('field'));
     }
 
-    public function updateFields(Request $request, $id)
+    public function updateField(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -255,6 +252,17 @@ class HomeController extends Controller
 
         return redirect()->route('manage-fields');
     }
+
+    public function destroyField($id)
+    {
+        $field = Field::findOrFail($id);
+        $field->delete();
+
+        toastr()->timeout(10000)->closeButton()->success('Campo apagado com sucesso!');
+
+        return redirect()->back();
+    }
+
 
     public function showEvents()
     {
