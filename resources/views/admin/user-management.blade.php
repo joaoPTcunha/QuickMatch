@@ -182,53 +182,61 @@
                     </div>
 
 
-                    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data" autocomplete="on">
                         @csrf
                         @method('PUT')
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="flex flex-col space-y-6">
                                 <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
-                                    <input type="text" name="name" value="{{ $user->name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <label for="adminEdit-{{ $user->id }}-name" class="block text-sm font-medium text-gray-700">Nome</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-name" name="name" value="{{ $user->name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="name" required>
                                 </div>
+
                                 <div>
-                                    <label for="surname" class="block text-sm font-medium text-gray-700">Sobrenome</label>
-                                    <input type="text" name="surname" value="{{ $user->surname }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-surname" class="block text-sm font-medium text-gray-700">Sobrenome</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-surname" name="surname" value="{{ $user->surname }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="family-name">
                                 </div>
+
                                 <div>
-                                    <label for="user_name" class="block text-sm font-medium text-gray-700">Nome de Utilizador</label>
-                                    <input type="text" name="user_name" value="{{ $user->user_name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-user_name" class="block text-sm font-medium text-gray-700">Nome de Utilizador</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-user_name" name="user_name" value="{{ $user->user_name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="username">
                                 </div>
+
                                 <div>
-                                    <label for="date_birth" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                                    <input type="date" name="date_birth" value="{{ $user->date_birth }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-date_birth" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                                    <input type="date" id="adminEdit-{{ $user->id }}-date_birth" name="date_birth" value="{{ $user->date_birth }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="bday">
                                 </div>
+
                                 <div>
-                                    <label for="gender" class="block text-sm font-medium text-gray-700">Gênero</label>
-                                    <select name="gender"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-gender" class="block text-sm font-medium text-gray-700">Gênero</label>
+                                    <select name="gender" id="adminEdit-{{ $user->id }}-gender" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
                                         <option value="Masculino" {{ $user->gender == 'Masculino' ? 'selected' : '' }}>Masculino</option>
                                         <option value="Feminino" {{ $user->gender == 'Feminino' ? 'selected' : '' }}>Feminino</option>
                                         <option value="Outro" {{ $user->gender == 'Outro' ? 'selected' : '' }}>Outro</option>
                                     </select>
                                 </div>
                             </div>
+
                             <div class="flex flex-col space-y-6">
                                 <div>
-                                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" name="email" value="{{ $user->email }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <label for="adminEdit-{{ $user->id }}-email" class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input type="email" id="adminEdit-{{ $user->id }}-email" name="email" value="{{ $user->email }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="email" required>
                                 </div>
+
                                 <div>
-                                    <label for="phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                                    <input type="text" name="phone" value="{{ $user->phone }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                                    <input type="tel" id="adminEdit-{{ $user->id }}-phone" name="phone" value="{{ $user->phone }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="tel">
                                 </div>
+
                                 <div>
-                                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço</label>
-                                    <input type="text" name="address" value="{{ $user->address }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-address" class="block text-sm font-medium text-gray-700">Endereço</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-address" name="address" value="{{ $user->address }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="address-line1">
                                 </div>
+
                                 <div>
-                                    <label for="usertype" class="block text-sm font-medium text-gray-700">Tipo de Utilizador</label>
-                                    <select name="usertype" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <label for="adminEdit-{{ $user->id }}-usertype" class="block text-sm font-medium text-gray-700">Tipo de Utilizador</label>
+                                    <select name="usertype" id="adminEdit-{{ $user->id }}-usertype" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
                                         <option value="admin" {{ $user->usertype == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="user" {{ $user->usertype == 'user' ? 'selected' : '' }}>Utilizador</option>
                                         <option value="user_field" {{ $user->usertype == 'user_field' ? 'selected' : '' }}>Utilizador Campo</option>
@@ -236,12 +244,18 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="mt-6">
                             <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 Salvar Alterações
                             </button>
                         </div>
                     </form>
+
+
+
+
+
                 </div>
             </div>
 
