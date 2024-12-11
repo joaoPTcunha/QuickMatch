@@ -46,18 +46,18 @@
         </div>
         <div>
             <x-input-label for="email" :value="__('Email')" class="ml-2" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full cursor-not-allowed rounded-sm pl-1" :value="$user->email" readonly />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full cursor-not-allowed rounded-sm pl-1" :value="$user->email" readonly autocomplete="email" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
                 <x-input-label for="date_birth" :value="__('Data de Nascimento')" class="ml-2" />
-                <x-text-input id="date_birth" name="date_birth" type="date" class="mt-1 block w-full rounded-sm pl-1" :value="old('date_birth', $user->date_birth)" />
+                <x-text-input id="date_birth" name="date_birth" type="date" class="mt-1 block w-full rounded-sm pl-1" :value="old('date_birth', $user->date_birth)" autocomplete="bday" />
                 <x-input-error class="mt-2" :messages="$errors->get('date_birth')" />
             </div>
             <div>
                 <x-input-label for="gender" :value="__('Gênero')" class="ml-2" />
-                <select id="gender" name="gender" class="mt-1 block w-full rounded-sm pl-1">
+                <select id="gender" name="gender" class="mt-1 block w-full rounded-sm pl-1" autocomplete="gender">
                     <option value="Male" {{ old('gender', $user->gender) === 'Masculino' ? 'selected' : '' }}>Masculino</option>
                     <option value="Female" {{ old('gender', $user->gender) === 'Feminino' ? 'selected' : '' }}>Feminino</option>
                     <option value="Other" {{ old('gender', $user->gender) === 'Outro' ? 'selected' : '' }}>Outro</option>
@@ -68,18 +68,30 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
                 <x-input-label for="phone" :value="__('Telefone')" class="ml-2" />
-                <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full rounded-sm pl-1" :value="old('phone', $user->phone)" />
+                <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full rounded-sm pl-1" :value="old('phone', $user->phone)" autocomplete="tel" />
                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
             </div>
 
             <div>
                 <x-input-label for="address" :value="__('Endereço')" class="ml-2" />
-                <x-text-input id="address" name="address" type="text" class="mt-1 block w-full rounded-sm pl-1" :value="old('address', $user->address)" />
+                <x-text-input id="address" name="address" type="text" class="mt-1 block w-full rounded-sm pl-1" :value="old('address', $user->address)" autocomplete="address-line1" />
                 <x-input-error class="mt-2" :messages="$errors->get('address')" />
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <x-primary-button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            @if (in_array(Auth::user()->usertype, ['user', 'user_field']))
+            <div>
+                <x-input-label for="usertype" :value="__('Tipo de Utilizador')" class="ml-2" />
+                <select id="usertype" name="usertype" class="mt-1 block w-full rounded-sm pl-1" autocomplete="organization">
+                    <option value="user" {{ old('usertype', $user->usertype) === 'user' ? 'selected' : '' }}>Utilizador</option>
+                    <option value="user_field" {{ old('usertype', $user->usertype) === 'user_field' ? 'selected' : '' }}>Dono de Campo</option>
+                </select>
+                <x-input-error class="mt-2" :messages="$errors->get('usertype')" />
+            </div>
+            @endif
+        </div>
+        <div class="flex justify-end gap-4">
+            <x-primary-button>
                 {{ __('Guardar') }}
             </x-primary-button>
         </div>

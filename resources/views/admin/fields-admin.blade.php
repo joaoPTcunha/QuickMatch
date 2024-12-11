@@ -7,14 +7,8 @@
             <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Gestão de Campos</h1>
 
             <div class="mb-6 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 px-3">
-                <!-- Formulário de pesquisa -->
                 <form action="{{ route('admin.fields.search') }}" method="GET" class="w-full sm:w-auto flex items-center space-x-2">
-                    <input
-                        type="text"
-                        name="query"
-                        placeholder="Pesquisar..."
-                        class="border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-80 text-sm"
-                        value="{{ request('query') }}">
+                    <input type="text" name="query" placeholder="Pesquisar..." class="border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-80 text-sm" value="{{ request('query') }}">
                     <button type="submit" class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-600 transition">Pesquisar
                     </button>
                 </form>
@@ -36,9 +30,12 @@
                 @foreach($fields as $field)
                 <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                     <div class="flex justify-center mb-4">
-                        <label for="field_image_{{ $field->id }}">
+                        <div for="imageField-{{ $field->id }}">
                             <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md">
-                        </label>
+                        </div>
+
+
+
                     </div>
                     <h2 class="text-lg font-bold text-gray-800 mb-2 text-center" id="field_name_{{ $field->id }}">{{ $field->name }}</h2>
                     <div class="text-gray-700 text-sm space-y-1 mb-4">

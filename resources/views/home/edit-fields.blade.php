@@ -8,9 +8,9 @@
         </h2>
 
         <div class="p-6 bg-white shadow-md rounded-lg max-w-2xl mx-auto">
-            <form action="{{ route('update-fields', $field->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+            <form action="{{ route('update-field', $field->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
                 <div class="flex justify-center mb-4">
                     <label for="image" class="cursor-pointer">
@@ -31,7 +31,7 @@
 
                 <div class="mb-4">
                     <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
-                    <textarea name="description" id="description" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Descrição">{{ old('description', $field->description) }}</textarea> 
+                    <textarea name="description" id="description" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Descrição">{{ old('description', $field->description) }}</textarea>
                 </div>
 
                 <div class="mb-4">
@@ -53,43 +53,43 @@
                     <label for="modality" class="block text-sm font-medium text-gray-700">Modalidades</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="futebol" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="futebol" class="mr-2"
                                 {{ in_array('futebol', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Futebol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="futebol 7" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="futebol 7" class="mr-2"
                                 {{ in_array('futebol 7', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Futebol 7
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="futsal" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="futsal" class="mr-2"
                                 {{ in_array('futsal', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Futsal
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="basquetebol" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="basquetebol" class="mr-2"
                                 {{ in_array('basquetebol', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Basquetebol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="voleibol" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="voleibol" class="mr-2"
                                 {{ in_array('voleibol', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Voleibol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="andebol" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="andebol" class="mr-2"
                                 {{ in_array('andebol', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Andebol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="ténis" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="ténis" class="mr-2"
                                 {{ in_array('ténis', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Ténis
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="raguebi" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="raguebi" class="mr-2"
                                 {{ in_array('raguebi', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Raguebi
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="padel" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="padel" class="mr-2"
                                 {{ in_array('padel', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Padel
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="outro" class="mr-2" 
+                            <input type="checkbox" name="modality[]" value="outro" class="mr-2"
                                 {{ in_array('outro', old('modality', explode(',', $field->modality))) ? 'checked' : '' }}> Outro
                         </label>
                     </div>
@@ -97,13 +97,13 @@
                     <!-- Campo Modalidade Personalizada (aparece quando 'Outro' é selecionado) -->
                     <div class="mb-4 {{ in_array('outro', old('modality', explode(',', $field->modality))) ? '' : 'hidden' }}">
                         <label for="customModality" class="block text-sm font-medium text-gray-700">Qual a modalidade?</label>
-                        <input type="text" name="customModality" id="customModality" value="{{ old('customModality') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                        <input type="text" name="customModality" id="customModality" value="{{ old('customModality') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
                 </div>
 
                 <div id="otherModality" class="mb-4 hidden">
                     <label for="customModality" class="block text-sm font-medium text-gray-700">Qual a modalidade?</label>
-                    <input type="text" name="customModality" id="customModality" value="{{ old('customModality') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                    <input type="text" name="customModality" id="customModality" value="{{ old('customModality') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
 
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">

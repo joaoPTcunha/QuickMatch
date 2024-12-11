@@ -52,7 +52,7 @@ class HomeController extends Controller
 
         if ($request->filled('field_id')) {
             $field = Field::findOrFail($request->field_id);
-            $modalities = explode(',', $field->modality); // Converte modalidades para array
+            $modalities = explode(',', $field->modality);
         }
 
         return view('home.newmatch', compact('field', 'modalities'));
@@ -146,8 +146,8 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        //if ($user->type !== 'user_field') {
-            //toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
+        if ($user->type !== 'user_field') {
+            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
 
            // return redirect()->route('profile.edit');
        // }
@@ -156,8 +156,6 @@ class HomeController extends Controller
 
         return view('home.manage-fields', compact('fields'));
     }
-
-
 
     public function createField()
     {
@@ -215,7 +213,7 @@ class HomeController extends Controller
 
     
 
-    public function storeFields(Request $request)
+    public function storeField(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -257,13 +255,13 @@ class HomeController extends Controller
         return null;
     }
 
-    public function editFields($id)
+    public function editField($id)
     {
         $field = Field::findOrFail($id);
         return view('home.edit-fields', compact('field'));
     }
 
-    public function updateFields(Request $request, $id)
+    public function updateField(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -309,39 +307,21 @@ class HomeController extends Controller
         return redirect()->route('manage-fields');
     }
 
-    public function showEvents(Request $request)
-{
-    $userId = Auth::id(); // Obtém o ID do usuário autenticado
+    public function destroyField($id)
+    {
+        $field = Field::findOrFail($id);
+        $field->delete();
 
-    $query = Event::with(['field', 'user']); // Carrega os eventos com relação aos campos e usuários
+        toastr()->timeout(10000)->closeButton()->success('Campo apagado com sucesso!');
 
-    // Filtro de ordenação
-    if ($request->filled('sort')) {
-        if ($request->sort === 'recent') {
-            // Ordena por data mais recente
-            $query->orderBy('event_date_time', 'desc');
-        } elseif ($request->sort === 'alphabetical') {
-            // Ordena por descrição (ordem alfabética)
-            $query->orderBy('description', 'asc');
-        }
+        return redirect()->back();
     }
 
-    // Paginação dos eventos
-    $events = $query->paginate(9); // Paginação com 9 eventos por página
 
-    // Adiciona a propriedade isSubscribed para cada evento (para ser usado no front-end)
-    foreach ($events as $event) {
-        // Converte o campo 'participants_user_id' (JSON) em array e verifica se o usuário está inscrito
-        $participants = json_decode($event->participants_user_id, true) ?? [];
-        $event->isSubscribed = in_array($userId, array_column($participants, 'user_id'));
+    public function showEvents()
+    {
+        $events = Event::with(['field', 'user'])->paginate(9);
+        return view('home.events', compact('events'));
     }
-
-    // Retorna a view com os eventos filtrados
-    return view('home.events', compact('events'));
-}
-
-    
-
-
 
 }

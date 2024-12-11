@@ -93,15 +93,16 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                         </svg>
                                     </a>
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                    <form id="delete-user-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-600">
+                                        <button type="button" onclick="confirmDeleteUser({{ $user->id }})" class="text-red-500 hover:text-red-600">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                             </svg>
                                         </button>
                                     </form>
+
                                 </div>
                             </td>
                         </tr>
@@ -112,8 +113,7 @@
 
             <!-- modal ver -->
             @foreach($users as $user)
-            <div id="modal-{{ $user->id }}"
-                class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300">
+            <div id="modal-{{ $user->id }}" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 px-2">
                 <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full relative">
                     <button onclick="closeModal('modal-{{ $user->id }}')"
                         class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
@@ -153,9 +153,11 @@
             </div>
 
             <!-- modal editar -->
-            <div id="edit-modal-{{ $user->id }}" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
-                <div class="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full relative">
-                    <button onclick="closeModal('edit-modal-{{ $user->id }}')" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+            <div id="edit-modal-{{ $user->id }}"
+                class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none px-3 mt-3">
+                <div class="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full relative overflow-auto max-h-screen sm:px-6">
+                    <button onclick="closeModal('edit-modal-{{ $user->id }}')"
+                        class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -182,53 +184,61 @@
                     </div>
 
 
-                    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data" autocomplete="on">
                         @csrf
                         @method('PUT')
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="flex flex-col space-y-6">
                                 <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
-                                    <input type="text" name="name" value="{{ $user->name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <label for="adminEdit-{{ $user->id }}-name" class="block text-sm font-medium text-gray-700">Nome</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-name" name="name" value="{{ $user->name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="name" required>
                                 </div>
+
                                 <div>
-                                    <label for="surname" class="block text-sm font-medium text-gray-700">Sobrenome</label>
-                                    <input type="text" name="surname" value="{{ $user->surname }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-surname" class="block text-sm font-medium text-gray-700">Sobrenome</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-surname" name="surname" value="{{ $user->surname }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="family-name">
                                 </div>
+
                                 <div>
-                                    <label for="user_name" class="block text-sm font-medium text-gray-700">Nome de Utilizador</label>
-                                    <input type="text" name="user_name" value="{{ $user->user_name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-user_name" class="block text-sm font-medium text-gray-700">Nome de Utilizador</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-user_name" name="user_name" value="{{ $user->user_name }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="username">
                                 </div>
+
                                 <div>
-                                    <label for="date_birth" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                                    <input type="date" name="date_birth" value="{{ $user->date_birth }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-date_birth" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                                    <input type="date" id="adminEdit-{{ $user->id }}-date_birth" name="date_birth" value="{{ $user->date_birth }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="bday">
                                 </div>
+
                                 <div>
-                                    <label for="gender" class="block text-sm font-medium text-gray-700">Gênero</label>
-                                    <select name="gender"
-                                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-gender" class="block text-sm font-medium text-gray-700">Gênero</label>
+                                    <select name="gender" id="adminEdit-{{ $user->id }}-gender" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
                                         <option value="Masculino" {{ $user->gender == 'Masculino' ? 'selected' : '' }}>Masculino</option>
                                         <option value="Feminino" {{ $user->gender == 'Feminino' ? 'selected' : '' }}>Feminino</option>
                                         <option value="Outro" {{ $user->gender == 'Outro' ? 'selected' : '' }}>Outro</option>
                                     </select>
                                 </div>
                             </div>
+
                             <div class="flex flex-col space-y-6">
                                 <div>
-                                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" name="email" value="{{ $user->email }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <label for="adminEdit-{{ $user->id }}-email" class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input type="email" id="adminEdit-{{ $user->id }}-email" name="email" value="{{ $user->email }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="email" required>
                                 </div>
+
                                 <div>
-                                    <label for="phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                                    <input type="text" name="phone" value="{{ $user->phone }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                                    <input type="tel" id="adminEdit-{{ $user->id }}-phone" name="phone" value="{{ $user->phone }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="tel">
                                 </div>
+
                                 <div>
-                                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço</label>
-                                    <input type="text" name="address" value="{{ $user->address }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <label for="adminEdit-{{ $user->id }}-address" class="block text-sm font-medium text-gray-700">Endereço</label>
+                                    <input type="text" id="adminEdit-{{ $user->id }}-address" name="address" value="{{ $user->address }}" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="address-line1">
                                 </div>
+
                                 <div>
-                                    <label for="usertype" class="block text-sm font-medium text-gray-700">Tipo de Utilizador</label>
-                                    <select name="usertype" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                    <label for="adminEdit-{{ $user->id }}-usertype" class="block text-sm font-medium text-gray-700">Tipo de Utilizador</label>
+                                    <select name="usertype" id="adminEdit-{{ $user->id }}-usertype" class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="off">
                                         <option value="admin" {{ $user->usertype == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="user" {{ $user->usertype == 'user' ? 'selected' : '' }}>Utilizador</option>
                                         <option value="user_field" {{ $user->usertype == 'user_field' ? 'selected' : '' }}>Utilizador Campo</option>
@@ -236,6 +246,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="mt-6">
                             <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 Salvar Alterações
@@ -284,6 +295,25 @@
             output.src = reader.result;
         };
         reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function confirmDeleteUser(userId) {
+        const form = document.getElementById(`delete-user-form-${userId}`);
+
+        Swal.fire({
+            title: 'Tem a certeza que deseja apagar este utilizador?',
+            text: "Esta ação não pode ser desfeita.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, apagar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
     }
 
     document.getElementById('dropdownButton').addEventListener('click', function(e) {
