@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Menu toggle functionality
     const menuToggle = document.getElementById("menu-toggle");
     const menuItems = document.getElementById("menu-items");
 
@@ -9,125 +8,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Mobile dropdowns
-    const mobilePlayToggle = document.getElementById(
-        "mobile-play-dropdown-toggle",
-    );
-    const mobilePlayContent = document.getElementById(
-        "mobile-play-dropdown-content",
-    );
-    const mobileProfileToggle = document.getElementById(
-        "mobile-profile-dropdown-toggle",
-    );
-    const mobileProfileContent = document.getElementById(
-        "mobile-profile-dropdown-content",
-    );
+    function addDropdownToggle(toggleElementId, contentElementId) {
+        const toggleElement = document.getElementById(toggleElementId);
+        const contentElement = document.getElementById(contentElementId);
 
-    // Play dropdown toggle
-    if (mobilePlayToggle && mobilePlayContent) {
-        mobilePlayToggle.addEventListener("click", function (e) {
-            e.stopPropagation();
-            mobilePlayContent.classList.toggle("hidden");
-            mobileProfileContent.classList.add("hidden");
-
-            // Toggle arrow rotation
-            const arrow = mobilePlayToggle.querySelector("svg");
-            arrow.classList.toggle("rotate-180");
-            mobileProfileToggle
-                .querySelector("svg")
-                .classList.remove("rotate-180");
-        });
+        if (toggleElement && contentElement) {
+            toggleElement.addEventListener("click", function (e) {
+                e.stopPropagation();
+                contentElement.classList.toggle("hidden");
+            });
+        }
     }
 
-    // Profile dropdown toggle
-    if (mobileProfileToggle && mobileProfileContent) {
-        mobileProfileToggle.addEventListener("click", function (e) {
-            e.stopPropagation();
-            mobileProfileContent.classList.toggle("hidden");
-            mobilePlayContent.classList.add("hidden");
+    addDropdownToggle("mobile-play-dropdown-toggle", "mobile-play-dropdown-content");
+    addDropdownToggle("mobile-profile-dropdown-toggle", "mobile-profile-dropdown-content");
 
-            // Toggle arrow rotation
-            const arrow = mobileProfileToggle.querySelector("svg");
-            mobilePlayToggle
-                .querySelector("svg")
-                .classList.remove("rotate-180");
-        });
-    }
+    addDropdownToggle("desktop-play-dropdown-toggle", "play-dropdown-content");
+    addDropdownToggle("desktop-profile-dropdown-toggle", "profile-dropdown-content");
 
-    // Desktop dropdowns
-    const desktopPlayToggle = document.getElementById(
-        "desktop-play-dropdown-toggle",
-    );
-    const desktopPlayContent = document.getElementById("play-dropdown-content");
-    const desktopProfileToggle = document.getElementById(
-        "desktop-profile-dropdown-toggle",
-    );
-    const desktopProfileContent = document.getElementById(
-        "profile-dropdown-content",
-    );
-
-    // Desktop play dropdown hover
-    if (desktopPlayToggle && desktopPlayContent) {
-        const playDropdownGroup = desktopPlayToggle.closest(".group");
-        playDropdownGroup.addEventListener("mouseenter", function () {
-            desktopPlayContent.classList.remove("hidden");
-            desktopPlayToggle.querySelector("svg").classList.add("rotate-180");
-        });
-        playDropdownGroup.addEventListener("mouseleave", function () {
-            desktopPlayContent.classList.add("hidden");
-            desktopPlayToggle.querySelector("svg");
-        });
-    }
-
-    // Desktop profile dropdown hover
-    if (desktopProfileToggle && desktopProfileContent) {
-        const profileDropdownGroup = desktopProfileToggle.closest(".group");
-        profileDropdownGroup.addEventListener("mouseenter", function () {
-            desktopProfileContent.classList.remove("hidden");
-            desktopProfileToggle.querySelector("svg");
-        });
-        profileDropdownGroup.addEventListener("mouseleave", function () {
-            desktopProfileContent.classList.add("hidden");
-            desktopProfileToggle.querySelector("svg");
-        });
-    }
-
-    // Close dropdowns when clicking outside
     document.addEventListener("click", function (e) {
-        // Verifica se o clique foi fora do dropdown de jogo
-        if (
-            mobilePlayToggle &&
-            !mobilePlayToggle.contains(e.target) &&
-            !mobilePlayContent.contains(e.target)
-        ) {
-            mobilePlayContent.classList.add("hidden");
-        }
+        const allDropdowns = [
+            { toggle: "mobile-play-dropdown-toggle", content: "mobile-play-dropdown-content" },
+            { toggle: "mobile-profile-dropdown-toggle", content: "mobile-profile-dropdown-content" },
+            { toggle: "desktop-play-dropdown-toggle", content: "play-dropdown-content" },
+            { toggle: "desktop-profile-dropdown-toggle", content: "profile-dropdown-content" },
+        ];
 
-        // Verifica se o clique foi fora do dropdown de perfil
-        if (
-            mobileProfileToggle &&
-            !mobileProfileToggle.contains(e.target) &&
-            !mobileProfileContent.contains(e.target)
-        ) {
-            mobileProfileContent.classList.add("hidden");
-        }
+        allDropdowns.forEach(({ toggle, content }) => {
+            const toggleElement = document.getElementById(toggle);
+            const contentElement = document.getElementById(content);
 
-        // Verifica se o clique foi fora do menu desktop
-        if (
-            desktopPlayToggle &&
-            !desktopPlayToggle.contains(e.target) &&
-            !desktopPlayContent.contains(e.target)
-        ) {
-            desktopPlayContent.classList.add("hidden");
-        }
-
-        // Verifica se o clique foi fora do dropdown de perfil no desktop
-        if (
-            desktopProfileToggle &&
-            !desktopProfileToggle.contains(e.target) &&
-            !desktopProfileContent.contains(e.target)
-        ) {
-            desktopProfileContent.classList.add("hidden");
-        }
+            if (toggleElement && contentElement && !toggleElement.contains(e.target) && !contentElement.contains(e.target)) {
+                contentElement.classList.add("hidden");
+            }
+        });
     });
 });

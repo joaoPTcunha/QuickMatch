@@ -59,6 +59,4 @@
             @endauth
         </div>
     </div>
-
-
 </main>
