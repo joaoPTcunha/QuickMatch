@@ -7,8 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'descricao', 'date_time', 'price', 'modality', 'num_participantes', 'user_id', 'field_id'
+        'field_id',
+        'description',
+        'event_date_time',
+        'price',
+        'modality',
+        'status',
+        'num_participantes',
+        'num_inscritos',
+        'user_id'
     ];
 
     public function user()
@@ -20,5 +30,12 @@ class Event extends Model
     {
         return $this->belongsTo(Field::class);
     }
+
+   public function incrementInscritos()
+{
+    $this->increment('num_inscritos');
 }
 
+
+
+}

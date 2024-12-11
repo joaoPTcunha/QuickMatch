@@ -17,7 +17,9 @@ class CreateEventsTable extends Migration
             $table->string('modality');
             $table->string('status')->default('pending');
             $table->unsignedInteger('num_participantes');
+            $table->unsignedInteger('num_inscritos')->default(0);
             $table->unsignedBigInteger('user_id');
+            $table->json('participants_user_id')->nullable(); // Adicionando o campo JSON para armazenar participantes
             $table->timestamps();
 
             $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');

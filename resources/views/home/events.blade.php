@@ -3,38 +3,100 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
-        <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Eventos Disponíveis</h1>
-        <div class="px-4 sm:px-6 lg:px-8 mb-6">
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8">
-            @foreach($events as $event)
-            <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
-                <div class="flex justify-center mb-4">
-                    <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-36 object-cover rounded-md shadow-md">
+        <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Eventos Disponíveis</h1>
+
+        <form method="GET" action="{{ route('showEvents') }}">
+            @csrf
+            <div class="flex flex-col sm:flex-row justify-between items-center ml-5 mr-5 px-4 text-gray-800 mb-6">
+                <!-- Modalidades como texto clicável (desktop) -->
+                <div class="hidden sm:flex space-x-4">
+                    <span class="filter-link cursor-pointer hover:underline text-gray-700 text-lg" data-filter="all">Todos</span>
+                    <span class="filter-link cursor-pointer hover:underline text-gray-500 text-lg" data-filter="Futebol">Futebol</span>
+                    <span class="filter-link cursor-pointer hover:underline text-orange-500 text-lg" data-filter="Basquetebol">Basquetebol</span>
+                    <span class="filter-link cursor-pointer hover:underline text-green-600 text-lg" data-filter="Ténis">Ténis</span>
+                    <span class="filter-link cursor-pointer hover:underline text-yellow-500 text-lg" data-filter="Voleibol">Voleibol</span>
+                    <span class="filter-link cursor-pointer hover:underline text-green-500 text-lg" data-filter="Padel">Padel</span>
+                    <span class="filter-link cursor-pointer hover:underline text-blue-500 text-lg" data-filter="Futsal">Futsal</span>
                 </div>
-                <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
-                <div class="text-gray-700 text-sm space-y-1">
-                    <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
-                    <p><strong>Campo:</strong> {{ $event->field->name }}</p>
-                    <p><strong>Modalidade:</strong> {{ $event->modality }}</p>
-                    <p><strong>Participantes:</strong> {{ $event->num_participantes }}</p>
-                    <p><strong>Preço:</strong> {{ number_format($event->price, 2) }} €</p>
-                    <p><strong>Nome do Dono:</strong> {{ $event->user->name }}</p>
-                </div>
-                <div class="mt-4 text-center">
-                    <a href="{{ route('new.match', ['id' => $event->field->id]) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300">
-                        Participar
-                    </a>
-                    <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 ml-2" data-location="{{ $event->field->location }}">
-                        Ver Localização
-                    </button>
+        
+                <!-- Modalidades como dropdown (mobile) -->
+                <div class="sm:hidden relative flex justify-center w-full">
+                    <select name="filter" id="mobileFilter" class="w-full sm:w-auto px-2 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+                        <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>Todos</option>
+                        <option value="Futebol" {{ request('filter') == 'Futebol' ? 'selected' : '' }}>Futebol</option>
+                        <option value="Basquetebol" {{ request('filter') == 'Basquetebol' ? 'selected' : '' }}>Basquetebol</option>
+                        <option value="Ténis" {{ request('filter') == 'Ténis' ? 'selected' : '' }}>Ténis</option>
+                        <option value="Voleibol" {{ request('filter') == 'Voleibol' ? 'selected' : '' }}>Voleibol</option>
+                        <option value="Padel" {{ request('filter') == 'Padel' ? 'selected' : '' }}>Padel</option>
+                        <option value="Futsal" {{ request('filter') == 'Futsal' ? 'selected' : '' }}>Futsal</option>
+                    </select>
                 </div>
             </div>
-            @endforeach
-        </div>
-        <div class="mt-6 px-4 sm:px-6 lg:px-8">
-            {{ $events->links() }}
-        </div>
+        
+            <!-- Barra de Pesquisa -->
+            <div class="flex items-center px-4 sm:px-6 lg:px-8 mb-6 space-x-4">
+                <select name="sort" id="sortOptions" class="px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+                    <option value="all">Selecione um filtro..
+                    <option value="recent" {{ request('sort') === 'recent' ? 'selected' : '' }}>Mais Recente</option>
+                    <option value="alphabetical" {{ request('sort') === 'alphabetical' ? 'selected' : '' }}>Ordem Alfabética</option>
+                    <option value="registered" {{ request('sort') === 'registered' ? 'selected' : '' }}>Eventos nos quais estou inscrito</option>
+                </select>
+        
+                <!-- Barra de pesquisa com ícone -->
+                <div class="flex items-center w-full sm:w-1/2 border rounded-lg shadow focus-within:ring-2 focus-within:ring-blue-500">
+                    <input type="text" name="search" id="searchBar" placeholder="Procurar por nome do evento" class="w-full px-4 py-2 focus:outline-none" value="{{ request('search') }}" oninput="this.form.submit()">
+                    <div class="flex items-center px-2 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Grid de Eventos -->
+            <div id="eventGridContainer">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8" id="eventGrid">
+                    @foreach($events as $event)
+                    <!-- Mostrar apenas eventos nos quais o usuário está inscrito, se o filtro "registered" for ativo -->
+                    <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ml-4 mr-4" data-modality="{{ $event->modality }}" data-registered="{{ $event->isSubscribed ? 'true' : 'false' }}">
+                        <div class="flex justify-center mb-4">
+                            <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
+                        <div class="flex justify-between text-gray-700 text-base space-y-1">
+                            <div>
+                                <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
+                                <p><strong>Campo:</strong> {{ $event->field->name }}</p>
+                                <p><strong>Modalidade:</strong> {{ $event->modality }}</p>
+                                <p><strong>Preço:</strong> {{ number_format($event->price, 2) }} €</p>
+                                <p><strong>Nome do Dono:</strong> {{ $event->user->name }}</p>
+                            </div>
+                            <div class="text-right text-lg font-semibold">
+                                <p>{{ $event->num_inscritos }} / {{ $event->num_participantes }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            @php
+                                $isFull = $event->num_inscritos >= $event->num_participantes;
+                            @endphp
+                        
+                            @if ($isFull)
+                            <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Lotado</button>
+                            @elseif ($event->isSubscribed)
+                            <button class="bg-purple-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Já Inscrito</button>
+                            @else
+                            <a href="{{ route('participateInEvent', ['id' => $event->id]) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">Participar</a>
+                            @endif
+                        
+                            <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">Ver Localização</button>
+                        </div>                    
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </form>
+        
+        
     </div>
     @include('home.footer')
 
@@ -73,36 +135,50 @@
             </div>
         </div>
     </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('locationModal');
             const closeModalButtons = document.querySelectorAll('#closeModal, #closeModalButton');
             const openModalButtons = document.querySelectorAll('button[data-location]');
             const travelModeSelect = document.getElementById('travelMode');
-
+            
+            let isModalOpen = false; // Variável para verificar o estado do modal
+            
+            // Abrir a modal ao clicar em um botão de "Ver Localização"
             openModalButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const location = button.getAttribute('data-location');
                     geocodeAddress(location);
-                    modal.classList.remove('hidden');
+                    modal.classList.remove('hidden'); // Mostra a modal
+                    isModalOpen = true; // Atualiza o estado do modal para aberto
                 });
             });
-
+        
+            // Fechar a modal ao clicar nos botões de fechar
             closeModalButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    modal.classList.add('hidden');
+                button.addEventListener('click', function () {
+                    modal.classList.add('hidden'); // Oculta a modal
+                    isModalOpen = false; // Atualiza o estado do modal para fechado
                 });
             });
-
-            travelModeSelect.addEventListener('change', function() {
+        
+            // Fechar a modal ao clicar fora dela (área de fundo), mas só se o modal estiver aberto
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal && isModalOpen) {
+                    modal.classList.add('hidden');
+                    isModalOpen = false; // Atualiza o estado do modal
+                }
+            });
+        
+            // Alterar o modo de viagem (carro, a pé, bicicleta) e atualizar a rota
+            travelModeSelect.addEventListener('change', function () {
                 const location = document.querySelector('button[data-location]:not([style*="display: none;"])').getAttribute('data-location');
                 geocodeAddress(location);
             });
-
-            // Chave de API do Mapbox
-            const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
-
+        
+            // Função para geocodificar o endereço e obter coordenadas
+            const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dDhqMnIxdmdjMmxyM2YyajR0bGQ0In0.4lNVR4phF_p8Kp2RdTQAXQ';
+        
             function geocodeAddress(address) {
                 fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxApiKey}&country=pt`)
                     .then(response => response.json())
@@ -116,32 +192,33 @@
                     })
                     .catch(error => console.error("Erro ao obter as coordenadas:", error));
             }
-
+        
+            // Função para inicializar o mapa no modal
             function initMap(lngLat) {
                 mapboxgl.accessToken = mapboxApiKey;
-                var map = new mapboxgl.Map({
+                const map = new mapboxgl.Map({
                     container: 'modalMap',
                     style: 'mapbox://styles/mapbox/satellite-streets-v12', // Estilo de satélite com rótulos
                     center: lngLat,
                     zoom: 15
                 });
-
-                var fieldMarker = new mapboxgl.Marker({ color: 'green' })
+        
+                const fieldMarker = new mapboxgl.Marker({ color: 'green' })
                     .setLngLat(lngLat)
                     .addTo(map);
-
+        
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
                         const userLngLat = [position.coords.longitude, position.coords.latitude];
-
-                        var userMarker = new mapboxgl.Marker({ color: 'red' })
+        
+                        const userMarker = new mapboxgl.Marker({ color: 'red' })
                             .setLngLat(userLngLat)
                             .addTo(map);
-
+        
                         getRoute(userLngLat, lngLat, map);
-
+        
                         document.getElementById('distanceInfo').classList.remove('hidden');
-                    }, function(error) {
+                    }, function (error) {
                         console.error("Erro ao obter a localização do usuário:", error);
                         document.getElementById('distanceText').innerText = 'Não foi possível obter a sua localização.';
                         document.getElementById('distanceInfo').classList.remove('hidden');
@@ -152,7 +229,8 @@
                     document.getElementById('distanceInfo').classList.remove('hidden');
                 }
             }
-
+        
+            // Função para calcular a rota
             function getRoute(userLngLat, fieldLngLat, map) {
                 const travelMode = travelModeSelect.value;
                 fetch(`https://api.mapbox.com/directions/v5/mapbox/${travelMode}/${userLngLat[0]},${userLngLat[1]};${fieldLngLat[0]},${fieldLngLat[1]}?access_token=${mapboxApiKey}&geometries=geojson`)
@@ -162,7 +240,7 @@
                             const route = data.routes[0];
                             const distanceKm = (route.distance / 1000).toFixed(2);
                             const durationMinutes = Math.round(route.duration / 60); // Tempo em minutos, arredondado
-
+        
                             let durationText;
                             if (durationMinutes >= 60) {
                                 const hours = Math.floor(durationMinutes / 60);
@@ -171,15 +249,15 @@
                             } else {
                                 durationText = `${durationMinutes} min`;
                             }
-
+        
                             document.getElementById('distanceText').innerText = `Distância: ${distanceKm} km`;
                             document.getElementById('durationText').innerText = `Tempo de Viagem: ${durationText}`;
-
+        
                             if (map.getLayer('route')) {
                                 map.removeLayer('route');
                                 map.removeSource('route');
                             }
-
+        
                             map.addLayer({
                                 id: 'route',
                                 type: 'line',
@@ -204,6 +282,73 @@
                     .catch(error => console.error("Erro ao obter a rota:", error));
             }
         });
+        
+</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchBar = document.getElementById('searchBar');
+            const eventGrid = document.getElementById('eventGrid');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const mobileFilter = document.getElementById('mobileFilter');
+            const filterLinks = document.querySelectorAll('.filter-link');
+        
+            // Função para filtrar eventos
+            function filterEvents() {
+                const searchQuery = searchBar.value.toLowerCase();
+                const activeFilter = document.querySelector('.filter-link.text-gray-800')?.getAttribute('data-filter') || 'all';
+                const dropdownFilter = mobileFilter?.value || 'all';
+        
+                // Determina qual filtro foi selecionado (desktop ou mobile)
+                const selectedFilter = window.innerWidth < 640 ? dropdownFilter : activeFilter;
+        
+                let events = Array.from(eventGrid.children);
+                let visibleEventCount = 0;
+        
+                events.forEach(event => {
+                    const name = event.querySelector('h2').textContent.toLowerCase();
+                    const modality = event.getAttribute('data-modality');
+                    
+                    // Lógica para os diferentes filtros
+                    let showEvent = false;
+        
+                    if (selectedFilter === 'all') {
+                        showEvent = name.includes(searchQuery);
+                    } else if (modality === selectedFilter) {
+                        showEvent = name.includes(searchQuery);
+                    }
+        
+                    if (showEvent) {
+                        event.style.display = 'block';
+                        visibleEventCount++;
+                    } else {
+                        event.style.display = 'none';
+                    }
+                });
+        
+                // Mostrar/ocultar mensagem de "Nenhum resultado encontrado"
+                noResultsMessage.classList.toggle('hidden', visibleEventCount > 0);
+            }
+        
+            // Listener para dropdown de mobile
+            if (mobileFilter) {
+                mobileFilter.addEventListener('change', filterEvents);
+            }
+        
+            // Inicialização
+            searchBar.addEventListener('input', filterEvents);
+        
+            filterLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    filterLinks.forEach(btn => btn.classList.remove('text-gray-800'));
+                    this.classList.add('text-gray-800');
+                    filterEvents();
+                });
+            });
+        
+            filterEvents();
+        });
     </script>
+   
+
+
 </body>
-</html>

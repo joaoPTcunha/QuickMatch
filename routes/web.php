@@ -34,6 +34,7 @@ Route::get('/events', [HomeController::class, 'showEvents'])->name('events');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
 
 
+
 #UTILIZADOR LOGADO APRAEECE PARA DAR LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch', [HomeController::class, 'newmatch'])->name('new.match');
@@ -41,6 +42,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
+    Route::get('/event/{id}/participate', [HomeController::class, 'participateInEvent'])->name('participateInEvent');
+    Route::get('/showEvents', action: [HomeController::class, 'showEvents'])->name('showEvents');
+
+
+    
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
     Route::get('/create-field', [HomeController::class, 'createField'])->name('create-field');

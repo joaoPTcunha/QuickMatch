@@ -30,7 +30,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="location" class="block text-sm font-medium text-gray-700">Localização</label>
-                    <input type="text" name="location" id="location" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Localização" autocomplete="off" />
+                    <input type="text" name="location" id="location" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira no mapa a localização do mapa" autocomplete="off" readonly />
                 </div>
 
                 <!-- Seção do Mapa do Mapbox -->

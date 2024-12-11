@@ -16,6 +16,35 @@ class HomeController extends Controller
         return view('home.index');
     }
 
+    public function participateInEvent($id)
+{
+    $event = Event::findOrFail($id); // Obtém o evento com o ID fornecido
+    $userId = Auth::id(); // Obtém o ID do usuário autenticado
+
+    // Verificar se o evento já está cheio
+    if ($event->num_inscritos >= $event->num_participantes) {
+        toastr()->error('O evento já está lotado!');
+        return redirect()->route('events'); // Redireciona de volta para a página de eventos
+    }
+
+    // Verifica se o usuário já está inscrito no evento
+    $participants = json_decode($event->participants_user_id, true) ?? [];
+    if (in_array($userId, array_column($participants, 'user_id'))) {
+        toastr()->error('Você já está inscrito neste evento!');
+        return redirect()->route('events'); // Redireciona de volta para a página de eventos
+    }
+
+    // Adiciona o usuário à lista de participantes
+    $participants[] = ['user_id' => $userId, 'user_name' => Auth::user()->user_name];
+    $event->participants_user_id = json_encode($participants); // Atualiza o campo de participantes
+    $event->increment('num_inscritos'); // Incrementa o número de inscritos
+    $event->save(); // Salva as alterações no banco de dados
+
+    toastr()->success('Você se inscreveu com sucesso no evento!');
+    return redirect()->route('events'); // Redireciona de volta para a página de eventos
+}
+
+
     public function newMatch(Request $request)
     {
         $field = null;
@@ -117,11 +146,11 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->type !== 'user_field') {
-            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
+        //if ($user->type !== 'user_field') {
+            //toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
 
-            return redirect()->route('profile.edit');
-        }
+           // return redirect()->route('profile.edit');
+       // }
 
         $fields = Field::where('user_id', $user->id)->get();
 
@@ -136,30 +165,55 @@ class HomeController extends Controller
     }
 
     public function storeEvent(Request $request)
-    {
-        $validatedData = $request->validate([
-            'field_id' => 'required|exists:fields,id',
-            'descricao' => 'required|string',
-            'date-time' => 'required|date',
-            'price' => 'required|numeric|min:0',
-            'modality' => 'required|string',
-            'num_participantes' => 'required|integer|min:1',
-        ]);
+{
+    // Validação dos dados
+    $validatedData = $request->validate([
+        'field_id' => 'required|exists:fields,id',
+        'descricao' => 'required|string',
+        'date-time' => 'required|date',
+        'price' => 'required|numeric|min:0',
+        'modality' => 'required|string',
+        'num_participantes' => 'required|integer|min:1',
+        'participar' => 'required|boolean',
+    ]);
 
-        $event = new Event();
-        $event->field_id = $validatedData['field_id'];
-        $event->description = $validatedData['descricao'];
-        $event->event_date_time = $validatedData['date-time'];
-        $event->price = $validatedData['price'];
-        $event->modality = $validatedData['modality'];
-        $event->num_participantes = $validatedData['num_participantes'];
-        $event->user_id = Auth::id();
+    // Criação do evento
+    $event = new Event();
+    $event->field_id = $validatedData['field_id'];
+    $event->description = $validatedData['descricao'];
+    $event->event_date_time = $validatedData['date-time'];
+    $event->price = $validatedData['price'];
+    $event->modality = $validatedData['modality'];
+    $event->num_participantes = $validatedData['num_participantes'];
+    $event->num_inscritos = 0; // Nenhum inscrito inicialmente
+    $event->user_id = Auth::id(); // Usuário criador do evento
+    $event->status = 'pending'; // Status padrão
+    $event->participants_user_id = json_encode([]); // Lista de participantes vazia
+    $event->save();
 
+    // Inscrição automática do criador, se desejado
+    if ($validatedData['participar']) {
+        // Incrementar o número de inscritos
+        $event->increment('num_inscritos');
+
+        // Adicionar o criador à lista de participantes
+        $participants = json_decode($event->participants_user_id, true) ?? [];
+        $participants[] = [
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->user_name,
+        ];
+        $event->participants_user_id = json_encode($participants);
+
+        // Salvar as alterações no evento
         $event->save();
-
-        toastr()->success('Evento publicado com sucesso!');
-        return redirect()->route('seematch');
     }
+
+    // Mensagem de sucesso e redirecionamento
+    toastr()->success('Evento publicado com sucesso!');
+    return redirect()->route('seematch');
+}
+
+    
 
     public function storeFields(Request $request)
     {
@@ -255,10 +309,39 @@ class HomeController extends Controller
         return redirect()->route('manage-fields');
     }
 
-    public function showEvents()
-    {
-        $events = Event::with(['field', 'user'])->paginate(9);
-        return view('home.events', compact('events'));
+    public function showEvents(Request $request)
+{
+    $userId = Auth::id(); // Obtém o ID do usuário autenticado
+
+    $query = Event::with(['field', 'user']); // Carrega os eventos com relação aos campos e usuários
+
+    // Filtro de ordenação
+    if ($request->filled('sort')) {
+        if ($request->sort === 'recent') {
+            // Ordena por data mais recente
+            $query->orderBy('event_date_time', 'desc');
+        } elseif ($request->sort === 'alphabetical') {
+            // Ordena por descrição (ordem alfabética)
+            $query->orderBy('description', 'asc');
+        }
     }
+
+    // Paginação dos eventos
+    $events = $query->paginate(9); // Paginação com 9 eventos por página
+
+    // Adiciona a propriedade isSubscribed para cada evento (para ser usado no front-end)
+    foreach ($events as $event) {
+        // Converte o campo 'participants_user_id' (JSON) em array e verifica se o usuário está inscrito
+        $participants = json_decode($event->participants_user_id, true) ?? [];
+        $event->isSubscribed = in_array($userId, array_column($participants, 'user_id'));
+    }
+
+    // Retorna a view com os eventos filtrados
+    return view('home.events', compact('events'));
+}
+
+    
+
+
 
 }

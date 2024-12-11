@@ -69,14 +69,16 @@
             
                 <div class="mb-4">
                     <label for="participar" class="inline-flex items-center">
-                        <input type="checkbox" id="participar" name="participar" class="form-checkbox h-5 w-5 text-blue-600" {{ old('participar') ? 'checked' : '' }}>
+                        <input type="hidden" name="participar" value="0">
+                        <input type="checkbox" id="participar" name="participar" class="form-checkbox h-5 w-5 text-blue-600" value="1" {{ old('participar') ? 'checked' : '' }}>
                         <span class="ml-2 text-gray-700">Participar neste evento</span>
                     </label>
                 </div>
+                
 
                 <div class="mb-4 flex items-center">
                     <label for="num-participantes" class="block text-gray-700 mr-4">Número de Participantes</label>
-                    <input type="number" id="num-participantes" name="num_participantes" class="w-20 p-2 border rounded" value="{{ old('num_participantes', 5) }}" min="1" required>
+                    <input type="number" id="num-participantes" name="num_participantes" class="w-20 p-2 border rounded" value="{{ old('num-participantes', 5) }}" min="1" required>
                 </div>
 
                 <div class="text-right">
