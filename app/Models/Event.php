@@ -16,8 +16,8 @@ class Event extends Model
         'price',
         'modality',
         'status',
-        'num_participantes',
-        'num_inscritos',
+        'num_participants',
+        'num_subscribers',
         'user_id'
     ];
 
@@ -33,7 +33,7 @@ class Event extends Model
 
    public function incrementInscritos()
 {
-    $this->increment('num_inscritos');
+    $this->increment('num_subscribers');
 }
 
 

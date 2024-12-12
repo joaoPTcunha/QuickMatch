@@ -37,7 +37,7 @@ class HomeController extends Controller
         // Adiciona o usuário à lista de participantes
         $participants[] = ['user_id' => $userId, 'user_name' => Auth::user()->user_name];
         $event->participants_user_id = json_encode($participants); // Atualiza o campo de participantes
-        $event->increment('num_inscritos'); // Incrementa o número de inscritos
+        $event->increment('num_subscribers'); // Incrementa o número de inscritos
         $event->save(); // Salva as alterações no banco de dados
 
         toastr()->success('Você inscreveu se com sucesso no evento!');
@@ -180,7 +180,7 @@ class HomeController extends Controller
         $event->event_date_time = $validatedData['date-time'];
         $event->price = $validatedData['price'];
         $event->modality = $validatedData['modality'];
-        $event->num_participants = $validatedData['num_participantes'];
+        $event->num_participants = $validatedData['num_participants'];
         $event->num_subscribers = 0; // Nenhum inscrito inicialmente
         $event->user_id = Auth::id(); // Usuário criador do evento
         $event->status = 'pending'; // Status padrão
