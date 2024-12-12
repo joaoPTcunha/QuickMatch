@@ -145,8 +145,8 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->type !== 'user_field') {
-            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
+        if ($user->usertype !== 'user_field') {
+            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil para ser Dono de um Campo.');
             return redirect()->route('profile.edit');
         }
 

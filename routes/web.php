@@ -46,7 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/showEvents', action: [HomeController::class, 'showEvents'])->name('showEvents');
 
 
-    
+
 
     Route::get('/manage-fields', [HomeController::class, 'manageFields'])->name('manage-fields');
     Route::get('/create-field', [HomeController::class, 'createField'])->name('create-field');
