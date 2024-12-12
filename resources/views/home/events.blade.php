@@ -72,12 +72,12 @@
                                 <p><strong>Nome do Dono:</strong> {{ $event->user->name }}</p>
                             </div>
                             <div class="text-right text-lg font-semibold">
-                                <p>{{ $event->num_inscritos }} / {{ $event->num_participantes }}</p>
+                                <p>{{ $event->num_inscritos }} / {{ $event->num_participants }}</p>
                             </div>
                         </div>
                         <div class="mt-4 text-center">
                             @php
-                                $isFull = $event->num_inscritos >= $event->num_participantes;
+                                $isFull = $event->num_subscribers >= $event->num_participantes;
                             @endphp
                         
                             @if ($isFull)

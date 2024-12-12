@@ -18,7 +18,7 @@
                                 <div class="flex justify-between items-center">
                                     <p><strong>Data e Hora:</strong> {{ $event->event_date_time }}</p>
                                     <p class="text-gray-700 text-lg font-semibold">
-                                        {{ $event->num_inscritos }} / {{ $event->num_participantes }}
+                                        {{ $event->num_subscribers }} / {{ $event->num_participants }}
                                     </p>
                                 </div>
                                 <p><strong>Modalidade:</strong> {{ $event->modality }}</p>

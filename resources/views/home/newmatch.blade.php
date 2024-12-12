@@ -65,8 +65,8 @@
 
 
                 <div class="mb-4 flex items-center">
-                    <label for="num-participantes" class="block text-gray-700 mr-4">Número de Participantes</label>
-                    <input type="number" id="num-participantes" name="num_participantes" class="w-20 p-2 border rounded" value="{{ old('num-participantes', 5) }}" min="1" required>
+                    <label for="num-participants" class="block text-gray-700 mr-4">Número de Participantes</label>
+                    <input type="number" id="num-participants" name="num_participantes" class="w-20 p-2 border rounded" value="{{ old('num-participants', 5) }}" min="1" required>
                 </div>
 
                 <div class="text-right">

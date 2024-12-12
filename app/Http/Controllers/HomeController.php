@@ -207,6 +207,7 @@ class HomeController extends Controller
         return redirect()->route('seematch');
     }
 
+
     private function storeFieldImage($request)
     {
         if ($request->hasFile('image')) {
