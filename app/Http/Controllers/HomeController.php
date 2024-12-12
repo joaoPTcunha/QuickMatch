@@ -22,7 +22,7 @@ class HomeController extends Controller
         $userId = Auth::id(); // Obtém o ID do usuário autenticado
 
         // Verificar se o evento já está cheio
-        if ($event->num_inscritos >= $event->num_participantes) {
+        if ($event->num_subscribers >= $event->num_participants) {
             toastr()->error('O evento já está lotado!');
             return redirect()->route('events'); // Redireciona de volta para a página de eventos
         }
@@ -40,7 +40,7 @@ class HomeController extends Controller
         $event->increment('num_inscritos'); // Incrementa o número de inscritos
         $event->save(); // Salva as alterações no banco de dados
 
-        toastr()->success('Você se inscreveu com sucesso no evento!');
+        toastr()->success('Você inscreveu se com sucesso no evento!');
         return redirect()->route('events'); // Redireciona de volta para a página de eventos
     }
 
@@ -145,10 +145,10 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->type !== 'user_field') {
-            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
-            return redirect()->route('profile.edit');
-        }
+        #if ($user->type !== 'user_field') {
+            #toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
+            #return redirect()->route('profile.edit');
+        #}
 
         $fields = Field::where('user_id', $user->id)->get();
 
@@ -169,7 +169,7 @@ class HomeController extends Controller
             'date-time' => 'required|date',
             'price' => 'required|numeric|min:0',
             'modality' => 'required|string',
-            'num_participantes' => 'required|integer|min:1',
+            'num_participants' => 'required|integer|min:1',
             'participar' => 'required|boolean',
         ]);
 
@@ -180,8 +180,8 @@ class HomeController extends Controller
         $event->event_date_time = $validatedData['date-time'];
         $event->price = $validatedData['price'];
         $event->modality = $validatedData['modality'];
-        $event->num_participantes = $validatedData['num_participantes'];
-        $event->num_inscritos = 0; // Nenhum inscrito inicialmente
+        $event->num_participants = $validatedData['num_participantes'];
+        $event->num_subscribers = 0; // Nenhum inscrito inicialmente
         $event->user_id = Auth::id(); // Usuário criador do evento
         $event->status = 'pending'; // Status padrão
         $event->participants_user_id = json_encode([]); // Lista de participantes vazia
@@ -190,7 +190,7 @@ class HomeController extends Controller
         // Inscrição automática do criador, se desejado
         if ($validatedData['participar']) {
             // Incrementar o número de inscritos
-            $event->increment('num_inscritos');
+            $event->increment('num_subscribers');
             // Adicionar o criador à lista de participantes
             $participants = json_decode($event->participants_user_id, true) ?? [];
             $participants[] = [
@@ -207,6 +207,37 @@ class HomeController extends Controller
         return redirect()->route('seematch');
     }
 
+    public function storeFields(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'modality' => 'required|array',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $modality = $request->input('modality');
+        if (is_array($modality)) {
+            $validatedData['modality'] = implode(',', $modality);
+        } else {
+            $validatedData['modality'] = '';
+        }
+        $imageName = $this->storeFieldImage($request);
+
+        if ($imageName) {
+            $validatedData['image'] = $imageName;
+        }
+        $validatedData['user_id'] = Auth::id();
+
+        Field::create($validatedData);
+
+        toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
+        return redirect()->route('manage-fields');
+    }
+    
     private function storeFieldImage($request)
     {
         if ($request->hasFile('image')) {

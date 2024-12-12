@@ -16,8 +16,8 @@ class CreateEventsTable extends Migration
             $table->decimal('price', 10, 2);
             $table->string('modality');
             $table->string('status')->default('pending');
-            $table->unsignedInteger('num_participantes');
-            $table->unsignedInteger('num_inscritos')->default(0);
+            $table->unsignedInteger('num_participants');
+            $table->unsignedInteger('num_subscribers')->default(0);
             $table->unsignedBigInteger('user_id');
             $table->json('participants_user_id')->nullable(); // Adicionando o campo JSON para armazenar participantes
             $table->timestamps();
