@@ -22,7 +22,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-700">Nome do Campo</label>
-                    <input type="text" name="name" id="name" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o nome do campo" />
+                    <input type="text" name="name" id="name" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o nome do campo" autocomplete="name" />
                 </div>
                 <div class="mb-4">
                     <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
@@ -45,40 +45,41 @@
                     <input type="text" name="price" id="price" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o valor" />
                 </div>
                 <div class="mb-4">
-                    <label for="modality" class="block text-sm font-medium text-gray-700">Modalidades</label>
+                    <label for="modality-futebol" class="block text-sm font-medium text-gray-700">Modalidades</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="futebol" class="mr-2"> Futebol
+                            <input type="checkbox" id="modality-futebol" name="modality[]" value="futebol" class="mr-2"> Futebol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="futebol 7" class="mr-2"> Futebol 7
+                            <input type="checkbox" id="modality-futebol7" name="modality[]" value="futebol 7" class="mr-2"> Futebol 7
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="futsal" class="mr-2"> Futsal
+                            <input type="checkbox" id="modality-futsal" name="modality[]" value="futsal" class="mr-2"> Futsal
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="basquetebol" class="mr-2"> Basquetebol
+                            <input type="checkbox" id="modality-basquetebol" name="modality[]" value="basquetebol" class="mr-2"> Basquetebol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="voleibol" class="mr-2"> Voleibol
+                            <input type="checkbox" id="modality-voleibol" name="modality[]" value="voleibol" class="mr-2"> Voleibol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="andebol" class="mr-2"> Andebol
+                            <input type="checkbox" id="modality-andebol" name="modality[]" value="andebol" class="mr-2"> Andebol
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="ténis" class="mr-2"> Ténis
+                            <input type="checkbox" id="modality-tenis" name="modality[]" value="ténis" class="mr-2"> Ténis
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="raguebi" class="mr-2"> Raguebi
+                            <input type="checkbox" id="modality-raguebi" name="modality[]" value="raguebi" class="mr-2"> Raguebi
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="padel" class="mr-2"> Padel
+                            <input type="checkbox" id="modality-padel" name="modality[]" value="padel" class="mr-2"> Padel
                         </label>
                         <label class="flex items-center">
-                            <input type="checkbox" name="modality[]" value="outro" class="mr-2"> Outro
+                            <input type="checkbox" id="modality-outro" name="modality[]" value="outro" class="mr-2"> Outro
                         </label>
                     </div>
                 </div>
+
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                     Adicionar Campo
                 </button>
@@ -91,7 +92,7 @@
             height: 600px;
         }
     </style>
-    
+
     <script>
         let map, marker;
 
@@ -109,7 +110,9 @@
             });
 
             // Adiciona marcador padrão
-            marker = new mapboxgl.Marker({ draggable: true })
+            marker = new mapboxgl.Marker({
+                    draggable: true
+                })
                 .setLngLat([-8.2242, 39.3999])
                 .addTo(map)
                 .on('dragend', function() {
@@ -117,7 +120,7 @@
                     reverseGeocode(lngLat);
                 });
 
-            // Adiciona o Geocoder do Mapbox
+            // Adiciona o Geocoder ao mapa
             const geocoder = new MapboxGeocoder({
                 accessToken: mapboxApiKey,
                 mapboxgl: mapboxgl,
@@ -125,7 +128,6 @@
                 countries: 'pt'
             });
 
-            // Adiciona o Geocoder ao mapa
             map.addControl(geocoder, 'top-right');
 
             // Ouvinte de clique no mapa
@@ -145,7 +147,9 @@
             if (marker) {
                 marker.remove();
             }
-            marker = new mapboxgl.Marker({ draggable: true })
+            marker = new mapboxgl.Marker({
+                    draggable: true
+                })
                 .setLngLat(lngLat)
                 .addTo(map)
                 .on('dragend', function() {
@@ -188,4 +192,5 @@
         });
     </script>
 </body>
+
 </html>
