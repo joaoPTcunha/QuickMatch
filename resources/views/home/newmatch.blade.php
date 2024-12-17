@@ -41,17 +41,7 @@
 
                 <div class="mb-4">
                     <label for="price" class="block text-gray-700">Preço Total (€)</label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        class="w-full mt-2 p-2 border rounded"
-                        placeholder="Preço do Evento"
-                        value="{{ old('price', $field->price ?? '') }}"
-                        min="0"
-                        step="0.01"
-                        required
-                        readonly>
+                    <input type="number" id="price" name="price" class="w-full mt-2 p-2 border rounded" placeholder="Preço do Evento" value="{{ old('price', $field->price ?? '') }}" required readonly>
                 </div>
 
                 <div class="mb-4">

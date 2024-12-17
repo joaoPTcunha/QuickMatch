@@ -117,7 +117,7 @@
                     <a href="{{ url('/profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver Perfil</a>
                     <a href="{{ url('/help') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Central de Ajuda</a>
 
-                    @if(auth()->check() && auth()->user()->user_type === 'user_field')
+                    @if (auth()->check() && auth()->user()->usertype === 'user_field')
                     <a href="{{ url('/manage-fields') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Gerir campos</a>
                     @endif
 

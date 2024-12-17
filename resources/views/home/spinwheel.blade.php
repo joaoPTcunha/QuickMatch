@@ -23,18 +23,13 @@
             left: calc(25% + 0.3rem);
         }
     }
-
-    .team-table-container td {
-        color: white;
-    }
 </style>
 
-
-<body class="bg-gray-200 flex flex-col min-h-screen">
+<body class="bg-gray-100 flex flex-col min-h-screen">
     <div class="flex justify-center w-full max-w-6xl mx-auto p-4">
         <div class="text-center">
             <h1 class="font-semibold text-3xl sm:text-4xl text-black">Bem-vindo à Roleta</h1>
-            <p class="text-lg text-gray-800 mt-2 mx-auto max-w-xl leading-relaxed">
+            <p class="text-lg text-gray-700 mt-2 mx-auto max-w-xl leading-relaxed">
                 Adicione os jogadores à lista, escolha o número de equipas e o tipo de desporto. Ao girar a roleta, os jogadores serão distribuídos automaticamente entre as equipas. Divirta-se e boa sorte!
             </p>
         </div>
@@ -52,37 +47,37 @@
         </div>
 
         <div class="lg:w-1/2 w-full">
-            <div class="flex flex-wrap justify-center gap-5 mb-5 bg-gray-800 p-4 rounded-lg shadow-md">
-                <label for="team-count" class="text-white mt-2">Número de Equipas:</label>
-                <input type="number" id="team-count" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto" placeholder="Número de equipas" min="2" value="2">                <select id="sport-type" class="p-2 rounded bg-gray-600 text-white border-none w-full sm:w-auto">
-                    <option value="futebol">Futebol</option>
-                    <option value="futebol 7">Futebol 7</option>
-                    <option value="futsal">Futsal</option>
-                    <option value="basquetebol">Basquetebol</option>
-                    <option value="voleibol">Voleibol</option>
-                    <option value="andebol">Andebol</option>
-                    <option value="ténis">Ténis</option>
-                    <option value="raguebi">Raguebi</option>
-                    <option value="padel">Padel</option>
+            <div class="flex flex-wrap justify-center gap-5 mb-5 bg-white p-4 rounded-lg shadow-md border">
+                <label for="team-count" class="text-gray-800 mt-2">Número de Equipas:</label>
+                <input type="number" id="team-count" class="p-2 rounded bg-gray-100 text-gray-800 border border-gray-300 w-full sm:w-auto" placeholder="Número de equipas" min="2" value="2">
+                <select id="sport-type" class="p-2 rounded bg-gray-100 text-gray-800 border border-gray-300 w-full sm:w-auto">
+                    <option value="2x2">2x2</option>
+                    <option value="3x3">3x3</option>
+                    <option value="4x4">4x4</option>
+                    <option value="5x5">5x5</option>
+                    <option value="6x6">6x6</option>
+                    <option value="7x7">7x7</option>
+                    <option value="10x10">10x10</option>
+                    <option value="12x12">12x12</option>
                     <option value="outro">Outro</option>
                 </select>
             </div>
 
             <div class="w-full space-y-4">
-                <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-800 text-white border-none placeholder-gray-400" placeholder="Adiciona os jogadores aqui.."></textarea>
+                <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-100 text-gray-800 border border-gray-300 placeholder-gray-400" placeholder="Adiciona os jogadores aqui.."></textarea>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
-                    <button class="btn p-3 bg-green-500 text-white rounded shadow transition duration-300 hover:bg-green-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogadores</button>
+                    <button class="btn p-3 bg-blue-500 text-white rounded shadow transition duration-300 hover:bg-blue-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogadores</button>
                 </div>
             </div>
 
-            <div class="team-table-container w-full  p-4 mx-auto overflow-x-auto">
+            <div class="team-table-container w-full p-4 mx-auto overflow-x-auto">
                 <h2 class="text-center text-lg font-semibold text-black mb-3">Distribuição de Jogadores</h2>
-                <table id="team-table" class="min-w-full table-auto bg-gray-800 text-sm">
+                <table id="team-table" class="min-w-full table-auto bg-white text-sm border border-gray-300">
                     <thead>
                         <tr>
-                            <th class="border-blue-600 text-white p-2 bg-blue-700">Equipa</th>
-                            <th class="border-blue-600 text-white p-2 bg-blue-700">Jogadores</th>
+                            <th class="border-gray-300 text-gray-800 p-2 bg-green-500">Equipa</th>
+                            <th class="border-gray-300 text-gray-800 p-2 bg-blue-500">Jogadores</th>
                         </tr>
                     </thead>
                     <tbody id="team-body">
@@ -94,8 +89,6 @@
 
     @include('home.footer')
 </body>
-
-<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 
 <script>
     function randomColor() {
@@ -303,7 +296,7 @@
             updateTeamDisplay();
 
             Swal.fire({
-                title: `🎉 Jogador selecionado: ${currentPlayer}!`,
+                title: `Jogador selecionado: ${currentPlayer}!`,
                 icon: 'success',
                 timer: 3000,
                 showConfirmButton: false,
@@ -387,32 +380,29 @@
         let minPlayersPerTeam;
 
         switch (sportType) {
-            case 'futebol':
-                minPlayersPerTeam = 11;
+            case '2x2':
+                minPlayersPerTeam = 2;
                 break;
-            case 'futebol 7':
-                minPlayersPerTeam = 7;
+            case '3x3':
+                minPlayersPerTeam = 3;
                 break;
-            case 'futsal':
+            case '4x4':
+                minPlayersPerTeam = 4;
+                break;
+            case '5x5':
                 minPlayersPerTeam = 5;
                 break;
-            case 'basquetebol':
-                minPlayersPerTeam = 5;
-                break;
-            case 'voleibol':
+            case '6x6':
                 minPlayersPerTeam = 6;
                 break;
-            case 'andebol':
+            case '7x7':
                 minPlayersPerTeam = 7;
                 break;
-            case 'ténis':
-                minPlayersPerTeam = 2;
+            case '10x10':
+                minPlayersPerTeam = 10;
                 break;
-            case 'raguebi':
-                minPlayersPerTeam = 15;
-                break;
-            case 'padel':
-                minPlayersPerTeam = 2;
+            case '12x12':
+                minPlayersPerTeam = 12;
                 break;
             default:
                 minPlayersPerTeam = 0;

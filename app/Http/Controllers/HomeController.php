@@ -145,10 +145,10 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        #if ($user->type !== 'user_field') {
-            #toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
-            #return redirect()->route('profile.edit');
-        #}
+        if ($user->usertype !== 'user_field') {
+            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
+            return redirect()->route('profile.edit');
+        }
 
         $fields = Field::where('user_id', $user->id)->get();
 
@@ -237,7 +237,7 @@ class HomeController extends Controller
         toastr()->timeout(10000)->closeButton()->success('Pedido de adição de campo com sucesso');
         return redirect()->route('manage-fields');
     }
-    
+
     private function storeFieldImage($request)
     {
         if ($request->hasFile('image')) {
@@ -249,13 +249,14 @@ class HomeController extends Controller
         return null;
     }
 
-    public function editFields($id)
+    public function editField($id)
     {
         $field = Field::findOrFail($id);
         return view('home.edit-fields', compact('field'));
     }
 
-    public function updateFields(Request $request, $id)
+
+    public function updateField(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
