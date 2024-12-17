@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
-    Route::get('/event/{id}/participate', [HomeController::class, 'participateInEvent'])->name('participateInEvent');
+    Route::get('participate-in-event/{id}', [HomeController::class, 'participateInEvent'])->name('participateInEvent');    
     Route::get('/showEvents', action: [HomeController::class, 'showEvents'])->name('showEvents');
 
 

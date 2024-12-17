@@ -5,7 +5,7 @@
     <div class="flex-grow">
         <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Eventos Disponíveis</h1>
 
-        <form method="GET" action="{{ route('showEvents') }}">
+        <form method="GET" action="{{ route('showEvents') }}" onsubmit="return false;">
             @csrf
             <div class="flex flex-col sm:flex-row justify-between items-center ml-5 mr-5 px-4 text-gray-800 mb-6">
                 <!-- Modalidades como texto clicável (desktop) -->
@@ -44,15 +44,12 @@
         
                 <!-- Barra de pesquisa com ícone -->
                 <div class="flex items-center w-full sm:w-1/2 border rounded-lg shadow focus-within:ring-2 focus-within:ring-blue-500">
-                    <input type="text" name="search" id="searchBar" placeholder="Procurar por nome do evento" class="w-full px-4 py-2 focus:outline-none" value="{{ request('search') }}" oninput="this.form.submit()">
-                    <div class="flex items-center px-2 text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
-                    </div>
+                    <input type="text" name="search" id="searchBar" placeholder="Procurar por nome do evento" class="w-full px-4 py-2 focus:outline-none" value="{{ request('search') }}">
                 </div>
             </div>
-        
+
+            <!-- Mensagem de nenhum resultado (moved above the grid) -->
+            <div id="noResultsMessage" class="text-center text-gray-500 text-lg mt-4 hidden">Nenhum resultado encontrado.</div>
             <!-- Grid de Eventos -->
             <div id="eventGridContainer">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8" id="eventGrid">
@@ -72,12 +69,12 @@
                                 <p><strong>Nome do Dono:</strong> {{ $event->user->name }}</p>
                             </div>
                             <div class="text-right text-lg font-semibold">
-                                <p>{{ $event->num_inscritos }} / {{ $event->num_participants }}</p>
+                                {{ $event->num_subscribers }} / {{ $event->num_participants }}
                             </div>
                         </div>
                         <div class="mt-4 text-center">
                             @php
-                                $isFull = $event->num_subscribers >= $event->num_participantes;
+                                $isFull = $event->num_subscribers >= $event->num_participants;
                             @endphp
                         
                             @if ($isFull)
@@ -85,7 +82,7 @@
                             @elseif ($event->isSubscribed)
                             <button class="bg-purple-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Já Inscrito</button>
                             @else
-                            <a href="{{ route('participateInEvent', ['id' => $event->id]) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">Participar</a>
+                            <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">Participar</a>
                             @endif
                         
                             <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">Ver Localização</button>
@@ -110,12 +107,12 @@
                     </svg>
                 </button>
             </div>
-            <div class="mb-4">
-            </div>
-            <div id="distanceInfo" class="mt-4 text-gray-700 text-center">
+    
+            <div id="distanceInfo" class="mt-4 text-gray-700 text-center mb-4">
                 <p id="distanceText" class="text-xl font-bold"></p>
                 <p id="durationText" class="text-lg"></p>
             </div>
+            
             <select id="travelMode" class="shadow appearance-none border rounded p-2 font-semibold text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full sm:w-auto">
                 <option value="driving">
                     🚗 Carro
@@ -126,8 +123,15 @@
                 <option value="cycling">
                     🚴‍♂️ Bicicleta
                 </option>
-            </select>            
+            </select>    
+            
+            <!-- Exibe o nome da localização -->
+            <label id="locationName" class="w-full sm:w-auto px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" type="text" readonly placeholder="Nome da Localização">
+            </label>
+                   
+            
             <div id="modalMap" class="h-96 mt-4"></div>
+    
             <div class="mt-4 flex justify-end">
                 <button id="closeModalButton" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
                     Fechar
@@ -137,54 +141,64 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Variáveis de elementos
             const modal = document.getElementById('locationModal');
             const closeModalButtons = document.querySelectorAll('#closeModal, #closeModalButton');
             const openModalButtons = document.querySelectorAll('button[data-location]');
             const travelModeSelect = document.getElementById('travelMode');
-            
-            let isModalOpen = false; // Variável para verificar o estado do modal
-            
-            // Abrir a modal ao clicar em um botão de "Ver Localização"
+            const searchBar = document.getElementById('searchBar');
+            const searchIcon = document.getElementById('searchIcon');
+            const eventGrid = document.getElementById('eventGrid');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const mobileFilter = document.getElementById('mobileFilter');
+            const filterLinks = document.querySelectorAll('.filter-link');
+    
+            let isModalOpen = false; // Estado do modal
+    
+            // Abrir o modal com a localização do evento
             openModalButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const location = button.getAttribute('data-location');
                     geocodeAddress(location);
-                    modal.classList.remove('hidden'); // Mostra a modal
-                    isModalOpen = true; // Atualiza o estado do modal para aberto
+                    modal.classList.remove('hidden');
+                    isModalOpen = true;
                 });
             });
-        
-            // Fechar a modal ao clicar nos botões de fechar
+    
+            // Fechar o modal
             closeModalButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    modal.classList.add('hidden'); // Oculta a modal
-                    isModalOpen = false; // Atualiza o estado do modal para fechado
+                    modal.classList.add('hidden');
+                    isModalOpen = false;
                 });
             });
-        
-            // Fechar a modal ao clicar fora dela (área de fundo), mas só se o modal estiver aberto
+    
+            // Fechar o modal clicando fora
             modal.addEventListener('click', function (e) {
                 if (e.target === modal && isModalOpen) {
                     modal.classList.add('hidden');
-                    isModalOpen = false; // Atualiza o estado do modal
+                    isModalOpen = false;
                 }
             });
-        
-            // Alterar o modo de viagem (carro, a pé, bicicleta) e atualizar a rota
+    
+            // Alterar o modo de viagem e atualizar a rota
             travelModeSelect.addEventListener('change', function () {
                 const location = document.querySelector('button[data-location]:not([style*="display: none;"])').getAttribute('data-location');
                 geocodeAddress(location);
             });
-        
-            // Função para geocodificar o endereço e obter coordenadas
-            const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dDhqMnIxdmdjMmxyM2YyajR0bGQ0In0.4lNVR4phF_p8Kp2RdTQAXQ';
-        
+    
+            // API Key do Mapbox
+            const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
+    
+            // Função para geocodificar o endereço
             function geocodeAddress(address) {
                 fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxApiKey}&country=pt`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.features.length > 0) {
                             const lngLat = data.features[0].center;
+                            const placeName = data.features[0].place_name;
+                            displayLocation(placeName);
                             initMap(lngLat);
                         } else {
                             alert('Localização não encontrada.');
@@ -192,45 +206,44 @@
                     })
                     .catch(error => console.error("Erro ao obter as coordenadas:", error));
             }
-        
-            // Função para inicializar o mapa no modal
+    
+            // Exibir o nome do local no modal
+            function displayLocation(placeName) {
+                const locationText = document.getElementById('locationName');
+                locationText.textContent = placeName;
+            }
+    
+            // Inicializar o mapa no modal
             function initMap(lngLat) {
                 mapboxgl.accessToken = mapboxApiKey;
                 const map = new mapboxgl.Map({
                     container: 'modalMap',
-                    style: 'mapbox://styles/mapbox/satellite-streets-v12', // Estilo de satélite com rótulos
+                    style: 'mapbox://styles/mapbox/satellite-streets-v12',
                     center: lngLat,
                     zoom: 15
                 });
-        
-                const fieldMarker = new mapboxgl.Marker({ color: 'green' })
+    
+                new mapboxgl.Marker({ color: 'green' })
                     .setLngLat(lngLat)
                     .addTo(map);
-        
+    
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
                         const userLngLat = [position.coords.longitude, position.coords.latitude];
-        
-                        const userMarker = new mapboxgl.Marker({ color: 'red' })
+                        new mapboxgl.Marker({ color: 'red' })
                             .setLngLat(userLngLat)
                             .addTo(map);
-        
                         getRoute(userLngLat, lngLat, map);
-        
-                        document.getElementById('distanceInfo').classList.remove('hidden');
                     }, function (error) {
                         console.error("Erro ao obter a localização do usuário:", error);
                         document.getElementById('distanceText').innerText = 'Não foi possível obter a sua localização.';
-                        document.getElementById('distanceInfo').classList.remove('hidden');
                     });
                 } else {
-                    console.error("Geolocalização não suportada pelo navegador.");
-                    document.getElementById('distanceText').innerText = 'Geolocalização não suportada pelo navegador.';
-                    document.getElementById('distanceInfo').classList.remove('hidden');
+                    console.error("Geolocalização não suportada.");
                 }
             }
-        
-            // Função para calcular a rota
+    
+            // Calcular a rota entre o usuário e o local
             function getRoute(userLngLat, fieldLngLat, map) {
                 const travelMode = travelModeSelect.value;
                 fetch(`https://api.mapbox.com/directions/v5/mapbox/${travelMode}/${userLngLat[0]},${userLngLat[1]};${fieldLngLat[0]},${fieldLngLat[1]}?access_token=${mapboxApiKey}&geometries=geojson`)
@@ -239,25 +252,20 @@
                         if (data.routes.length > 0) {
                             const route = data.routes[0];
                             const distanceKm = (route.distance / 1000).toFixed(2);
-                            const durationMinutes = Math.round(route.duration / 60); // Tempo em minutos, arredondado
-        
-                            let durationText;
-                            if (durationMinutes >= 60) {
-                                const hours = Math.floor(durationMinutes / 60);
-                                const minutes = durationMinutes % 60;
-                                durationText = `${hours}h ${minutes}min`;
-                            } else {
-                                durationText = `${durationMinutes} min`;
-                            }
-        
+                            const durationMinutes = Math.round(route.duration / 60);
+    
+                            const durationText = durationMinutes >= 60
+                                ? `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}min`
+                                : `${durationMinutes} min`;
+    
                             document.getElementById('distanceText').innerText = `Distância: ${distanceKm} km`;
                             document.getElementById('durationText').innerText = `Tempo de Viagem: ${durationText}`;
-        
+    
                             if (map.getLayer('route')) {
                                 map.removeLayer('route');
                                 map.removeSource('route');
                             }
-        
+    
                             map.addLayer({
                                 id: 'route',
                                 type: 'line',
@@ -272,71 +280,46 @@
                                 paint: {
                                     'line-color': 'blue',
                                     'line-width': 6,
-                                    'line-opacity': 1
+                                    'line-opacity': 0.75
                                 }
                             });
                         } else {
-                            alert('Não foi possível obter a rota.');
+                            alert('Não foi possível calcular a rota.');
                         }
                     })
                     .catch(error => console.error("Erro ao obter a rota:", error));
             }
-        });
-        
-</script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchBar = document.getElementById('searchBar');
-            const eventGrid = document.getElementById('eventGrid');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            const mobileFilter = document.getElementById('mobileFilter');
-            const filterLinks = document.querySelectorAll('.filter-link');
-        
-            // Função para filtrar eventos
+    
             function filterEvents() {
                 const searchQuery = searchBar.value.toLowerCase();
                 const activeFilter = document.querySelector('.filter-link.text-gray-800')?.getAttribute('data-filter') || 'all';
                 const dropdownFilter = mobileFilter?.value || 'all';
-        
-                // Determina qual filtro foi selecionado (desktop ou mobile)
                 const selectedFilter = window.innerWidth < 640 ? dropdownFilter : activeFilter;
-        
-                let events = Array.from(eventGrid.children);
+            
                 let visibleEventCount = 0;
-        
-                events.forEach(event => {
+            
+                Array.from(eventGrid.children).forEach(event => {
                     const name = event.querySelector('h2').textContent.toLowerCase();
                     const modality = event.getAttribute('data-modality');
-                    
-                    // Lógica para os diferentes filtros
-                    let showEvent = false;
-        
-                    if (selectedFilter === 'all') {
-                        showEvent = name.includes(searchQuery);
-                    } else if (modality === selectedFilter) {
-                        showEvent = name.includes(searchQuery);
-                    }
-        
-                    if (showEvent) {
-                        event.style.display = 'block';
-                        visibleEventCount++;
-                    } else {
-                        event.style.display = 'none';
-                    }
+            
+                    // Se o campo de pesquisa estiver vazio, exibe todos os eventos que correspondem ao filtro
+                    const showEvent = searchQuery === '' 
+                        ? (selectedFilter === 'all' || modality === selectedFilter) 
+                        : (selectedFilter === 'all' || modality === selectedFilter) && name.includes(searchQuery);
+            
+                    event.style.display = showEvent ? 'block' : 'none';
+                    if (showEvent) visibleEventCount++;
                 });
-        
-                // Mostrar/ocultar mensagem de "Nenhum resultado encontrado"
+            
+                // Exibe ou oculta a mensagem de "Nenhum resultado encontrado"
                 noResultsMessage.classList.toggle('hidden', visibleEventCount > 0);
             }
         
-            // Listener para dropdown de mobile
-            if (mobileFilter) {
-                mobileFilter.addEventListener('change', filterEvents);
-            }
-        
-            // Inicialização
+            // Listener para a pesquisa automática
             searchBar.addEventListener('input', filterEvents);
         
+            // Listeners para filtros
+            if (mobileFilter) mobileFilter.addEventListener('change', filterEvents);
             filterLinks.forEach(link => {
                 link.addEventListener('click', function () {
                     filterLinks.forEach(btn => btn.classList.remove('text-gray-800'));
@@ -344,11 +327,26 @@
                     filterEvents();
                 });
             });
-        
-            filterEvents();
         });
-    </script>
-   
 
+        function confirmParticipation(eventId) {
+            Swal.fire({
+                title: 'Confirmação',
+                text: "Deseja participar deste evento?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Não'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If user confirms, redirect to participation route
+                    window.location.href = "{{ route('participateInEvent', ['id' => ':id']) }}".replace(':id', eventId);
+                }
+            });
+        }
+        
+    </script>
 
 </body>
