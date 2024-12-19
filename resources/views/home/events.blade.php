@@ -5,23 +5,37 @@
     <div class="flex-grow">
         <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Eventos Disponíveis</h1>
 
-        <form method="GET" action="{{ route('showEvents') }}" onsubmit="return false;">
+        <form method="GET" action="{{ route('showEvents') }}">
             @csrf
-            <div class="flex flex-col sm:flex-row justify-between items-center ml-5 mr-5 px-4 text-gray-800 mb-6">
+            <div class="flex flex-wrap justify-between items-center ml-5 mr-5 px-4 text-gray-800 mb-6 space-y-4 sm:space-y-0">
                 <!-- Modalidades como texto clicável (desktop) -->
-                <div class="hidden sm:flex space-x-4">
-                    <span class="filter-link cursor-pointer hover:underline text-gray-700 text-lg" data-filter="all">Todos</span>
-                    <span class="filter-link cursor-pointer hover:underline text-gray-500 text-lg" data-filter="Futebol">Futebol</span>
-                    <span class="filter-link cursor-pointer hover:underline text-orange-500 text-lg" data-filter="Basquetebol">Basquetebol</span>
-                    <span class="filter-link cursor-pointer hover:underline text-green-600 text-lg" data-filter="Ténis">Ténis</span>
-                    <span class="filter-link cursor-pointer hover:underline text-yellow-500 text-lg" data-filter="Voleibol">Voleibol</span>
-                    <span class="filter-link cursor-pointer hover:underline text-green-500 text-lg" data-filter="Padel">Padel</span>
-                    <span class="filter-link cursor-pointer hover:underline text-blue-500 text-lg" data-filter="Futsal">Futsal</span>
+                <div class="hidden sm:flex flex-wrap space-x-4">
+                    <span class="filter-link cursor-pointer hover:underline text-gray-700 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'all']) }}" class="{{ request('filter') == 'all' ? 'text-gray-800' : 'text-gray-700' }}">Todos</a>
+                    </span>
+                    <span class="filter-link cursor-pointer hover:underline text-gray-500 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'Futebol']) }}" class="{{ request('filter') == 'Futebol' ? 'text-gray-800' : 'text-gray-500' }}">Futebol</a>
+                    </span>
+                    <span class="filter-link cursor-pointer hover:underline text-orange-500 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'Basquetebol']) }}" class="{{ request('filter') == 'Basquetebol' ? 'text-gray-800' : 'text-orange-500' }}">Basquetebol</a>
+                    </span>
+                    <span class="filter-link cursor-pointer hover:underline text-green-600 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'Ténis']) }}" class="{{ request('filter') == 'Ténis' ? 'text-gray-800' : 'text-green-600' }}">Ténis</a>
+                    </span>
+                    <span class="filter-link cursor-pointer hover:underline text-yellow-500 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'Voleibol']) }}" class="{{ request('filter') == 'Voleibol' ? 'text-gray-800' : 'text-yellow-500' }}">Voleibol</a>
+                    </span>
+                    <span class="filter-link cursor-pointer hover:underline text-green-500 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'Padel']) }}" class="{{ request('filter') == 'Padel' ? 'text-gray-800' : 'text-green-500' }}">Padel</a>
+                    </span>
+                    <span class="filter-link cursor-pointer hover:underline text-blue-500 text-lg">
+                        <a href="{{ route('showEvents', ['filter' => 'Futsal']) }}" class="{{ request('filter') == 'Futsal' ? 'text-gray-800' : 'text-blue-500' }}">Futsal</a>
+                    </span>
                 </div>
         
                 <!-- Modalidades como dropdown (mobile) -->
-                <div class="sm:hidden relative flex justify-center w-full">
-                    <select name="filter" id="mobileFilter" class="w-full sm:w-auto px-2 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+                <div class="sm:hidden relative flex justify-start w-full">
+                    <select name="filter" id="mobileFilter" class="w-full px-2 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
                         <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>Todos</option>
                         <option value="Futebol" {{ request('filter') == 'Futebol' ? 'selected' : '' }}>Futebol</option>
                         <option value="Basquetebol" {{ request('filter') == 'Basquetebol' ? 'selected' : '' }}>Basquetebol</option>
@@ -33,40 +47,41 @@
                 </div>
             </div>
         
-            <!-- Barra de Pesquisa -->
-            <div class="flex items-center px-4 sm:px-6 lg:px-8 mb-6 space-x-4">
-                <select name="sort" id="sortOptions" class="px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+
+            <!-- Filtro de ordens -->
+            <div class="flex flex-wrap items-center px-4 sm:px-6 lg:px-8 mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+                <select name="sort" id="sortOptions" class="w-full sm:w-auto px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
                     <option value="all">Selecione um filtro..
                     <option value="recent" {{ request('sort') === 'recent' ? 'selected' : '' }}>Mais Recente</option>
                     <option value="alphabetical" {{ request('sort') === 'alphabetical' ? 'selected' : '' }}>Ordem Alfabética</option>
                     <option value="registered" {{ request('sort') === 'registered' ? 'selected' : '' }}>Eventos nos quais estou inscrito</option>
                 </select>
-        
-                <!-- Barra de pesquisa com ícone -->
-                <div class="flex items-center w-full sm:w-1/2 border rounded-lg shadow focus-within:ring-2 focus-within:ring-blue-500">
-                    <input type="text" name="search" id="searchBar" placeholder="Procurar por nome do evento" class="w-full px-4 py-2 focus:outline-none" value="{{ request('search') }}">
+
+                <!-- Barra de pesquisa -->
+                <div class="flex items-center w-full sm:w-1/2 focus:ring-2 focus:ring-blue-500">
+                    <input type="text" name="search" id="searchBar" placeholder="Procurar por nome do evento" class="w-full px-4 py-2 border rounded-lg focus:ring-2" value="{{ request('search') }}">
                 </div>
             </div>
 
-            <!-- Mensagem de nenhum resultado (moved above the grid) -->
+            <!-- Mensagem de nenhum resultado -->
             <div id="noResultsMessage" class="text-center text-gray-500 text-lg mt-4 hidden">Nenhum resultado encontrado.</div>
+
             <!-- Grid de Eventos -->
             <div id="eventGridContainer">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8" id="eventGrid">
                     @foreach($events as $event)
-                    <!-- Mostrar apenas eventos nos quais o usuário está inscrito, se o filtro "registered" for ativo -->
-                    <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ml-4 mr-4" data-modality="{{ $event->modality }}" data-registered="{{ $event->isSubscribed ? 'true' : 'false' }}">
+                    <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                         <div class="flex justify-center mb-4">
                             <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                         </div>
                         <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
                         <div class="flex justify-between text-gray-700 text-base space-y-1">
                             <div>
-                                <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
-                                <p><strong>Campo:</strong> {{ $event->field->name }}</p>
-                                <p><strong>Modalidade:</strong> {{ $event->modality }}</p>
-                                <p><strong>Preço:</strong> {{ number_format($event->price, 2) }} €</p>
-                                <p><strong>Nome do Dono:</strong> {{ $event->user->name }}</p>
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ number_format($event->price, 2) }} €</p>
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Criador:</span> {{ $event->user->name }}</p>
                             </div>
                             <div class="text-right text-lg font-semibold">
                                 {{ $event->num_subscribers }} / {{ $event->num_participants }}
@@ -77,23 +92,29 @@
                                 $isFull = $event->num_subscribers >= $event->num_participants;
                             @endphp
                         
-                            @if ($isFull)
-                            <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Lotado</button>
-                            @elseif ($event->isSubscribed)
-                            <button class="bg-purple-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Já Inscrito</button>
+                            @if ($event->isSubscribed)
+                                <!-- Botão "Cancelar" para inscritos -->
+                                <a href="#" onclick="cancelParticipation({{ $event->id }}); return false;" 
+                                   class="inline-block bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 w-full sm:w-auto mb-2">
+                                   Cancelar Inscrição
+                                </a>
+                            @elseif ($isFull)
+                                <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Lotado</button>
                             @else
-                            <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">Participar</a>
+                                <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;" 
+                                   class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">
+                                   Participar
+                                </a>
                             @endif
                         
-                            <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">Ver Localização</button>
-                        </div>                    
-                    </div>
+                            <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">
+                                Ver Localização
+                            </button>
+                        </div>                        
                     @endforeach
                 </div>
             </div>
         </form>
-        
-        
     </div>
     @include('home.footer')
 
@@ -343,6 +364,24 @@
                 if (result.isConfirmed) {
                     // If user confirms, redirect to participation route
                     window.location.href = "{{ route('participateInEvent', ['id' => ':id']) }}".replace(':id', eventId);
+                }
+            });
+        }
+        
+        function cancelParticipation(eventId) {
+            Swal.fire({
+                title: 'Confirmação',
+                text: "Deseja cancelar sua inscrição neste evento?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, cancelar',
+                cancelButtonText: 'Não'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redireciona para a rota de cancelamento
+                    window.location.href = "{{ route('cancelParticipation', ['id' => ':id']) }}".replace(':id', eventId);
                 }
             });
         }

@@ -92,6 +92,7 @@
                     @auth
                     <a href="{{ url('/newmatch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Criar um evento</a>
                     <a href="{{ url('/seematch') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Ver eventos criados</a>
+                    <a href="{{ url('/events') }}"class="block px-4 py-2 text-gray-700  hover:bg-gray-100 rounded-t-lg transition duration-200 ease-in-out">Todos os jogos ativos</a>
                     @endauth
                 </div>
             </div>

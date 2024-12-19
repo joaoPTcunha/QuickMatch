@@ -35,8 +35,35 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="date-time" class="block text-gray-700">Data e Hora</label>
-                    <input type="datetime-local" id="date-time" name="date-time" class="w-full mt-2 p-2 border rounded" value="{{ old('date-time', now()->addDay()->startOfDay()->format('Y-m-d\TH:i')) }}" required>
+                    <label for="horarios-disponiveis" class="block text-gray-700">Horários Disponíveis</label>
+                    <select id="horarios-disponiveis" name="schedule" class="w-full mt-2 p-2 border rounded" required>
+                        <option value="" disabled selected>Selecione um Horário</option>
+                        @if($field && $field->availability)
+                            @php
+                                $availabilitySlots = json_decode($field->availability, true);
+                                $dayTranslations = [
+                                    'monday' => 'Segunda-feira',
+                                    'tuesday' => 'Terça-feira',
+                                    'wednesday' => 'Quarta-feira',
+                                    'thursday' => 'Quinta-feira',
+                                    'friday' => 'Sexta-feira',
+                                    'saturday' => 'Sábado',
+                                    'sunday' => 'Domingo',
+                                ];
+                            @endphp
+                
+                            @foreach($availabilitySlots as $day => $time)
+                                <option value="{{ $day }}|{{ $time['start'] }}">
+                                    {{ $dayTranslations[$day] ?? ucfirst($day) }} - {{ $time['start'] }} até {{ $time['end'] }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="specific-date" class="block text-gray-700">Data</label>
+                    <input id="specific-date" type="date" name="specific-date" class="w-full mt-2 p-2 border rounded" required readonly>
                 </div>
 
                 <div class="mb-4">
@@ -66,11 +93,11 @@
 
                 <div class="mb-4 flex items-center">
                     <label for="num-participants" class="block text-gray-700 mr-4">Número de Participantes</label>
-                    <input type="number" id="num-participants" name="num_participants" class="w-20 p-2 border rounded" value="{{ old('num-participants', 5) }}" min="1" required>
+                    <input type="number" id="num-participants" name="num_participants" class="w-20 p-2 border rounded" value="{{ old('num-participants', 1) }}" min="1" required>
                 </div>
 
-                <div class="text-right">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
+                <div class="text-center mt-6">
+                    <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                         Publicar Evento
                     </button>
                 </div>
@@ -79,6 +106,87 @@
     </div>
 
     @include('home.footer')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scheduleSelect = document.getElementById('horarios-disponiveis');
+            const dateInput = document.getElementById('specific-date');
+            
+            scheduleSelect.addEventListener('change', function() {
+                if (this.value) {
+                    const [day] = this.value.split('|');
+                    setupDateRestrictions(dateInput, day);
+                    
+                    // Seleciona automaticamente a próxima data disponível
+                    const nextValidDate = getNextDayOfWeek(day);
+                    dateInput.value = nextValidDate.toISOString().split('T')[0];
+                    dateInput.readOnly = false;
+                } else {
+                    dateInput.value = '';
+                    dateInput.readOnly = true;
+                }
+            });
+        
+            dateInput.addEventListener('input', function() {
+                if (scheduleSelect.value) {
+                    const [selectedDay] = scheduleSelect.value.split('|');
+                    const selectedDate = new Date(this.value);
+                    const dayOfWeek = getDayName(selectedDate.getDay());
+                    
+                    if (dayOfWeek !== selectedDay) {
+                        // Se a data selecionada não corresponder ao dia da semana correto,
+                        // encontra a próxima data válida
+                        const nextValidDate = getNextDayOfWeek(selectedDay, selectedDate);
+                        this.value = nextValidDate.toISOString().split('T')[0];
+                    }
+                }
+            });
+        
+            function setupDateRestrictions(dateInput, selectedDay) {
+                // Define a data mínima como hoje
+                const today = new Date();
+                dateInput.min = today.toISOString().split('T')[0];
+                
+                // Define a data máxima como 3 meses a partir de hoje
+                const maxDate = new Date();
+                maxDate.setMonth(maxDate.getMonth() + 3);
+                dateInput.max = maxDate.toISOString().split('T')[0];
+            }
+        
+            function getNextDayOfWeek(dayName, startDate = new Date()) {
+                const days = {
+                    'monday': 1,
+                    'tuesday': 2,
+                    'wednesday': 3,
+                    'thursday': 4,
+                    'friday': 5,
+                    'saturday': 6,
+                    'sunday': 0
+                };
+                
+                const targetDay = days[dayName.toLowerCase()];
+                const current = startDate.getDay();
+                
+                let daysToAdd = targetDay - current;
+                if (daysToAdd <= 0) daysToAdd += 7;
+                
+                const nextDate = new Date(startDate);
+                nextDate.setDate(startDate.getDate() + daysToAdd);
+                return nextDate;
+            }
+        
+            function getDayName(dayNumber) {
+                const days = {
+                    0: 'sunday',
+                    1: 'monday',
+                    2: 'tuesday',
+                    3: 'wednesday',
+                    4: 'thursday',
+                    5: 'friday',
+                    6: 'saturday'
+                };
+                return days[dayNumber];
+            }
+        });
+    </script>        
 </body>
-
 </html>

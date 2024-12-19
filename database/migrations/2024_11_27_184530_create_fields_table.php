@@ -21,10 +21,10 @@ return new class extends Migration
             $table->decimal('price', 8, 2)->nullable();
             $table->string('modality')->nullable();
             $table->string('image')->nullable();
+            $table->json('availability')->nullable();  // Novo campo para armazenar a disponibilidade
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.

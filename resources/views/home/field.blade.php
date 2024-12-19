@@ -43,19 +43,46 @@
                 <div class="flex justify-center mb-4">
                     <label for="field_image_{{ $field->id }}" class="cursor-pointer">
                         <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md cursor-pointer" data-image-url="{{ asset('Fields/' . $field->image) }}" onclick="openModal(this)">
-
                     </label>
-
                 </div>
                 <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $field->name }}</h2>
                 <div class="text-gray-700 text-sm space-y-1">
-                    <p><strong>Localização:</strong> {{ $field->location }}</p>
-                    <p><strong>Preço:</strong> {{ $field->price }}€</p>
-                    <p><strong>Modalidade(s):</strong> {{ $field->modality }}</p>
-                    <p><strong>Descrição:</strong> {{ $field->description }}</p>
-                    <p><strong>Nome do Dono:</strong> {{ $field->user->name }}</p>
-                    <p><strong>Email do Dono:</strong> {{ $field->user->email }}</p>
-                    <p><strong>Contacto:</strong> {{ $field->contact }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $field->location }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $field->price }}€</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade(s):</span> {{ $field->modality }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição:</span> {{ $field->description }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Dono:</span> {{ $field->user->name }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
+                    
+                    <!-- Disponibilidade -->
+                    @if($field->availability)
+                    <div class="text-sm text-gray-700 mb-4">
+                        <span class="font-semibold">Disponibilidade:</span>                        
+                        <ul class="list-inside list-disc space-y-1 mt-1">
+                            @php
+                                // Decodificando a disponibilidade do campo
+                                $availabilitySlots = json_decode($field->availability, true);
+                                // Mapeamento dos dias para português
+                                $dayTranslations = [
+                                    'monday' => 'Segundas-feiras',
+                                    'tuesday' => 'Terças-feiras',
+                                    'wednesday' => 'Quartas-feiras',
+                                    'thursday' => 'Quintas-feiras',
+                                    'friday' => 'Sextas-feiras',
+                                    'saturday' => 'Sábados',
+                                    'sunday' => 'Domingos',
+                                ];
+                            @endphp
+
+                            @foreach($availabilitySlots as $day => $time)
+                                <li><span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span> {{ $time['start'] }} - {{ $time['end'] }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @else
+                    <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
+                    @endif
                 </div>
                 <div class="mt-4 text-center">
                     <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
@@ -92,11 +119,5 @@
             }
         }
     </script>
-    
 </body>
-
-
-
-
-
 </html>
