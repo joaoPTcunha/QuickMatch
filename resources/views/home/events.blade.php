@@ -46,12 +46,11 @@
                     </select>
                 </div>
             </div>
-        
 
             <!-- Filtro de ordens -->
             <div class="flex flex-wrap items-center px-4 sm:px-6 lg:px-8 mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
                 <select name="sort" id="sortOptions" class="w-full sm:w-auto px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
-                    <option value="all">Selecione um filtro..
+                    <option value="all">Selecione um filtro..</option>
                     <option value="recent" {{ request('sort') === 'recent' ? 'selected' : '' }}>Mais Recente</option>
                     <option value="alphabetical" {{ request('sort') === 'alphabetical' ? 'selected' : '' }}>Ordem Alfabética</option>
                     <option value="registered" {{ request('sort') === 'registered' ? 'selected' : '' }}>Eventos nos quais estou inscrito</option>
@@ -63,56 +62,59 @@
                 </div>
             </div>
 
-            <!-- Mensagem de nenhum resultado -->
-            <div id="noResultsMessage" class="text-center text-gray-500 text-lg mt-4 hidden">Nenhum resultado encontrado.</div>
-
-            <!-- Grid de Eventos -->
+            <!-- Grid de Eventos com lógica de "nenhum resultado" no servidor -->
             <div id="eventGridContainer">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8" id="eventGrid">
-                    @foreach($events as $event)
-                    <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
-                        <div class="flex justify-center mb-4">
-                            <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
-                        </div>
-                        <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
-                        <div class="flex justify-between text-gray-700 text-base space-y-1">
-                            <div>
-                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
-                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
-                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
-                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ number_format($event->price, 2) }} €</p>
-                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Criador:</span> {{ $event->user->name }}</p>
+                @if($events->isEmpty())
+                    <div class="text-center text-gray-500 text-lg mt-4">
+                        Nenhum resultado encontrado.
+                    </div>
+                @else
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8" id="eventGrid">
+                        @foreach($events as $event)
+                        <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
+                            <div class="flex justify-center mb-4">
+                                <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                             </div>
-                            <div class="text-right text-lg font-semibold">
-                                {{ $event->num_subscribers }} / {{ $event->num_participants }}
+                            <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
+                            <div class="flex justify-between text-gray-700 text-base space-y-1">
+                                <div>
+                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
+                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
+                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
+                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ number_format($event->price, 2) }} €</p>
+                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Criador:</span> {{ $event->user->name }}</p>
+                                </div>
+                                <div class="text-right text-lg font-semibold">
+                                    {{ $event->num_subscribers }} / {{ $event->num_participants }}
+                                </div>
                             </div>
+                            <div class="mt-4 text-center">
+                                @php
+                                    $isFull = $event->num_subscribers >= $event->num_participants;
+                                @endphp
+                            
+                                @if ($event->isSubscribed)
+                                    <a href="#" onclick="cancelParticipation({{ $event->id }}); return false;" 
+                                       class="inline-block bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 w-full sm:w-auto mb-2">
+                                       Cancelar Inscrição
+                                    </a>
+                                @elseif ($isFull)
+                                    <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Lotado</button>
+                                @else
+                                    <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;" 
+                                       class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">
+                                       Participar
+                                    </a>
+                                @endif
+                            
+                                <button type="button" class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">
+                                        Ver Localização
+                                </button>
+                            </div>                        
                         </div>
-                        <div class="mt-4 text-center">
-                            @php
-                                $isFull = $event->num_subscribers >= $event->num_participants;
-                            @endphp
-                        
-                            @if ($event->isSubscribed)
-                                <!-- Botão "Cancelar" para inscritos -->
-                                <a href="#" onclick="cancelParticipation({{ $event->id }}); return false;" 
-                                   class="inline-block bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 w-full sm:w-auto mb-2">
-                                   Cancelar Inscrição
-                                </a>
-                            @elseif ($isFull)
-                                <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Lotado</button>
-                            @else
-                                <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;" 
-                                   class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">
-                                   Participar
-                                </a>
-                            @endif
-                        
-                            <button class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">
-                                Ver Localização
-                            </button>
-                        </div>                        
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </form>
     </div>
@@ -146,11 +148,9 @@
                 </option>
             </select>    
             
-            <!-- Exibe o nome da localização -->
             <label id="locationName" class="w-full sm:w-auto px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" type="text" readonly placeholder="Nome da Localização">
             </label>
                    
-            
             <div id="modalMap" class="h-96 mt-4"></div>
     
             <div class="mt-4 flex justify-end">
@@ -162,21 +162,14 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Variáveis de elementos
+            // Map modal elements
             const modal = document.getElementById('locationModal');
             const closeModalButtons = document.querySelectorAll('#closeModal, #closeModalButton');
             const openModalButtons = document.querySelectorAll('button[data-location]');
             const travelModeSelect = document.getElementById('travelMode');
-            const searchBar = document.getElementById('searchBar');
-            const searchIcon = document.getElementById('searchIcon');
-            const eventGrid = document.getElementById('eventGrid');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            const mobileFilter = document.getElementById('mobileFilter');
-            const filterLinks = document.querySelectorAll('.filter-link');
+            let isModalOpen = false;
     
-            let isModalOpen = false; // Estado do modal
-    
-            // Abrir o modal com a localização do evento
+            // Modal event listeners
             openModalButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const location = button.getAttribute('data-location');
@@ -186,7 +179,6 @@
                 });
             });
     
-            // Fechar o modal
             closeModalButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     modal.classList.add('hidden');
@@ -194,7 +186,6 @@
                 });
             });
     
-            // Fechar o modal clicando fora
             modal.addEventListener('click', function (e) {
                 if (e.target === modal && isModalOpen) {
                     modal.classList.add('hidden');
@@ -202,16 +193,14 @@
                 }
             });
     
-            // Alterar o modo de viagem e atualizar a rota
             travelModeSelect.addEventListener('change', function () {
                 const location = document.querySelector('button[data-location]:not([style*="display: none;"])').getAttribute('data-location');
                 geocodeAddress(location);
             });
     
-            // API Key do Mapbox
+            // Mapbox configuration
             const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
     
-            // Função para geocodificar o endereço
             function geocodeAddress(address) {
                 fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxApiKey}&country=pt`)
                     .then(response => response.json())
@@ -228,13 +217,11 @@
                     .catch(error => console.error("Erro ao obter as coordenadas:", error));
             }
     
-            // Exibir o nome do local no modal
             function displayLocation(placeName) {
                 const locationText = document.getElementById('locationName');
                 locationText.textContent = placeName;
             }
     
-            // Inicializar o mapa no modal
             function initMap(lngLat) {
                 mapboxgl.accessToken = mapboxApiKey;
                 const map = new mapboxgl.Map({
@@ -264,7 +251,6 @@
                 }
             }
     
-            // Calcular a rota entre o usuário e o local
             function getRoute(userLngLat, fieldLngLat, map) {
                 const travelMode = travelModeSelect.value;
                 fetch(`https://api.mapbox.com/directions/v5/mapbox/${travelMode}/${userLngLat[0]},${userLngLat[1]};${fieldLngLat[0]},${fieldLngLat[1]}?access_token=${mapboxApiKey}&geometries=geojson`)
@@ -310,46 +296,9 @@
                     })
                     .catch(error => console.error("Erro ao obter a rota:", error));
             }
-    
-            function filterEvents() {
-                const searchQuery = searchBar.value.toLowerCase();
-                const activeFilter = document.querySelector('.filter-link.text-gray-800')?.getAttribute('data-filter') || 'all';
-                const dropdownFilter = mobileFilter?.value || 'all';
-                const selectedFilter = window.innerWidth < 640 ? dropdownFilter : activeFilter;
-            
-                let visibleEventCount = 0;
-            
-                Array.from(eventGrid.children).forEach(event => {
-                    const name = event.querySelector('h2').textContent.toLowerCase();
-                    const modality = event.getAttribute('data-modality');
-            
-                    // Se o campo de pesquisa estiver vazio, exibe todos os eventos que correspondem ao filtro
-                    const showEvent = searchQuery === '' 
-                        ? (selectedFilter === 'all' || modality === selectedFilter) 
-                        : (selectedFilter === 'all' || modality === selectedFilter) && name.includes(searchQuery);
-            
-                    event.style.display = showEvent ? 'block' : 'none';
-                    if (showEvent) visibleEventCount++;
-                });
-            
-                // Exibe ou oculta a mensagem de "Nenhum resultado encontrado"
-                noResultsMessage.classList.toggle('hidden', visibleEventCount > 0);
-            }
-        
-            // Listener para a pesquisa automática
-            searchBar.addEventListener('input', filterEvents);
-        
-            // Listeners para filtros
-            if (mobileFilter) mobileFilter.addEventListener('change', filterEvents);
-            filterLinks.forEach(link => {
-                link.addEventListener('click', function () {
-                    filterLinks.forEach(btn => btn.classList.remove('text-gray-800'));
-                    this.classList.add('text-gray-800');
-                    filterEvents();
-                });
-            });
         });
-
+    
+        // Participation confirmation functions
         function confirmParticipation(eventId) {
             Swal.fire({
                 title: 'Confirmação',
@@ -362,12 +311,11 @@
                 cancelButtonText: 'Não'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // If user confirms, redirect to participation route
                     window.location.href = "{{ route('participateInEvent', ['id' => ':id']) }}".replace(':id', eventId);
                 }
             });
         }
-        
+    
         function cancelParticipation(eventId) {
             Swal.fire({
                 title: 'Confirmação',
@@ -380,12 +328,44 @@
                 cancelButtonText: 'Não'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Redireciona para a rota de cancelamento
                     window.location.href = "{{ route('cancelParticipation', ['id' => ':id']) }}".replace(':id', eventId);
                 }
             });
         }
-        
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchBar = document.getElementById('searchBar');
+            const eventGrid = document.getElementById('eventGrid');
+            const noResultsMessage = document.createElement('div');
+            noResultsMessage.className = 'text-center text-gray-500 text-lg mt-4 hidden';
+            noResultsMessage.id = 'noResultsMessage';
+            noResultsMessage.innerText = 'Nenhum resultado encontrado.';
+            eventGrid.parentElement.appendChild(noResultsMessage);
+        
+            searchBar.addEventListener('input', function () {
+                const searchTerm = searchBar.value.toLowerCase();
+                const eventCards = eventGrid.querySelectorAll('.event-card');
+        
+                let hasResults = false;
+        
+                eventCards.forEach(card => {
+                    const description = card.querySelector('h2').innerText.toLowerCase();
+                    if (description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                        hasResults = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+        
+                if (hasResults) {
+                    noResultsMessage.classList.add('hidden');
+                } else {
+                    noResultsMessage.classList.remove('hidden');
+                }
+            });
+        });
+    </script>        
 
 </body>
