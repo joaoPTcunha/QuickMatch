@@ -4,7 +4,7 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Lista de Campos</h1>
-        <div class="px-10 sm:px-20 mb-6">
+        <div class="px-10 sm:px-4 mb-6"> 
             <form action="{{ url()->current() }}" method="GET" class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-start">
                 <div class="w-full sm:w-1/3">
                     <label for="modality" class="block text-gray-700 font-semibold mb-2">Filtrar por Modalidade:</label>
@@ -35,9 +35,10 @@
                         </svg>
                     </div>
                 </div>
+                
             </form>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 px-10 sm:px-20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8"> 
             @foreach($fields as $field)
             <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                 <div class="flex justify-center mb-4">
@@ -55,7 +56,6 @@
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
                     
-                    <!-- Disponibilidade -->
                     @if($field->availability)
                     <div class="text-sm text-gray-700 mb-4">
                         <span class="font-semibold">Disponibilidade:</span>                        
@@ -84,6 +84,7 @@
                     <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
                     @endif
                 </div>
+                
                 <div class="mt-4 text-center">
                     <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
                         Marcar Evento

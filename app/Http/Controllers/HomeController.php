@@ -405,51 +405,25 @@ class HomeController extends Controller
 
 
     public function updateField(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'contact' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        ]);
+{
+    // Validação dos campos
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'location' => 'required|string|max:255',
+        'contact' => 'required|string|max:255',
+        'price' => 'required|numeric|min:0',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        'days' => 'required|array', // Garantir que os dias sejam enviados
+    ]);
 
-        $modalities = $request->input('modality', []);
-
-        if (in_array('outro', $modalities) && $request->filled('customModality')) {
-            $modalities[] = $request->input('customModality');
-        }
-
-        $validatedData['modality'] = implode(',', $modalities);
-
-        $field = Field::findOrFail($id);
-
-        $field->name = $validated['name'];
-        $field->description = $validated['description'];
-        $field->location = $validated['location'];
-        $field->contact = $validated['contact'];
-        $field->price = $validated['price'];
-        $field->modality = $validatedData['modality'];
-
-        if ($request->hasFile('image')) {
-            if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
-                unlink(public_path('Fields/' . $field->image));
-            }
-
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('Fields'), $imageName);
-
-            $field->image = $imageName;
-        }
-
-        $field->save();
-
-        toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso');
-
-        return redirect()->route('manage-fields');
+    // Processar a modalidade (incluir caso seja "outro")
+    $modalities = $request->input('modality', []);
+    if (in_array('outro', $modalities) && $request->filled('customModality')) {
+        $modalities[] = $request->input('customModality');
     }
 
+<<<<<<< HEAD
     public function destroyField($id)
     {
         $field = Field::find($id);
@@ -458,16 +432,95 @@ class HomeController extends Controller
             return redirect()->back()->with('error', 'Campo não encontrado.');
         }
 
+=======
+    // Atualizar os dados da modalidade
+    $validatedData['modality'] = implode(',', $modalities);
+
+    // Adicionando o horário por dia da semana
+    $availability = [];
+
+    foreach ($request->input('days', []) as $day) {
+        $start = $request->input("{$day}_start");
+        $end = $request->input("{$day}_end");
+
+        if ($start && $end) {
+            // Garantir que o array de disponibilidade esteja estruturado corretamente
+            $availability[$day] = [
+                'start' => $start,
+                'end' => $end,
+            ];
+        }
+    }
+
+    // Codificar a disponibilidade em JSON
+    $validatedData['availability'] = json_encode($availability);
+
+    // Obter as coordenadas, caso sejam fornecidas
+    $coordinates = [];
+    if ($request->filled('location_lat') && $request->filled('location_lng')) {
+        $coordinates = [
+            'latitude' => $request->location_lat,
+            'longitude' => $request->location_lng
+        ];
+    }
+
+    // Buscar o campo a ser atualizado
+    $field = Field::findOrFail($id);
+
+    // Atualizar as informações básicas
+    $field->name = $validated['name'];
+    $field->description = $validated['description'];
+    $field->location = $validated['location'];
+    $field->contact = $validated['contact'];
+    $field->price = $validated['price'];
+    $field->modality = $validatedData['modality'];
+    $field->availability = $validatedData['availability'];
+    
+    // Atualizar as coordenadas, caso existam
+    if (!empty($coordinates)) {
+        $field->latitude = $coordinates['latitude'];
+        $field->longitude = $coordinates['longitude'];
+    }
+
+    // Processar o upload de imagem
+    if ($request->hasFile('image')) {
+        // Verificar e excluir a imagem anterior, caso exista
+>>>>>>> 108adf9dca63c66662077aa25d146c4deac494be
         if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
             unlink(public_path('Fields/' . $field->image));
         }
 
+<<<<<<< HEAD
         $field->delete();
 
         toastr()->timeout(10000)->closeButton()->success('Campo apagado com sucesso!');
         return redirect()->route('manage-fields');
     }
 
+=======
+        // Gerar um nome único para a nova imagem e mover para o diretório apropriado
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('Fields'), $imageName);
+
+        // Atualizar o campo da imagem
+        $field->image = $imageName;
+    }
+
+    // Atualizar a disponibilidade, se houver mudanças
+    $field->availability = $validatedData['availability'];
+
+    // Salvar as alterações no banco de dados
+    $field->save();
+
+    // Mensagem de sucesso
+    toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso');
+
+    // Redirecionar para a página de gerenciamento de campos
+    return redirect()->route('manage-fields');
+}
+
+
+>>>>>>> 108adf9dca63c66662077aa25d146c4deac494be
     public function showEvents(Request $request)
     {
         $userId = Auth::id(); // Obtém o ID do usuário autenticado

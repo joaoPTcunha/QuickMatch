@@ -23,7 +23,7 @@
                 <div class="p-6 flex flex-col flex-grow">
                     <h4 class="text-lg font-bold text-gray-800 text-center mb-2">{{ $field->name }}</h4>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $field->location }}</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Custo:</span> {{ $field->price }}€/hora</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $field->price }}€/hora</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Tipo de desporto:</span> {{ $field->modality }}</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }} ({{ $field->user->name }})</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição:</span> {{ $field->description }}</p>
