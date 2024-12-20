@@ -36,13 +36,51 @@
 
                 <div class="mb-4">
                     <label for="location" class="block text-sm font-medium text-gray-700">Localização</label>
-                    <input type="text" name="location" id="location" value="{{ old('location', $field->location) }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Localização" />
+                    <input type="text" name="location" id="location" value="{{ old('location', $field->location) }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira no mapa a localização do campo" readonly />
                 </div>
+
+                <!-- Mapa do Mapbox -->
+                <div id="map" class="mb-4 w-full h-64"></div>
 
                 <div class="mb-4">
                     <label for="contact" class="block text-sm font-medium text-gray-700">Contato</label>
                     <input type="text" name="contact" id="contact" value="{{ old('contact', $field->contact) }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o contacto" />
                 </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</label>
+            <div class="mt-4">
+                <label for="availability" class="text-sm text-gray-700">Selecione os dias e horários</label>
+        
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
+                    @foreach(['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira', 
+                             'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 
+                             'sunday' => 'Domingo'] as $day => $label)
+                        <div>
+                            <!-- Checkbox para selecionar o dia -->
+                            <input type="checkbox" id="{{ $day }}" name="days[]" value="{{ $day }}" 
+                                class="mr-2" 
+                                @if(in_array($day, old('days', isset($availability[$day]) ? [$day] : []))) checked @endif>
+                            <label for="{{ $day }}">{{ $label }}</label>
+                        
+                            <!-- Campos de horário de início e fim, visíveis apenas se o dia estiver selecionado -->
+                            <div id="{{ $day }}-times" class="mt-2 {{ in_array($day, old('days', isset($availability[$day]) ? [$day] : [])) ? '' : 'hidden' }}">
+                                <label for="{{ $day }}_start" class="text-sm text-gray-700">Início</label>
+                                <input type="time" name="{{ $day }}_start" id="{{ $day }}_start" 
+                                    value="{{ old($day.'_start', isset($availability[$day]) ? $availability[$day]['start'] : '') }}"
+                                    class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                        
+                                <label for="{{ $day }}_end" class="text-sm text-gray-700">Fim</label>
+                                <input type="time" name="{{ $day }}_end" id="{{ $day }}_end" 
+                                    value="{{ old($day.'_end', isset($availability[$day]) ? $availability[$day]['end'] : '') }}"
+                                    class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                            </div>
+                        </div>
+                    @endforeach
+                </div>                
+            </div>                         
+        </div>
+
 
                 <div class="mb-4">
                     <label for="price" class="block text-sm font-medium text-gray-700">Preço por Hora</label>
@@ -101,11 +139,6 @@
                     </div>
                 </div>
 
-                <div id="otherModality" class="mb-4 hidden">
-                    <label for="customModality" class="block text-sm font-medium text-gray-700">Qual a modalidade?</label>
-                    <input type="text" name="customModality" id="customModality" value="{{ old('customModality') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                     Atualizar Campo
                 </button>
@@ -115,25 +148,115 @@
 
     @include('home.footer')
 
-    <script>
-        document.getElementById('modality').addEventListener('change', function() {
-            const otherModalityField = document.getElementById('otherModality');
-            if (this.value === 'outro') {
-                otherModalityField.classList.remove('hidden');
-            } else {
-                otherModalityField.classList.add('hidden');
-            }
-        });
+    <style>
+        #map { height: 400px; }
+    </style>
 
-        document.getElementById('image').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('avatar').src = e.target.result;
-                }
-                reader.readAsDataURL(file);
+    <script>
+        let map, marker;
+        const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
+
+        function initMap() {
+            mapboxgl.accessToken = mapboxApiKey;
+            
+            // Initialize with field's current location or default to Portugal center
+            const initialLat = {{ $field->latitude ?? 39.3999 }};
+            const initialLng = {{ $field->longitude ?? -8.2242 }};
+
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                center: [initialLng, initialLat],
+                zoom: 15
+            });
+
+            marker = new mapboxgl.Marker({
+                draggable: true
+            })
+            .setLngLat([initialLng, initialLat])
+            .addTo(map)
+            .on('dragend', function() {
+                const lngLat = marker.getLngLat();
+                reverseGeocode(lngLat);
+            });
+
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxApiKey,
+                mapboxgl: mapboxgl,
+                placeholder: 'Pesquisar localização',
+                countries: 'pt'
+            });
+
+            map.addControl(geocoder, 'top-right');
+
+            map.on('click', function(event) {
+                placeMarker(event.lngLat);
+            });
+
+            geocoder.on('result', function(event) {
+                const lngLat = event.result.geometry.coordinates;
+                placeMarker(lngLat);
+            });
+        }
+
+        function placeMarker(lngLat) {
+            if (marker) {
+                marker.remove();
             }
+            marker = new mapboxgl.Marker({
+                draggable: true
+            })
+            .setLngLat(lngLat)
+            .addTo(map)
+            .on('dragend', function() {
+                const lngLat = marker.getLngLat();
+                reverseGeocode(lngLat);
+            });
+
+            reverseGeocode(lngLat);
+        }
+
+        function reverseGeocode(lngLat) {
+            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxApiKey}&country=pt`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features.length > 0) {
+                        document.getElementById("location").value = data.features[0].place_name;
+                    } else {
+                        document.getElementById("location").value = 'Localização desconhecida';
+                    }
+                })
+                .catch(error => console.error("Erro ao obter o endereço:", error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+
+            // Image preview handler
+            document.getElementById('image').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('avatar').src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Availability time slots handler
+            const daysCheckboxes = document.querySelectorAll('input[type="checkbox"][name="days[]"]');
+            daysCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const day = this.value;
+                    const timesDiv = document.getElementById(day + '-times');
+                    if (this.checked) {
+                        timesDiv.classList.remove('hidden');
+                    } else {
+                        timesDiv.classList.add('hidden');
+                    }
+                });
+            });
         });
     </script>
 </body>
