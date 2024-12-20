@@ -62,7 +62,6 @@
                 </div>
             </div>
 
-            <!-- Grid de Eventos com lógica de "nenhum resultado" no servidor -->
             <div id="eventGridContainer">
                 @if($events->isEmpty())
                     <div class="text-center text-gray-500 text-lg mt-4">
@@ -99,7 +98,7 @@
                                        Cancelar Inscrição
                                     </a>
                                 @elseif ($isFull)
-                                    <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Lotado</button>
+                                    <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Cheio</button>
                                 @else
                                     <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;" 
                                        class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">

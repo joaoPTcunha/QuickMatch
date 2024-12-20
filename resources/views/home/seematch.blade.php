@@ -16,17 +16,18 @@
                         <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
                         <div class="text-gray-700 text-sm space-y-1">
                             <div class="flex justify-between items-center">
-                                <p><strong>Data e Hora:</strong> {{ $event->event_date_time }}</p>
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ $event->event_date_time }}</p>
                                 <p class="text-gray-700 text-lg font-semibold">
                                     {{ $event->num_subscribers }} / {{ $event->num_participants }}
                                 </p>
                             </div>
-                            <p><strong>Modalidade:</strong> {{ $event->modality }}</p>
-                            <p><strong>Preço:</strong> {{ $event->price }} €</p>
-                            <p><strong>Campo:</strong> {{ $event->field->name }}</p>
-                            <p><strong>Descrição do Campo:</strong> {{ $event->field->description }}</p>
-                            <p><strong>Localização:</strong> {{ $event->field->location }}</p>
-                            <p><strong>Contacto:</strong> {{ $event->field->contact }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $event->price }} €</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição do Campo:</span> {{ $event->field->description }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $event->field->location }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $event->field->contact }}</p>
+                            
                         </div>
 
                         <!-- Buttons for Contact and Share -->
