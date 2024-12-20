@@ -45,7 +45,7 @@
                     <label class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</label>
                     <div class="mt-4">
                         <label for="availability" class="text-sm text-gray-700">Selecione os dias e horários</label>
-                        
+
                         <!-- Filtro para seleção dos dias -->
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
                             <div>
@@ -58,7 +58,7 @@
                                     <input type="time" name="monday_end" id="monday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                                 </div>
                             </div>
-                
+
                             <div>
                                 <input type="checkbox" id="tuesday" name="days[]" value="tuesday" class="mr-2">
                                 <label for="tuesday">Terça-feira</label>
@@ -69,7 +69,7 @@
                                     <input type="time" name="tuesday_end" id="tuesday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                                 </div>
                             </div>
-                
+
                             <div>
                                 <input type="checkbox" id="wednesday" name="days[]" value="wednesday" class="mr-2">
                                 <label for="wednesday">Quarta-feira</label>
@@ -80,7 +80,7 @@
                                     <input type="time" name="wednesday_end" id="wednesday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                                 </div>
                             </div>
-                
+
                             <div>
                                 <input type="checkbox" id="thursday" name="days[]" value="thursday" class="mr-2">
                                 <label for="thursday">Quinta-feira</label>
@@ -91,7 +91,7 @@
                                     <input type="time" name="thursday_end" id="thursday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                                 </div>
                             </div>
-                
+
                             <div>
                                 <input type="checkbox" id="friday" name="days[]" value="friday" class="mr-2">
                                 <label for="friday">Sexta-feira</label>
@@ -102,7 +102,7 @@
                                     <input type="time" name="friday_end" id="friday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                                 </div>
                             </div>
-                
+
                             <div>
                                 <input type="checkbox" id="saturday" name="days[]" value="saturday" class="mr-2">
                                 <label for="saturday">Sábado</label>
@@ -113,7 +113,7 @@
                                     <input type="time" name="saturday_end" id="saturday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                                 </div>
                             </div>
-                
+
                             <div>
                                 <input type="checkbox" id="sunday" name="days[]" value="sunday" class="mr-2">
                                 <label for="sunday">Domingo</label>
@@ -127,9 +127,9 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-4">
-                    <label for="price" class="block text-sm font-medium text-gray-700">Preço por Hora</label>
+                    <label for="price" class="block text-sm font-medium text-gray-700">Preço por Hora($)</label>
                     <input type="text" name="price" id="price" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o valor" />
                 </div>
 
@@ -168,7 +168,7 @@
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="text-center mt-6">
                     <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                         Adicionar Campo
@@ -178,131 +178,131 @@
         </div>
         @include('home.footer')
 
-    <style>
-        #map {
-            height: 600px;
-        }
-    </style>
-
-    <script>
-        let map, marker;
-
-        // Chave de API do Mapbox
-        const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
-
-        // Função para inicializar o mapa
-        function initMap() {
-            mapboxgl.accessToken = mapboxApiKey;
-            map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/satellite-streets-v11', // Estilo de satélite com rótulos
-                center: [-8.2242, 39.3999], // Coordenadas do centro de Portugal
-                zoom: 7
-            });
-
-            // Adiciona marcador padrão
-            marker = new mapboxgl.Marker({
-                    draggable: true
-                })
-                .setLngLat([-8.2242, 39.3999])
-                .addTo(map)
-                .on('dragend', function() {
-                    const lngLat = marker.getLngLat();
-                    reverseGeocode(lngLat);
-                });
-
-            // Adiciona o Geocoder ao mapa
-            const geocoder = new MapboxGeocoder({
-                accessToken: mapboxApiKey,
-                mapboxgl: mapboxgl,
-                placeholder: 'Pesquisar localização',
-                countries: 'pt'
-            });
-
-            map.addControl(geocoder, 'top-right');
-
-            // Ouvinte de clique no mapa
-            map.on('click', function(event) {
-                placeMarker(event.lngLat);
-            });
-
-            // Ouvinte de seleção de localização pelo Geocoder
-            geocoder.on('result', function(event) {
-                const lngLat = event.result.geometry.coordinates;
-                placeMarker(lngLat);
-            });
-        }
-
-        // Função para colocar o marcador e preencher o campo de localização
-        function placeMarker(lngLat) {
-            if (marker) {
-                marker.remove();
+        <style>
+            #map {
+                height: 600px;
             }
-            marker = new mapboxgl.Marker({
-                    draggable: true
-                })
-                .setLngLat(lngLat)
-                .addTo(map)
-                .on('dragend', function() {
-                    const lngLat = marker.getLngLat();
-                    reverseGeocode(lngLat);
+        </style>
+
+        <script>
+            let map, marker;
+
+            // Chave de API do Mapbox
+            const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
+
+            // Função para inicializar o mapa
+            function initMap() {
+                mapboxgl.accessToken = mapboxApiKey;
+                map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/satellite-streets-v11', // Estilo de satélite com rótulos
+                    center: [-8.2242, 39.3999], // Coordenadas do centro de Portugal
+                    zoom: 7
                 });
 
-            reverseGeocode(lngLat);
-        }
+                // Adiciona marcador padrão
+                marker = new mapboxgl.Marker({
+                        draggable: true
+                    })
+                    .setLngLat([-8.2242, 39.3999])
+                    .addTo(map)
+                    .on('dragend', function() {
+                        const lngLat = marker.getLngLat();
+                        reverseGeocode(lngLat);
+                    });
 
-        // Função para obter o endereço a partir das coordenadas
-        function reverseGeocode(lngLat) {
-            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxApiKey}&country=pt`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.features.length > 0) {
-                        document.getElementById("location").value = data.features[0].place_name;
-                    } else {
-                        document.getElementById("location").value = 'Localização desconhecida';
-                    }
-                })
-                .catch(error => console.error("Erro ao obter o endereço:", error));
-        }
+                // Adiciona o Geocoder ao mapa
+                const geocoder = new MapboxGeocoder({
+                    accessToken: mapboxApiKey,
+                    mapboxgl: mapboxgl,
+                    placeholder: 'Pesquisar localização',
+                    countries: 'pt'
+                });
 
-        // Inicializa o mapa
-        document.addEventListener('DOMContentLoaded', function() {
-            initMap();
+                map.addControl(geocoder, 'top-right');
 
-            // Script para exibir a imagem selecionada
-            document.getElementById('image').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('avatar').src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
+                // Ouvinte de clique no mapa
+                map.on('click', function(event) {
+                    placeMarker(event.lngLat);
+                });
+
+                // Ouvinte de seleção de localização pelo Geocoder
+                geocoder.on('result', function(event) {
+                    const lngLat = event.result.geometry.coordinates;
+                    placeMarker(lngLat);
+                });
+            }
+
+            // Função para colocar o marcador e preencher o campo de localização
+            function placeMarker(lngLat) {
+                if (marker) {
+                    marker.remove();
                 }
-            });
-        });
-    </script>
+                marker = new mapboxgl.Marker({
+                        draggable: true
+                    })
+                    .setLngLat(lngLat)
+                    .addTo(map)
+                    .on('dragend', function() {
+                        const lngLat = marker.getLngLat();
+                        reverseGeocode(lngLat);
+                    });
 
-    <script>
-        // Script para mostrar/esconder os horários conforme o dia é selecionado
-        document.addEventListener('DOMContentLoaded', function() {
-            const daysCheckboxes = document.querySelectorAll('input[type="checkbox"][name="days[]"]');
-            
-            daysCheckboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    const day = this.value;
-                    const timesDiv = document.getElementById(day + '-times');
-                    
-                    if (this.checked) {
-                        timesDiv.classList.remove('hidden');
-                    } else {
-                        timesDiv.classList.add('hidden');
+                reverseGeocode(lngLat);
+            }
+
+            // Função para obter o endereço a partir das coordenadas
+            function reverseGeocode(lngLat) {
+                fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxApiKey}&country=pt`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.features.length > 0) {
+                            document.getElementById("location").value = data.features[0].place_name;
+                        } else {
+                            document.getElementById("location").value = 'Localização desconhecida';
+                        }
+                    })
+                    .catch(error => console.error("Erro ao obter o endereço:", error));
+            }
+
+            // Inicializa o mapa
+            document.addEventListener('DOMContentLoaded', function() {
+                initMap();
+
+                // Script para exibir a imagem selecionada
+                document.getElementById('image').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('avatar').src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
                     }
                 });
             });
-        });
-    </script>
-   
+        </script>
+
+        <script>
+            // Script para mostrar/esconder os horários conforme o dia é selecionado
+            document.addEventListener('DOMContentLoaded', function() {
+                const daysCheckboxes = document.querySelectorAll('input[type="checkbox"][name="days[]"]');
+
+                daysCheckboxes.forEach(function(checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        const day = this.value;
+                        const timesDiv = document.getElementById(day + '-times');
+
+                        if (this.checked) {
+                            timesDiv.classList.remove('hidden');
+                        } else {
+                            timesDiv.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        </script>
+
 </body>
 
 </html>

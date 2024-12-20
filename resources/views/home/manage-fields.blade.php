@@ -2,7 +2,7 @@
 @include('home.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow container sm:px-6 lg:px-8 py-6">
+    <div class="flex-grow sm:px-6 lg:px-8 py-6 px-3">
         <h3 class="text-3xl font-bold text-center mb-8 text-gray-800">Meus Campos</h3>
 
         @if($fields->isEmpty())
@@ -16,14 +16,14 @@
                 <!-- Imagem -->
                 <div class="flex justify-center mb-4">
                     <label for="field_image_{{ $field->id }}" class="cursor-pointer">
-                        <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md cursor-pointer mt-5 " data-image-url="{{ asset('Fields/' . $field->image) }}" onclick="openModal(this)">
+                        <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md cursor-pointer mt-5" data-image-url="{{ asset('Fields/' . $field->image) }}" onclick="openModal(this)">
                     </label>
                 </div>
                 <!-- Informações do Campo -->
                 <div class="p-6 flex flex-col flex-grow">
                     <h4 class="text-lg font-bold text-gray-800 text-center mb-2">{{ $field->name }}</h4>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $field->location }}</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $field->price }}€/hora</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Custo:</span> {{ $field->price }}€/hora</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Tipo de desporto:</span> {{ $field->modality }}</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }} ({{ $field->user->name }})</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição:</span> {{ $field->description }}</p>
