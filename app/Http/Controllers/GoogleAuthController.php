@@ -24,12 +24,10 @@ class GoogleAuthController extends Controller
             $name = $nameParts[0];
             $surname = $nameParts[1] ?? '';
 
-            //faz o username unico com os nomes
-            $baseUsername = strtolower(str_replace(' ', '.', $fullName)); // Nome completo como base
+            $baseUsername = strtolower(str_replace(' ', '.', $fullName)); // nome completo como base
             $username = $baseUsername;
             $counter = 1;
 
-            // caso que exista um username igual ele faz username.1
             while (User::where('user_name', $username)->exists()) {
                 $username = $baseUsername . '.' . $counter;
                 $counter++;
@@ -40,18 +38,26 @@ class GoogleAuthController extends Controller
                 ->first();
 
             if (!$user) {
+                $profile_picture = $this->storeGoogleProfileImage($google_user->getAvatar());
+
                 $user = User::create([
                     'name' => $name,
                     'surname' => $surname,
                     'user_name' => $username,
                     'email' => $google_user->getEmail(),
-                    'google_id' => $google_user->getId()
+                    'google_id' => $google_user->getId(),
+                    'profile_picture' => $profile_picture,
                 ]);
 
                 $user->forceFill(['email_verified_at' => now()])->save();
 
                 event(new Registered($user));
             } else {
+                if (!$user->profile_picture) {
+                    $profile_picture = $this->storeGoogleProfileImage($google_user->getAvatar());
+                    $user->update(['profile_picture' => $profile_picture]);
+                }
+
                 $user->update([
                     'google_id' => $user->google_id ?: $google_user->getId(),
                     'name' => $user->name ?: $name,
@@ -67,5 +73,21 @@ class GoogleAuthController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('login')->with('error', 'Algo deu errado: ' . $th->getMessage());
         }
+    }
+
+
+    private function storeGoogleProfileImage($avatarUrl)
+    {
+        $imageContents = file_get_contents($avatarUrl);
+        $imageName = time() . '_google_avatar.jpg';
+        $imagePath = public_path('Profile_Photo/' . $imageName);
+
+        if (!is_dir(public_path('Profile_Photo'))) {
+            mkdir(public_path('Profile_Photo'), 0755, true);
+        }
+
+        file_put_contents($imagePath, $imageContents);
+
+        return $imageName;
     }
 }
