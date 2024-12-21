@@ -2,10 +2,10 @@
 @include('admin.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow container mx-auto p-4 sm:p-6">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
-            <h1 class="text-2xl sm:text-3xl font-bold text-center sm:text-left">Suporte ao Cliente</h1>
-            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline text-center">
+    <div class="flex-grow mx-auto p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-col sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
+            <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Gestão de Campos</h1>
+            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline ">
                 Histórico de Problemas
             </a>
         </div>

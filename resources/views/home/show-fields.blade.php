@@ -5,7 +5,7 @@
     <div class="flex-grow max-w-4xl mx-auto p-4">
         <h1 class="text-4xl font-bold text-gray-800 text-center mb-6">{{ $field->name }}</h1>
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-48 object-contain mb-4 mt-4  rounded-lg">
+            <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-48 object-contain mb-4 mt-4 rounded-lg">
 
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">

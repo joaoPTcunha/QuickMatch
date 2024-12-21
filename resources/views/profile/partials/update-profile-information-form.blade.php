@@ -14,7 +14,7 @@
         <div class="flex flex-col items-center">
             <div id="profile-picture-preview">
                 @if ($user->profile_picture)
-                <img src="{{ asset('Profile_Photo/' . $user->profile_picture) }}" id="profile-picture" class="w-32 h-32 rounded-full object-cover shadow-md">
+                <img src="{{ asset('Profile_Photo/' . $user->profile_picture) }}" id="profile-picture" class="w-32 h-32 rounded-full object-cover shadow-md" alt="Profile_image">
                 @else
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-32 h-32 text-gray-500" alt="Profile image">
                     <path stroke-linecap="round" stroke-linejoin="round"
