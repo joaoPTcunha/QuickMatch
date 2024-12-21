@@ -39,8 +39,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('newmatch.field');
     Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
+
+    Route::get('/print_pdf/{id}', [HomeController::class, 'print_pdf'])->name('print_pdf');
+
     Route::post('/sendproblem', [HomeController::class, 'sendProblem'])->name('send.problem');
-    Route::get('participate-in-event/{id}', [HomeController::class, 'participateInEvent'])->name('participateInEvent');    
+    Route::get('participate-in-event/{id}', [HomeController::class, 'participateInEvent'])->name('participateInEvent');
     Route::get('/event/cancel/{id}', [HomeController::class, 'cancelParticipation'])->name('cancelParticipation');
     Route::get('/showEvents', action: [HomeController::class, 'showEvents'])->name('showEvents');
 

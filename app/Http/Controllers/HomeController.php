@@ -9,7 +9,7 @@ use App\Models\Problem;
 use App\Models\Field;
 use App\Models\Event;
 use Carbon\Carbon;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class HomeController extends Controller
@@ -315,6 +315,14 @@ class HomeController extends Controller
             toastr()->error('Ocorreu um erro ao criar o evento: ' . $e->getMessage());
             return back()->withInput();
         }
+    }
+
+    public function print_pdf($id)
+    {
+        $event = Event::findOrFail($id);
+
+        $pdf = Pdf::loadView('home.invoice', compact('event'));
+        return $pdf->download('invoice.pdf');
     }
 
 
