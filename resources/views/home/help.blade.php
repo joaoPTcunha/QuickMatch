@@ -1,45 +1,49 @@
-<head>
-    @include('home.css')
-    <title>Central de Ajuda</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .faq-answer {
-            display: none; 
-        }
-        .toggle-icon {
-            transition: transform 0.3s;
-            font-size: 20px; 
-            margin-left: 10px; 
-        }
-        .rotated {
-            transform: rotate(180deg); 
-        }
-    </style>
-</head>
-<body class="flex flex-col min-h-screen bg-gray-100">
-    @include('home.header')
+@include('home.header')
+@include('home.css')
 
+<body class="flex flex-col min-h-screen bg-gray-100">
     <div class="container mx-auto flex-grow py-8 px-4 rounded-lg">
-        <h1 class="text-center text-4xl font-bold my-8">Central de Ajuda</h1>
+        <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Central de Ajuda</h1>
 
         <!-- FAQ Section -->
         <section class="mb-12">
             <h2 class="text-2xl font-semibold mb-4">Perguntas Frequentes (FAQ)</h2>
             <div class="rounded-lg shadow-md p-6 bg-white">
-                @foreach($faqs as $faq)
-                    <div class="mb-4">
-                        <div class="faq-question cursor-pointer flex justify-between items-center bg-blue-200 rounded-lg p-4" onclick="toggleAnswer('faq{{ $loop->index }}', this)">
-                            <h3>{{ $loop->iteration }}. {{ $faq['question'] }}</h3>
-                            <span class="toggle-icon">^</span>
-                        </div>
-                        <div id="faq{{ $loop->index }}" class="faq-answer mx-2 p-3">
-                            <p>{{ $faq['answer'] }}</p>
-                        </div>
+                <!-- FAQ 1 -->
+                <div class="mb-4">
+                    <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold">1. Como faço uma reserva?</h3>
+                        <p class="mt-2 text-gray-700">Para fazer uma reserva, basta selecionar o campo desejado, escolher a modalidade e a data disponível, e então confirmar a sua reserva.</p>
                     </div>
-                @endforeach
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="mb-4">
+                    <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold">2. Posso cancelar minha reserva?</h3>
+                        <p class="mt-2 text-gray-700">Sim, é possível cancelar a sua reserva dentro de um período determinado. Consulte as nossas políticas de cancelamento para mais informações.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="mb-4">
+                    <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold">3. Como posso encontrar o campo ideal para a minha prática?</h3>
+                        <p class="mt-2 text-gray-700">Você pode usar a nossa ferramenta de busca para filtrar os campos por modalidade, localização e disponibilidade, facilitando a escolha do campo ideal.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="mb-4">
+                    <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold">4. O que fazer se eu tiver problemas com o site?</h3>
+                        <p class="mt-2 text-gray-700">Caso enfrente dificuldades, entre em contato conosco através da nossa seção de "Contato" ou envie um e-mail para suporte@quickmatch.com</p>
+                    </div>
+                </div>
             </div>
         </section>
 
+        <!-- Enviar Reclamação Section -->
         <section>
             <h2 class="text-2xl font-semibold mb-4">Envie uma Reclamação</h2>
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -48,7 +52,7 @@
                     <div class="bg-green-500 text-white p-4 rounded-lg mb-6">
                             {{ session('success') }}
                     </div>
-                        @endif
+                    @endif
                     @csrf
                     <div class="mb-4">
                         <label for="subject" class="block text-sm font-medium text-gray-700">Assunto:</label>
@@ -62,24 +66,9 @@
                         Enviar Reclamação
                     </button>
                 </form>
+            </div>
         </section>
     </div>
-
-    <script>
-        function toggleAnswer(faqId, element) {
-            const answer = document.getElementById(faqId);
-            const toggleIcon = element.querySelector('.toggle-icon');
-            if (answer.style.display === "none" || answer.style.display === "") {
-                answer.style.display = "block"; 
-                toggleIcon.innerHTML = '˅'; 
-                toggleIcon.classList.add('rotated'); 
-            } else {
-                answer.style.display = "none"; 
-                toggleIcon.innerHTML = '^'; 
-                toggleIcon.classList.remove('rotated'); 
-            }
-        }
-    </script>
 
     @include('home.footer')
 </body>

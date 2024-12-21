@@ -169,32 +169,57 @@ public function seeMatch()
     }
 
     public function field(Request $request)
-    {
-        $query = Field::query();
+{
+    $query = Field::query();
 
-        if ($request->filled('modality')) {
-            $query->where('modality', $request->modality);
-        }
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('location', 'like', "%{$search}%")
-                    ->orWhere('modality', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        $fields = $query->paginate(10); // Paginação
-
-        $from = $request->input('from', null); // Pega o parâmetro 'from' da URL
-        $redirect = $request->input('redirect', null); // Pega o parâmetro 'redirect'
-
-        return view('home.field', compact('fields', 'from', 'redirect'));
+    // Filtro de modalidade: Permite filtrar campos que contenham a modalidade desejada em qualquer parte da string de modalidades
+    if ($request->filled('modality')) {
+        $modality = $request->modality;
+        // Verifica se a modalidade está em qualquer parte do campo 'modality', considerando que este pode ter mais de uma modalidade separada por vírgulas
+        $query->where('modality', 'LIKE', "%{$modality}%");
     }
+
+    // Filtro de busca: Pesquisa em nome, localização, modalidade e usuário
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('location', 'like', "%{$search}%")
+                ->orWhere('modality', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        });
+    }
+
+    // Ordenação (opcional)
+    if ($request->filled('sort')) {
+        $sort = $request->sort;
+        switch ($sort) {
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+        }
+    }
+
+    // Paginação
+    $fields = $query->paginate(10); // Paginação com 10 resultados por página
+
+    // Outros parâmetros que você possa estar usando para redirecionamento ou controle de origem
+    $from = $request->input('from', null); 
+    $redirect = $request->input('redirect', null);
+
+    return view('home.field', compact('fields', 'from', 'redirect'));
+}
 
     public function contact()
     {
@@ -203,13 +228,7 @@ public function seeMatch()
 
     public function help()
     {
-        $faqs = [
-            ['question' => 'Como posso redefinir minha senha?', 'answer' => 'Você pode redefinir sua senha clicando em "Esqueci a senha" na tela de login. Siga as instruções enviadas para o seu e-mail.'],
-            ['question' => 'Como posso entrar em contato com o suporte?', 'answer' => 'Você pode entrar em contato com o suporte através do e-mail suporte@exemplo.com ou pelo telefone (11) 1234-5678.'],
-            ['question' => 'Quais métodos de pagamento são aceitos?', 'answer' => 'Aceitamos cartões de crédito, débito e PayPal. Confira nossa página de pagamento para mais informações.'],
-        ];
-
-        return view('home.help', compact('faqs'));
+        return view('home.help');
     }
 
     public function sendProblem(Request $request)

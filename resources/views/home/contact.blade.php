@@ -5,12 +5,12 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
     <div class="flex-1 container mx-auto px-4 py-12">
-        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Contactos</h1>
+        <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Contactos</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Endereço</h2>
-                <p class="text-gray-600">Rua da Amizade, nº 123</p>
-                <p class="text-gray-600">1234-567 Cidade, País</p>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Criadores</h2>
+                <p class="text-gray-600">José Amorim</p>
+                <p class="text-gray-600">João Cunha</p>
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6">

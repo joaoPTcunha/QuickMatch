@@ -166,8 +166,15 @@
                         <label class="flex items-center">
                             <input type="checkbox" id="modality-outros" name="modality[]" value="outros" class="mr-2"> Outros
                         </label>
+                
+                        <!-- Campo de entrada para "Outros" -->
+                        <div class="col-span-2 sm:col-span-3 lg:col-span-5 mt-2 hidden" id="other-sport-container">
+                            <label for="other-sport" class="text-sm text-gray-700">Escreva o nome do desporto</label>
+                            <input type="text" id="other-sport" name="other_sport" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="Insira o nome do desporto" />
+                        </div>
                     </div>
                 </div>
+                
                 
                 <div class="text-center mt-6">
                     <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
@@ -302,6 +309,28 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const otherSportCheckbox = document.getElementById('modality-outros');
+            const otherSportContainer = document.getElementById('other-sport-container');
+        
+            // Inicializa o estado do campo de texto "Outros"
+            if (otherSportCheckbox.checked) {
+                otherSportContainer.classList.remove('hidden');
+            } else {
+                otherSportContainer.classList.add('hidden');
+            }
+        
+            // Escuta as mudanças no checkbox "Outros"
+            otherSportCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    otherSportContainer.classList.remove('hidden');
+                } else {
+                    otherSportContainer.classList.add('hidden');
+                }
+            });
+        });
+    </script>        
    
 </body>
 
