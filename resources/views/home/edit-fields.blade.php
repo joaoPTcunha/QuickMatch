@@ -47,40 +47,45 @@
                     <input type="text" name="contact" id="contact" value="{{ old('contact', $field->contact) }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o contacto" />
                 </div>
 
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</label>
-            <div class="mt-4">
-                <label for="availability" class="text-sm text-gray-700">Selecione os dias e horários</label>
-        
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                    @foreach(['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira', 
-                             'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 
-                             'sunday' => 'Domingo'] as $day => $label)
-                        <div>
-                            <!-- Checkbox para selecionar o dia -->
-                            <input type="checkbox" id="{{ $day }}" name="days[]" value="{{ $day }}" 
-                                class="mr-2" 
-                                @if(in_array($day, old('days', isset($availability[$day]) ? [$day] : []))) checked @endif>
-                            <label for="{{ $day }}">{{ $label }}</label>
-                        
-                            <!-- Campos de horário de início e fim, visíveis apenas se o dia estiver selecionado -->
-                            <div id="{{ $day }}-times" class="mt-2 {{ in_array($day, old('days', isset($availability[$day]) ? [$day] : [])) ? '' : 'hidden' }}">
-                                <label for="{{ $day }}_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="{{ $day }}_start" id="{{ $day }}_start" 
-                                    value="{{ old($day.'_start', isset($availability[$day]) ? $availability[$day]['start'] : '') }}"
-                                    class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                        
-                                <label for="{{ $day }}_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="{{ $day }}_end" id="{{ $day }}_end" 
-                                    value="{{ old($day.'_end', isset($availability[$day]) ? $availability[$day]['end'] : '') }}"
-                                    class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                        </div>
-                    @endforeach
-                </div>                
-            </div>                         
-        </div>
-
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</label>
+                    <div class="mt-4">
+                        <label for="availability" class="text-sm text-gray-700">Selecione os dias e horários</label>
+                
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
+                            @foreach(['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira', 
+                                     'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 
+                                     'sunday' => 'Domingo'] as $day => $label)
+                                <div>
+                                    <!-- Checkbox para selecionar o dia -->
+                                    <input type="checkbox" id="{{ $day }}" name="days[]" value="{{ $day }}" class="mr-2"
+                                        @if(in_array($day, old('days', isset($availability[$day]) ? [$day] : []))) checked @endif>
+                                    <label for="{{ $day }}">{{ $label }}</label>
+                
+                                    <!-- Campos de horário dinâmico de início e fim -->
+                                    <div id="{{ $day }}-times" class="mt-2 {{ in_array($day, old('days', isset($availability[$day]) ? [$day] : [])) ? '' : 'hidden' }}">
+                                        <div class="timeslot-container">
+                                            @foreach(old($day.'_start', isset($availability[$day]) ? $availability[$day] : []) as $index => $time)
+                                                <div class="timeslot">
+                                                    <label for="{{ $day }}_start_{{ $index }}" class="text-sm text-gray-700">Início</label>
+                                                    <input type="time" name="{{ $day }}_start[]" id="{{ $day }}_start_{{ $index }}"
+                                                        value="{{ old($day.'_start.'.$index, $time['start'] ?? '') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                                    
+                                                    <label for="{{ $day }}_end_{{ $index }}" class="text-sm text-gray-700">Fim</label>
+                                                    <input type="time" name="{{ $day }}_end[]" id="{{ $day }}_end_{{ $index }}"
+                                                        value="{{ old($day.'_end.'.$index, $time['end'] ?? '') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                
+                                                    <button type="button" class="remove-time-btn text-red-500 hover:underline mt-2" onclick="removeTimeSlot('{{ $day }}', {{ $index }})">Remover</button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <button type="button" class="add-time-btn text-blue-500 hover:underline mt-4" onclick="addTimeSlot('{{ $day }}')">Adicionar horário</button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>                
+                    </div>                         
+                </div>
 
                 <div class="mb-4">
                     <label for="price" class="block text-sm font-medium text-gray-700">Preço por Hora</label>
@@ -258,5 +263,29 @@
                 });
             });
         });
+
+        function addTimeSlot(day) {
+            const timeslotContainer = document.querySelector(`#${day}-times .timeslot-container`);
+            const index = timeslotContainer.children.length;
+            const timeslotHTML = `
+                <div class="timeslot">
+                    <label for="${day}_start_${index}" class="text-sm text-gray-700">Início</label>
+                    <input type="time" name="${day}_start[]" id="${day}_start_${index}"
+                        class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                        
+                    <label for="${day}_end_${index}" class="text-sm text-gray-700">Fim</label>
+                    <input type="time" name="${day}_end[]" id="${day}_end_${index}"
+                        class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                    
+                    <button type="button" class="remove-time-btn text-red-500 hover:underline mt-2" onclick="removeTimeSlot('${day}', ${index})">Remover</button>
+                </div>
+            `;
+            timeslotContainer.insertAdjacentHTML('beforeend', timeslotHTML);
+        }
+
+        function removeTimeSlot(day, index) {
+            const timeslot = document.querySelector(`#${day}-times .timeslot:nth-child(${index + 1})`);
+            timeslot.remove();
+        }
     </script>
 </body>

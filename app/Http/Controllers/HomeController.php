@@ -279,31 +279,42 @@ class HomeController extends Controller
         $validatedData = $request->validate([
             'field_id' => 'required|exists:fields,id',
             'field_name' => 'required|string',
-            'schedule' => 'required|string',
+            'schedule' => 'required|string',  // Formato: 'day|start|end'
             'specific-date' => 'required|date',
             'price' => 'required|numeric|min:0',
             'modality' => 'required|string',
             'num_participants' => 'required|integer|min:1',
-            'participar' => 'boolean'
+            'participar' => 'boolean',
         ]);
-
+    
         try {
             // Extrair dia da semana e horário do campo "schedule"
             [$dayOfWeek, $time] = explode('|', $validatedData['schedule']);
-
+    
             // Criar timestamp usando a data e o horário
             $eventDateTime = Carbon::createFromFormat(
                 'Y-m-d H:i',
                 $validatedData['specific-date'] . ' ' . $time
             );
-
+    
             // Verificar se o dia da semana da data corresponde ao selecionado
             $dayOfWeekFromDate = strtolower($eventDateTime->format('l'));
             if ($dayOfWeekFromDate !== $dayOfWeek) {
                 toastr()->error('A data selecionada não corresponde ao dia da semana escolhido.');
                 return back()->withInput();
             }
-
+    
+            // Verificar se já existe um evento no mesmo campo, na mesma data e horário
+            $existingEvent = Event::where('field_id', $validatedData['field_id'])
+                ->whereDate('event_date_time', $eventDateTime->toDateString()) // Verificar pela data
+                ->whereTime('event_date_time', $eventDateTime->toTimeString()) // Verificar pelo horário
+                ->first();
+    
+            if ($existingEvent) {
+                toastr()->error('Já existe um evento agendado para esse horário neste campo.');
+                return back()->withInput();
+            }
+    
             // Criar o evento
             $event = new Event();
             $event->field_id = $validatedData['field_id'];
@@ -317,24 +328,24 @@ class HomeController extends Controller
             $event->user_id = Auth::id();
             $event->status = 'pending';
             $event->participants_user_id = json_encode([]);
-
+    
             $event->save();
-
+    
             // Inscrição automática do criador, se marcado
             if ($request->has('participar') && $request->participar) {
                 $event->num_subscribers = 1;
-
+    
                 $participants = [
                     [
                         'user_id' => Auth::id(),
                         'user_name' => Auth::user()->name
                     ]
                 ];
-
+    
                 $event->participants_user_id = json_encode($participants);
                 $event->save();
             }
-
+    
             toastr()->success('Evento publicado com sucesso!');
             return redirect()->route('seematch');
         } catch (\Exception $e) {
@@ -342,6 +353,7 @@ class HomeController extends Controller
             return back()->withInput();
         }
     }
+    
 
     public function print_pdf($id)
     {
@@ -353,72 +365,77 @@ class HomeController extends Controller
 
 
     public function storeFields(Request $request)
-    {
-        // Validação dos dados recebidos
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'contact' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'modality' => 'required|array',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'days' => 'required|array', // Garantir que os dias sejam enviados
-        ]);
+{
+    // Validação dos dados recebidos
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'location' => 'required|string|max:255',
+        'contact' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'modality' => 'required|array',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'days' => 'required|array', // Garantir que os dias sejam enviados
+    ]);
 
-        // Tratamento da modalidade
-        $modality = $request->input('modality');
-        if (is_array($modality)) {
-            $validatedData['modality'] = implode(',', $modality);
-        } else {
-            $validatedData['modality'] = '';
+    // Tratamento da modalidade
+    $modality = $request->input('modality');
+    if (is_array($modality)) {
+        $validatedData['modality'] = implode(',', $modality);
+    } else {
+        $validatedData['modality'] = '';
+    }
+
+    // Armazenamento da imagem
+    try {
+        $imageName = $this->storeFieldImage($request);
+        if ($imageName) {
+            $validatedData['image'] = $imageName;
         }
+    } catch (\Exception $e) {
+        toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
+        return back();
+    }
 
-        // Armazenamento da imagem
-        try {
-            $imageName = $this->storeFieldImage($request);
-            if ($imageName) {
-                $validatedData['image'] = $imageName;
-            }
-        } catch (\Exception $e) {
-            toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
-            return back();
-        }
+    // Adicionando o ID do usuário
+    $validatedData['user_id'] = Auth::id();
 
-        // Adicionando o ID do usuário
-        $validatedData['user_id'] = Auth::id();
+    // Adicionando o horário por dia da semana
+    $availability = [];
 
-        // Adicionando o horário por dia da semana
-        $availability = [];
+    // Itera sobre os dias e coleta todos os horários
+    foreach ($request->input('days', []) as $day) {
+        $startTimes = $request->input("{$day}_start");
+        $endTimes = $request->input("{$day}_end");
 
-        foreach ($request->input('days', []) as $day) {
-            $start = $request->input("{$day}_start");
-            $end = $request->input("{$day}_end");
-
-            if ($start && $end) {
-                $availability[$day] = [
+        if ($startTimes && $endTimes) {
+            $dayAvailability = [];
+            foreach ($startTimes as $index => $start) {
+                $dayAvailability[] = [
                     'start' => $start,
-                    'end' => $end,
+                    'end' => $endTimes[$index],
                 ];
             }
+            $availability[$day] = $dayAvailability;
         }
-
-        $validatedData['availability'] = json_encode($availability);
-
-        // Criando o novo campo no banco de dados
-        try {
-            Field::create($validatedData);
-        } catch (\Exception $e) {
-            toastr()->error('Erro ao criar o campo: ' . $e->getMessage());
-            return back();
-        }
-
-        // Exibindo a mensagem de sucesso
-        toastr()->timeout(10000)->closeButton()->success('Campo adicionado com sucesso!');
-
-        // Redirecionando para a página de gerenciamento de campos
-        return redirect()->route('manage-fields');
     }
+
+    $validatedData['availability'] = json_encode($availability);
+
+    // Criando o novo campo no banco de dados
+    try {
+        Field::create($validatedData);
+    } catch (\Exception $e) {
+        toastr()->error('Erro ao criar o campo: ' . $e->getMessage());
+        return back();
+    }
+
+    // Exibindo a mensagem de sucesso
+    toastr()->timeout(10000)->closeButton()->success('Campo adicionado com sucesso!');
+
+    // Redirecionando para a página de gerenciamento de campos
+    return redirect()->route('manage-fields');
+}
 
     private function storeFieldImage($request)
     {
@@ -439,50 +456,83 @@ class HomeController extends Controller
 
 
     public function updateField(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'contact' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        ]);
+{
+    // Validação dos dados recebidos
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'location' => 'required|string|max:255',
+        'contact' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'modality' => 'required|array',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'days' => 'required|array', // Garantir que os dias sejam enviados
+    ]);
 
-        $modalities = $request->input('modality', []);
-
-        if (in_array('outro', $modalities) && $request->filled('customModality')) {
-            $modalities[] = $request->input('customModality');
-        }
-
-        $validatedData['modality'] = implode(',', $modalities);
-
-        $field = Field::findOrFail($id);
-
-        $field->name = $validated['name'];
-        $field->description = $validated['description'];
-        $field->location = $validated['location'];
-        $field->contact = $validated['contact'];
-        $field->price = $validated['price'];
-        $field->modality = $validatedData['modality'];
-
-        if ($request->hasFile('image')) {
-            if ($field->image && file_exists(public_path('Fields/' . $field->image))) {
-                unlink(public_path('Fields/' . $field->image));
-            }
-
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('Fields'), $imageName);
-
-            $field->image = $imageName;
-        }
-
-        $field->save();
-
-        toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso');
-
-        return redirect()->route('manage-fields');
+    // Tratamento da modalidade
+    $modality = $request->input('modality');
+    if (is_array($modality)) {
+        $validatedData['modality'] = implode(',', $modality);
+    } else {
+        $validatedData['modality'] = '';
     }
+
+    // Armazenamento da imagem (caso haja uma nova)
+    try {
+        if ($request->hasFile('image')) {
+            $imageName = $this->storeFieldImage($request);  // Supondo que esse método seja o mesmo
+            if ($imageName) {
+                $validatedData['image'] = $imageName;
+            }
+        }
+    } catch (\Exception $e) {
+        toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
+        return back();
+    }
+
+    // Obtém o campo que será atualizado
+    $field = Field::findOrFail($id);
+
+    // Adicionando o ID do usuário (não precisa ser modificado, pois ele já pertence ao campo)
+    $validatedData['user_id'] = $field->user_id;
+
+    // Atualizando o horário por dia da semana
+    $availability = [];
+
+    // Itera sobre os dias e coleta todos os horários
+    foreach ($request->input('days', []) as $day) {
+        $startTimes = $request->input("{$day}_start");
+        $endTimes = $request->input("{$day}_end");
+
+        if ($startTimes && $endTimes) {
+            $dayAvailability = [];
+            foreach ($startTimes as $index => $start) {
+                $dayAvailability[] = [
+                    'start' => $start,
+                    'end' => $endTimes[$index],
+                ];
+            }
+            $availability[$day] = $dayAvailability;
+        }
+    }
+
+    // Armazenando os horários atualizados
+    $validatedData['availability'] = json_encode($availability);
+
+    // Atualizando o campo no banco de dados
+    try {
+        $field->update($validatedData);
+    } catch (\Exception $e) {
+        toastr()->error('Erro ao atualizar o campo: ' . $e->getMessage());
+        return back();
+    }
+
+    // Exibindo a mensagem de sucesso
+    toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso!');
+
+    // Redirecionando para a página de gerenciamento de campos
+    return redirect()->route('manage-fields');
+}
 
     public function destroyField($id)
     {

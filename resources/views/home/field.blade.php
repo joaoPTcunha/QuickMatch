@@ -105,31 +105,41 @@
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Dono:</span> {{ $field->user->name }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
-                             <!-- Disponibilidade -->
-                            @if($field->availability)
-                            <div class="text-sm text-gray-700 mb-4">
-                                <span class="font-semibold">Disponibilidade:</span>                        
-                                <ul class="list-inside list-disc space-y-1 mt-1">
-                                    @php
-                                        $availabilitySlots = json_decode($field->availability, true);
-                                        $dayTranslations = [
-                                            'monday' => 'Segundas-feiras',
-                                            'tuesday' => 'Terças-feiras',
-                                            'wednesday' => 'Quartas-feiras',
-                                            'thursday' => 'Quintas-feiras',
-                                            'friday' => 'Sextas-feiras',
-                                            'saturday' => 'Sábados',
-                                            'sunday' => 'Domingos',
-                                        ];
-                                    @endphp
-                                    @foreach($availabilitySlots as $day => $time)
-                                        <li><span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span> {{ $time['start'] }} - {{ $time['end'] }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            @else
-                            <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
-                            @endif
+
+
+                             @if($field->availability)
+    <div class="text-sm text-gray-700 mb-4">
+        <span class="font-semibold">Disponibilidade:</span>                        
+        <ul class="list-inside list-disc space-y-1 mt-1">
+            @php
+                $availabilitySlots = json_decode($field->availability, true);
+                $dayTranslations = [
+                    'monday' => 'Segundas-feiras',
+                    'tuesday' => 'Terças-feiras',
+                    'wednesday' => 'Quartas-feiras',
+                    'thursday' => 'Quintas-feiras',
+                    'friday' => 'Sextas-feiras',
+                    'saturday' => 'Sábados',
+                    'sunday' => 'Domingos',
+                ];
+            @endphp
+
+            @foreach($availabilitySlots as $day => $times)
+                <li>
+                    <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
+                    <ul class="list-inside list-disc pl-5">
+                        @foreach($times as $time)
+                            <li>{{ $time['start'] }} - {{ $time['end'] }}</li>
+                        @endforeach
+                    </ul>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@else
+    <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
+@endif
+
                         </div>
                         <div class="mt-4 text-center">
                             <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
