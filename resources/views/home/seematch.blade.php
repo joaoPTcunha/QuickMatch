@@ -3,7 +3,7 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
-        <h1 class="text-xl text-center py-6 text-gray-800 font-semibold">Eventos Criados</h1>
+        <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Eventos Criados</h1>
             @if($events->isEmpty())
                 <p class="text-center text-gray-500">Nenhum evento criado ainda.</p>
             @else
