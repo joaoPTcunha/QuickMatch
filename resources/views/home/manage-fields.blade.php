@@ -15,8 +15,8 @@
             <div class="flex flex-col bg-white rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                 <!-- Imagem -->
                 <div class="flex justify-center mb-4">
-                    <label for="field_image_{{ $field->id }}" class="cursor-pointer">
-                        <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md cursor-pointer mt-5" data-image-url="{{ asset('Fields/' . $field->image) }}" onclick="openModal(this)">
+                    <label for="field_image_{{ $field->id }}" class="block w-full p-5">
+                        <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                     </label>
                 </div>
                 <!-- Informações do Campo -->

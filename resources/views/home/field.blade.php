@@ -7,7 +7,7 @@
         
         <form method="GET" action="{{ url()->current() }}" class="mb-6">
             @csrf
-            <!-- Modalidades  texto clicável (desktop) --> 
+            <!-- Modalidades texto clicável (desktop) --> 
             <div class="flex flex-wrap items-center px-4 sm:px-6 lg:px-8 mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
                 <!-- Modalidades para desktop -->
                 <div class="hidden sm:flex flex-wrap items-center space-x-4 w-full mb-4">
@@ -87,98 +87,75 @@
         </form>
         
         <!-- Exibição dos campos -->
-        @if(!$fields->isEmpty())
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8">
-                @foreach($fields as $field)
-                    <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
-                        <div class="flex justify-center mb-4">
-                            <label for="field_image_{{ $field->id }}" class="cursor-pointer">
-                                <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-36 object-cover rounded-md shadow-md cursor-pointer" data-image-url="{{ asset('Fields/' . $field->image) }}" onclick="openModal(this)">
-                            </label>
+@if(!$fields->isEmpty())
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8">
+        @foreach($fields as $field)
+            <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
+                <div class="w-full mb-4">
+                    <label for="field_image_{{ $field->id }}" class="block w-full">
+                        <!-- Imagem com largura total e altura fixa de 40 -->
+                        <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
+                    </label>
+                </div>
+                <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $field->name }}</h2>
+                <div class="text-gray-700 text-sm space-y-1">
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $field->location }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $field->price }}€</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade(s):</span> {{ $field->modality }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição:</span> {{ $field->description }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Dono:</span> {{ $field->user->name }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
+                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
+
+                    @if($field->availability)
+                        <div class="text-sm text-gray-700 mb-4">
+                            <span class="font-semibold">Disponibilidade:</span>                        
+                            <ul class="list-inside list-disc space-y-1 mt-1">
+                                @php
+                                    $availabilitySlots = json_decode($field->availability, true);
+                                    $dayTranslations = [
+                                        'monday' => 'Segundas-feiras',
+                                        'tuesday' => 'Terças-feiras',
+                                        'wednesday' => 'Quartas-feiras',
+                                        'thursday' => 'Quintas-feiras',
+                                        'friday' => 'Sextas-feiras',
+                                        'saturday' => 'Sábados',
+                                        'sunday' => 'Domingos',
+                                    ];
+                                @endphp
+
+                                @foreach($availabilitySlots as $day => $times)
+                                    <li>
+                                        <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
+                                        <ul class="list-inside list-disc pl-5">
+                                            @foreach($times as $time)
+                                                <li>{{ $time['start'] }} - {{ $time['end'] }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </div>
-                        <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $field->name }}</h2>
-                        <div class="text-gray-700 text-sm space-y-1">
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $field->location }}</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $field->price }}€</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade(s):</span> {{ $field->modality }}</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição:</span> {{ $field->description }}</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Dono:</span> {{ $field->user->name }}</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
-
-
-                             @if($field->availability)
-    <div class="text-sm text-gray-700 mb-4">
-        <span class="font-semibold">Disponibilidade:</span>                        
-        <ul class="list-inside list-disc space-y-1 mt-1">
-            @php
-                $availabilitySlots = json_decode($field->availability, true);
-                $dayTranslations = [
-                    'monday' => 'Segundas-feiras',
-                    'tuesday' => 'Terças-feiras',
-                    'wednesday' => 'Quartas-feiras',
-                    'thursday' => 'Quintas-feiras',
-                    'friday' => 'Sextas-feiras',
-                    'saturday' => 'Sábados',
-                    'sunday' => 'Domingos',
-                ];
-            @endphp
-
-            @foreach($availabilitySlots as $day => $times)
-                <li>
-                    <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
-                    <ul class="list-inside list-disc pl-5">
-                        @foreach($times as $time)
-                            <li>{{ $time['start'] }} - {{ $time['end'] }}</li>
-                        @endforeach
-                    </ul>
-                </li>
-            @endforeach
-        </ul>
+                    @else
+                        <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
+                    @endif
+                </div>
+                <!-- Garantir que o botão fique dentro do card -->
+                <div class="mt-4 text-center">
+                    <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                        Marcar Evento
+                    </a>
+                </div>
+            </div>
+        @endforeach
     </div>
-@else
-    <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
 @endif
 
-                        </div>
-                        <div class="mt-4 text-center">
-                            <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
-                                Marcar Evento
-                            </a>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
 
         <div class="mt-6 px-10 sm:px-20">
             {{ $fields->links() }}
         </div>
     </div>
 
-    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;" onclick="closeModal(event)">
-        <div class="relative">
-            <img id="modalImage" src="" alt="Imagem ampliada" class="max-w-screen-md max-h-screen-md rounded-md cursor-pointer" onclick="event.stopPropagation();">
-        </div>
-    </div>
-    
     @include('home.footer')
-
-    <script>
-        function openModal(element) {
-            const imageUrl = element.getAttribute('data-image-url');
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-
-            modalImage.src = imageUrl;
-            modal.style.display = 'flex';
-        }
-
-        function closeModal(event) {
-            if (event.target === event.currentTarget) {
-                const modal = document.getElementById('imageModal');
-                modal.style.display = 'none';
-            }
-        }
-    </script>
 </body>

@@ -39,6 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/newmatch/{id}', [HomeController::class, 'newMatchField'])->name('newmatch.field');
     Route::post('/store-event', [HomeController::class, 'storeEvent'])->name('store.event');
     Route::get('/seematch', [HomeController::class, 'seeMatch'])->name('seematch');
+    Route::delete('/events/{id}', [HomeController::class, 'destroyEvent'])->name('events.destroy');
+
 
     Route::get('/print_pdf/{id}', [HomeController::class, 'print_pdf'])->name('print_pdf');
 

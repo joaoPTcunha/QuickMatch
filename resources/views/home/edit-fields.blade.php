@@ -13,9 +13,10 @@
                 @method('PUT')
 
                 <div class="flex justify-center mb-4">
-                    <label for="image" class="cursor-pointer">
-                        <img id="avatar" src="{{ asset('Fields/' . $field->image) }}" alt="Avatar" class="w-32 h-32 object-cover border-4 border-gray-300 rounded-md">
+                    <label for="image" class="cursor-pointer block w-1/2">
+                        <img id="avatar" src="{{ asset('Fields/' . $field->image) }}" alt="Avatar" class="w-full h-40 object-cover rounded-md mb-3">
                     </label>
+                    
                     <input type="file" id="image" name="image" class="hidden" accept="image/*">
                 </div>
                 <div class="text-center mb-4">

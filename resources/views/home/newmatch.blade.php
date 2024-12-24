@@ -30,8 +30,8 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="descricao" class="block text-gray-700">Descrição</label>
-                    <textarea id="descricao" name="descricao" rows="3" class="w-full mt-2 p-2 border rounded" placeholder="Descrição do evento" required>{{ old('descricao') }}</textarea>
+                    <label for="descricao" class="block text-gray-700">Título do Evento</label>
+                    <textarea id="descricao" name="descricao" rows="3" class="w-full mt-2 p-2 border rounded" placeholder="Insira um título curto e direto" required>{{ old('descricao') }}</textarea>
                 </div>
 
                 <div class="mb-4">

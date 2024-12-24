@@ -71,13 +71,14 @@
                     @foreach($events as $event)
                     <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                         <div class="flex justify-center mb-4">
-                            <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-48 object-contain mb-4 mt-4 rounded-lg">
+                            <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                         </div>
                         <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
                         <div class="flex justify-between text-gray-700 text-base space-y-1">
                             <div>
                                 <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
                                 <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
+                                
                                 <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
                                 <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ number_format($event->price, 2) }} €</p>
                                 <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Criador:</span> {{ $event->user->name }}</p>

@@ -11,9 +11,11 @@
             <form action="{{ route('store-fields') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="flex justify-center mb-4">
-                    <label for="image" class="cursor-pointer">
-                        <img id="avatar" src="https://via.placeholder.com/150" alt="Avatar" class="w-full h-36 object-cover rounded-md mb-3">
+                    <label for="image" class="cursor-pointer block w-1/2">
+                        <img id="avatar" src="https://via.placeholder.com/600x300" alt="Avatar" class="w-full h-40 object-cover rounded-md mb-3">
                     </label>
+                    
+                    
                     <input type="file" id="image" name="image" class="hidden" accept="image/*">
                 </div>
                 <div class="text-center mb-4">

@@ -163,6 +163,21 @@ class HomeController extends Controller
         return view('home.seematch', compact('events'));
     }
 
+    public function destroyEvent($id)
+    {
+        // Encontre o evento pelo ID e verifique se o usuário é o dono do evento
+        $event = Event::where('id', $id)
+            ->where('user_id', Auth::id()) // Garante que o evento pertence ao usuário logado
+            ->firstOrFail();
+
+        // Remova o evento da base de dados
+        $event->delete();
+
+        toastr()->timeout(10000)->closeButton()->success('Evento apagado com sucesso!');
+
+        return redirect()->route('seematch');
+    }
+
     public function spinWheel()
     {
         return view('home.spinwheel');

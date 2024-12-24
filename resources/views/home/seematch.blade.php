@@ -24,24 +24,30 @@
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $event->price }} €</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
-                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição do Campo:</span> {{ $event->field->description }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição do Evento:</span> {{ $event->description }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $event->field->location }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $event->field->contact }}</p>
                             
                         </div>
 
-                <div class="mt-4 text-center flex justify-between items-center">
-                    <div>
-                        @php
-                        $contactNumber = preg_replace('/[^0-9]/', '', $event->field->contact); // Remove caracteres não numéricos
-                        $whatsappMessage = urlencode("Olá, estou interessado no evento realizado no campo: {$event->field->name}. Gostaria de mais informações.");
-                        @endphp
-                        <a href="https://wa.me/{{ $contactNumber }}?text={{ $whatsappMessage }}"
-                            target="_blank"
-                            class="inline-block bg-green-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-600 transition-all duration-300">
-                            Conversar com o Dono
-                        </a>
-                    </div>
+                        <div class="mt-4 text-center flex justify-between items-center">
+                            <div class="flex space-x-4">
+                                <!-- Botão Conversar com o Dono -->
+                                @php
+                                $contactNumber = preg_replace('/[^0-9]/', '', $event->field->contact); // Remove caracteres não numéricos
+                                $whatsappMessage = urlencode("Olá, estou interessado no evento realizado no campo: {$event->field->name}. Gostaria de mais informações.");
+                                @endphp
+                                <a href="https://wa.me/{{ $contactNumber }}?text={{ $whatsappMessage }}"
+                                    target="_blank"
+                                    class="inline-block bg-green-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-600 transition-all duration-300 text-m">
+                                    Conversar com o Dono
+                                </a>
+                        
+                                <!-- Botão Apagar Evento -->
+                                <button class="inline-block bg-red-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-600 transition-all duration-300 text-m" id="deleteButton-{{ $event->id }}" data-event-id="{{ $event->id }}">
+                                    Apagar Evento
+                                </button>
+                            </div>
 
                     <div class="relative">
                         <a href="{{ url('print_pdf/'.$event->id) }}" class="inline-flex items-center justify-center p-2 rounded-lg ">
@@ -127,5 +133,49 @@
         });
     });
 </script>
+<script>
+    const deleteButtons = document.querySelectorAll('[id^="deleteButton-"]');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const eventId = button.getAttribute('data-event-id'); // Obtém o ID do evento do atributo de dados
+            
+            Swal.fire({
+                title: 'Tem certeza que deseja apagar este evento?',
+                text: "Esta ação não pode ser desfeita.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, apagar!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'bg-red-500 text-white hover:bg-red-600',
+                    cancelButton: 'bg-gray-600 text-white hover:bg-gray-600'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Caso o usuário confirme, submete o formulário para apagar o evento
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/events/${eventId}`; // Substitua por sua rota de exclusão de evento
 
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'DELETE';
+                    form.appendChild(methodField);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 </html>
