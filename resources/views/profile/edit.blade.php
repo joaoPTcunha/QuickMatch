@@ -11,7 +11,7 @@
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
     <main class="container mx-auto px-4 py-2 flex-grow">
-        <h2 class="text-3xl font-semibold text-gray-800 leading-tight mb-7 text-center">
+        <h2 class="text-4xl font-semibold text-gray-800 leading-tight mb-7 text-center">
             {{ __('Perfil') }}
         </h2>
 
