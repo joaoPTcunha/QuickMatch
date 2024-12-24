@@ -4,30 +4,31 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
         <h1 class="text-3xl text-center py-6 text-gray-800 font-bold">Eventos Criados</h1>
-        @if($events->isEmpty())
-        <p class="text-center text-gray-500">Nenhum evento criado ainda.</p>
-        @else
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8">
-            @foreach($events as $event)
-            <div class="flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ml-4 mr-4">
-                <div class="flex justify-center mb-4">
-                    <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-48 object-contain mb-4 mt-4 rounded-lg">
-                </div>
-                <h2 class=" text-lg font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
-                <div class="text-gray-700 text-sm space-y-1">
-                    <div class="flex justify-between items-center">
-                        <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ $event->event_date_time }}</p>
-                        <p class="text-gray-700 text-lg font-semibold">
-                            {{ $event->num_subscribers }} / {{ $event->num_participants }}
-                        </p>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $event->price }} €</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição do Campo:</span> {{ $event->field->description }}</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $event->field->location }}</p>
-                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $event->field->contact }}</p>
-                </div>
+            @if($events->isEmpty())
+                <p class="text-center text-gray-500">Nenhum evento criado ainda.</p>
+            @else
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8">
+                    @foreach($events as $event)
+                    <div class="flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 ml-4 mr-4">
+                        <div class="flex justify-center mb-4">
+                            <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
+                        </div>
+                        <h2 class="text-lg font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
+                        <div class="text-gray-700 text-sm space-y-1">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ $event->event_date_time }}</p>
+                                <p class="text-gray-700 text-lg font-semibold">
+                                    {{ $event->num_subscribers }} / {{ $event->num_participants }}
+                                </p>
+                            </div>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ $event->price }} €</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição do Campo:</span> {{ $event->field->description }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $event->field->location }}</p>
+                            <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $event->field->contact }}</p>
+                            
+                        </div>
 
                 <div class="mt-4 text-center flex justify-between items-center">
                     <div>

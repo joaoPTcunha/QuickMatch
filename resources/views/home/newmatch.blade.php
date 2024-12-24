@@ -4,7 +4,7 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow px-3">
         <div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h1 class="text-2xl font-bold mb-6 text-center">Criar um Evento</h1>
+            <h1 class="text-3xl text-center py-6 text-gray-800 font-semibold">Criar um Evento</h1>
             <form action="{{ route('store.event') }}" method="POST">
                 @csrf
                 <input type="hidden" name="field_id" value="{{ $field->id ?? '' }}">
@@ -51,11 +51,14 @@
                                     'sunday' => 'Domingo',
                                 ];
                             @endphp
-                
-                            @foreach($availabilitySlots as $day => $time)
-                                <option value="{{ $day }}|{{ $time['start'] }}">
-                                    {{ $dayTranslations[$day] ?? ucfirst($day) }} - {{ $time['start'] }} até {{ $time['end'] }}
-                                </option>
+                            @foreach($availabilitySlots as $day => $times)
+                                <optgroup label="{{ $dayTranslations[$day] ?? ucfirst($day) }}">
+                                    @foreach ($times as $time)
+                                        <option value="{{ $day }}|{{ $time['start'] }}|{{ $time['end'] }}">
+                                            {{ $time['start'] }} até {{ $time['end'] }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         @endif
                     </select>
@@ -75,9 +78,9 @@
                     <label for="modality" class="block text-gray-700">Modalidade</label>
                     <select id="modality" name="modality" class="w-full mt-2 p-2 border rounded" required>
                         @foreach ($modalities as $modality)
-                        <option value="{{ $modality }}" {{ (old('modality', $field->modality ?? '') == $modality) ? 'selected' : '' }}>
-                            {{ $modality }}
-                        </option>
+                            <option value="{{ $modality }}" {{ (old('modality', $field->modality ?? '') == $modality) ? 'selected' : '' }}>
+                                {{ $modality }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -89,7 +92,6 @@
                         <span class="ml-2 text-gray-700">Participar neste evento</span>
                     </label>
                 </div>
-
 
                 <div class="mb-4 flex items-center">
                     <label for="num-participants" class="block text-gray-700 mr-4">Número de Participantes</label>
@@ -106,17 +108,20 @@
     </div>
 
     @include('home.footer')
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const scheduleSelect = document.getElementById('horarios-disponiveis');
             const dateInput = document.getElementById('specific-date');
-            
+            let selectedDay = null; // Variable to store selected day from schedule
+
             scheduleSelect.addEventListener('change', function() {
-                if (this.value) {
-                    const [day] = this.value.split('|');
+                const selectedValues = Array.from(this.selectedOptions).map(option => option.value);
+                if (selectedValues.length > 0) {
+                    const [day] = selectedValues[0].split('|');
+                    selectedDay = day; // Store the first selected day's name
                     setupDateRestrictions(dateInput, day);
                     
-                    // Seleciona automaticamente a próxima data disponível
                     const nextValidDate = getNextDayOfWeek(day);
                     dateInput.value = nextValidDate.toISOString().split('T')[0];
                     dateInput.readOnly = false;
@@ -125,33 +130,28 @@
                     dateInput.readOnly = true;
                 }
             });
-        
+
             dateInput.addEventListener('input', function() {
-                if (scheduleSelect.value) {
-                    const [selectedDay] = scheduleSelect.value.split('|');
+                if (selectedDay) {
                     const selectedDate = new Date(this.value);
                     const dayOfWeek = getDayName(selectedDate.getDay());
                     
+                    // If selected date doesn't match the required day, adjust it to the next valid date
                     if (dayOfWeek !== selectedDay) {
-                        // Se a data selecionada não corresponder ao dia da semana correto,
-                        // encontra a próxima data válida
                         const nextValidDate = getNextDayOfWeek(selectedDay, selectedDate);
                         this.value = nextValidDate.toISOString().split('T')[0];
                     }
                 }
             });
-        
+
             function setupDateRestrictions(dateInput, selectedDay) {
-                // Define a data mínima como hoje
                 const today = new Date();
                 dateInput.min = today.toISOString().split('T')[0];
-                
-                // Define a data máxima como 3 meses a partir de hoje
                 const maxDate = new Date();
                 maxDate.setMonth(maxDate.getMonth() + 3);
                 dateInput.max = maxDate.toISOString().split('T')[0];
             }
-        
+
             function getNextDayOfWeek(dayName, startDate = new Date()) {
                 const days = {
                     'monday': 1,
@@ -162,18 +162,18 @@
                     'saturday': 6,
                     'sunday': 0
                 };
-                
+
                 const targetDay = days[dayName.toLowerCase()];
                 const current = startDate.getDay();
-                
+
                 let daysToAdd = targetDay - current;
                 if (daysToAdd <= 0) daysToAdd += 7;
-                
+
                 const nextDate = new Date(startDate);
                 nextDate.setDate(startDate.getDate() + daysToAdd);
                 return nextDate;
             }
-        
+
             function getDayName(dayNumber) {
                 const days = {
                     0: 'sunday',
@@ -187,6 +187,6 @@
                 return days[dayNumber];
             }
         });
-    </script>        
+    </script>
 </body>
 </html>
