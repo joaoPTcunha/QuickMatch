@@ -70,23 +70,24 @@
                 @else
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8" id="eventGrid">
                         @foreach($events as $event)
-                        <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
+                        <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 h-fit">
                             <div class="flex justify-center mb-4">
                                 <img src="{{ asset('Fields/' . $event->field->image) }}" alt="{{ $event->field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                             </div>
                             <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">{{ $event->description }}</h2>
-                            <div class="flex justify-between text-gray-700 text-base space-y-1 sm:space-x-2 sm:space-y-0">
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
-                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
-                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
-                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ number_format($event->price, 2) }} €</p>
-                                    <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Criador:</span> {{ $event->user->name }}</p>
+                            <div class="flex-grow">
+                                <div class="flex justify-between text-gray-700 text-base">
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Data e Hora:</span> {{ \Carbon\Carbon::parse($event->event_date_time)->format('d/m/Y H:i') }}</p>
+                                        <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Campo:</span> {{ $event->field->name }}</p>
+                                        <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Modalidade:</span> {{ $event->modality }}</p>
+                                        <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Preço:</span> {{ number_format($event->price, 2) }} €</p>
+                                        <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Nome do Criador:</span> {{ $event->user->name }}</p>
+                                    </div>
+                                    <div class="text-right text-lg font-semibold">
+                                        {{ $event->num_subscribers }} / {{ $event->num_participants }}
+                                    </div>
                                 </div>
-                                <div class="text-right text-lg font-semibold sm:text-lg">
-                                    {{ $event->num_subscribers }} / {{ $event->num_participants }}
-                                </div>
-                                
                             </div>
                             
                             <div class="mt-4 text-center">

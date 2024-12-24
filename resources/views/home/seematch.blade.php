@@ -3,7 +3,7 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
-        <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Eventos Criados</h1>
+        <h1 class="text-xl text-center py-6 text-gray-800 font-semibold">Eventos Criados</h1>
             @if($events->isEmpty())
                 <p class="text-center text-gray-500">Nenhum evento criado ainda.</p>
             @else
@@ -27,7 +27,6 @@
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Descrição do Evento:</span> {{ $event->description }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Localização:</span> {{ $event->field->location }}</p>
                             <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $event->field->contact }}</p>
-                            
                         </div>
 
                         <div class="mt-4 text-center flex justify-between items-center">
@@ -55,7 +54,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                             </svg>
                         </a>
-                        <button id="shareButton" class="text-gray-500 hover:text-gray-700">
+                        <!-- Botão de compartilhamento -->
+                        <button id="shareButton-{{ $event->id }}" class="text-gray-500 hover:text-gray-700">
                             <svg class="h-8 w-8 text-gray-500 hover:text-gray-700" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <circle cx="6" cy="12" r="3" />
@@ -66,7 +66,8 @@
                             </svg>
                         </button>
 
-                        <div id="shareModal" class="absolute hidden top-0 left-1/2 transform -translate-x-1/2 mt-10 w-64 p-4 bg-white border border-gray-300 rounded-lg shadow-lg">
+                        <!-- Modal de compartilhamento -->
+                        <div id="shareModal-{{ $event->id }}" class="absolute hidden top-0 left-1/2 transform -translate-x-1/2 mt-10 w-64 p-4 bg-white border border-gray-300 rounded-lg shadow-lg">
                             <h3 class="text-lg font-semibold mb-2 text-center">Partilhar evento</h3>
                             <div class="flex justify-center space-x-4">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('/events') . '?search=' . $event->description) }}&quote=Criei%20um%20evento%20no%20QuickMatch,%20venha%20jogar%20comigo!" target="_blank" class="text-blue-600">
@@ -75,7 +76,6 @@
                                         <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" />
                                     </svg>
                                 </a>
-
                                 <!-- Instagram Icon -->
                                 <a href="https://www.instagram.com/?url={{ urlencode(url('/events') . '?search=' . $event->description) }}" target="_blank" class="text-pink-600">
                                     <svg class="h-8 w-8 text-pink-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -84,7 +84,6 @@
                                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                                     </svg>
                                 </a>
-
                                 <!-- Twitter Icon -->
                                 <a href="https://twitter.com/intent/tweet?url={{ urlencode(url('/events') . '?search=' . $event->description) }}&text=Criei%20um%20evento%20no%20QuickMatch,%20venha%20jogar%20comigo!" target="_blank" class="text-blue-400">
                                     <svg class="h-8 w-8 text-blue-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -93,7 +92,6 @@
                                         <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
                                     </svg>
                                 </a>
-
                                 <button id="copyLinkButton-{{ $event->id }}" data-link="{{ url('/events') . '?search=' . $event->description }}" class="text-gray-600 hover:text-gray-800">
                                     <svg class="h-8 w-8 text-gray-600 hover:text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -102,6 +100,7 @@
                                 </button>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -116,22 +115,22 @@
 
 <script>
     // Verifica se o botão de compartilhamento existe antes de adicionar o ouvinte de eventos
-    const shareButton = document.getElementById('shareButton');
-    if (shareButton) {
-        shareButton.addEventListener('click', function() {
-            const modal = document.getElementById('shareModal');
-            modal.classList.toggle('hidden');
-        });
-    }
-
-    const copyLinkButtons = document.querySelectorAll('[id^="copyLinkButton-"]');
-
-    copyLinkButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const link = button.getAttribute('data-link');
-            navigator.clipboard.writeText(link).then(function() {})
-        });
+const shareButtons = document.querySelectorAll('[id^="shareButton-"]');
+shareButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const eventId = button.id.split('-')[1]; // Obtém o ID do evento a partir do botão
+        const modal = document.getElementById('shareModal-' + eventId);
+        modal.classList.toggle('hidden');
     });
+});
+
+const copyLinkButtons = document.querySelectorAll('[id^="copyLinkButton-"]');
+copyLinkButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const link = button.getAttribute('data-link');
+        navigator.clipboard.writeText(link).then(function() {});
+    });
+});
 </script>
 <script>
     const deleteButtons = document.querySelectorAll('[id^="deleteButton-"]');

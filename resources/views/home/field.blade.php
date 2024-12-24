@@ -93,7 +93,6 @@
             <div class="flex flex-col bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                 <div class="w-full mb-4">
                     <label for="field_image_{{ $field->id }}" class="block w-full">
-                        <!-- Imagem com largura total e altura fixa de 40 -->
                         <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                     </label>
                 </div>
@@ -107,12 +106,16 @@
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
 
+                    <!-- Disponibilidade -->
                     @if($field->availability)
                         <div class="text-sm text-gray-700 mb-4">
-                            <span class="font-semibold">Disponibilidade:</span>                        
+                            <span class="font-semibold">Disponibilidade:</span>
                             <ul class="list-inside list-disc space-y-1 mt-1">
                                 @php
+                                    // Decodificando a disponibilidade do campo
                                     $availabilitySlots = json_decode($field->availability, true);
+
+                                    // Mapeamento dos dias para português
                                     $dayTranslations = [
                                         'monday' => 'Segundas-feiras',
                                         'tuesday' => 'Terças-feiras',
@@ -123,17 +126,38 @@
                                         'sunday' => 'Domingos',
                                     ];
                                 @endphp
-
-                                @foreach($availabilitySlots as $day => $times)
-                                    <li>
-                                        <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
-                                        <ul class="list-inside list-disc pl-5">
-                                            @foreach($times as $time)
-                                                <li>{{ $time['start'] }} - {{ $time['end'] }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </li>
-                                @endforeach
+                                
+                                @if(is_array($availabilitySlots) && count($availabilitySlots) > 0)
+                                    @foreach($availabilitySlots as $day => $times)
+                                        @if(is_array($times))
+                                            <li>
+                                                <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
+                                                
+                                                @if(count($times) == 1)
+                                                    <!-- Caso exista apenas um horário, mostramos diretamente -->
+                                                    @php
+                                                        $startTime = data_get($times[0], 'start', 'Indefinido');
+                                                        $endTime = data_get($times[0], 'end', 'Indefinido');
+                                                    @endphp
+                                                    <span>{{ $startTime }} - {{ $endTime }}</span>
+                                                @else
+                                                    <!-- Caso exista mais de um horário, iteramos sobre eles -->
+                                                    @foreach($times as $time)
+                                                        @php
+                                                            $startTime = data_get($time, 'start', 'Indefinido');
+                                                            $endTime = data_get($time, 'end', 'Indefinido');
+                                                        @endphp
+                                                        <span>{{ $startTime }} - {{ $endTime }}</span>
+                                                        @if(!$loop->last), @endif
+                                                    @endforeach
+                                                @endif
+                                                
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <p class="text-sm text-gray-700 mb-3">Formato de disponibilidade inválido ou sem horários definidos.</p>
+                                @endif
                             </ul>
                         </div>
                     @else
