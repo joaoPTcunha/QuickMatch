@@ -41,7 +41,7 @@
 
                 <div class="mb-4">
                     <label for="contact" class="block text-sm font-medium text-gray-700">Contato</label>
-                    <input type="text" name="contact" id="contact" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o contato" />
+                    <input type="text" name="contact" id="contact" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o contato" maxlength="9" />
                 </div>
 
                 <div class="mb-4">

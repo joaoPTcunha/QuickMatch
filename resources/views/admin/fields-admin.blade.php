@@ -25,9 +25,9 @@
                 </form>
             </div>
 
-            <div class="grid grid-cols-1 gap-6 p-0 sm:p-0 lg:p-0 justify-start">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-0 sm:p-0 lg:p-0 justify-start">
                 @foreach($fields as $field)
-                <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 w-full sm:w-1/2 lg:w-1/3">
+                <div class="event-card flex flex-col bg-white p-6 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 w-full">
                     <!-- Imagem -->
                     <div class="flex justify-start mb-4">
                         <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
@@ -53,6 +53,7 @@
                 </div>
                 @endforeach
             </div>
+            
             
             
 

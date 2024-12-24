@@ -2,8 +2,8 @@
 @include('admin.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Histórico de Problemas</h1>
+    <div class="flex-grow container mx-16 p-6">
+        <h1 class="text-4xl font-semibold mb-8 text-center text-gray-800">Histórico de Problemas</h1>
 
 
         @if (session('success'))
