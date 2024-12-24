@@ -92,22 +92,33 @@
                             @endphp
 
                             @if ($event->isSubscribed)
-                            <a href="#" onclick="cancelParticipation({{ $event->id }}); return false;"
-                                class="inline-block bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 w-full sm:w-auto mb-2">
+                            <a href="#"
+                                onclick="cancelParticipation({{ $event->id }}); return false;"
+                                class="inline-block bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 w-full sm:w-auto">
                                 Cancelar Inscrição
                             </a>
                             @elseif ($isFull)
                             <button class="bg-gray-500 text-white px-6 py-2 rounded-lg cursor-not-allowed w-full sm:w-auto mb-2" disabled>Evento Cheio</button>
+
                             @else
                             <a href="#" onclick="confirmParticipation({{ $event->id }}); return false;"
                                 class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 w-full sm:w-auto mb-2">
                                 Participar
                             </a>
                             @endif
-
                             <button type="button" class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300 w-full sm:w-auto" data-location="{{ $event->field->location }}">
                                 Ver Localização
                             </button>
+                            @if ($event->isSubscribed)
+                            <a href="{{ url('print_pdf/'.$event->id) }}" style="margin-top: -45px;"
+                                class="flex items-center justify-end text-gray-700 px-6 py-2 rounded-lg font-semibold transition-all duration-300 w-full sm:w-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-9 h-9 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                </svg>
+                            </a>
+                            @endif
+
+
                         </div>
                     </div>
                     @endforeach

@@ -31,11 +31,8 @@ class Event extends Model
         return $this->belongsTo(Field::class);
     }
 
-   public function incrementSubscribers()
-{
-    $this->increment('num_subscribers');
-}
-
-
-
+    public function incrementSubscribers()
+    {
+        $this->increment('num_subscribers');
+    }
 }
