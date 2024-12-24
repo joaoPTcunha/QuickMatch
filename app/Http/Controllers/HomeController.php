@@ -373,9 +373,11 @@ class HomeController extends Controller
     public function print_pdf($id)
     {
         $event = Event::findOrFail($id);
-
+        $pdf = Pdf::loadView('home.invoice', compact('event'))->setOptions([
+            'image_path' => public_path('Logo.png'), // Definir o caminho da imagem no PDF
+        ]);
         $pdf = Pdf::loadView('home.invoice', compact('event'));
-        return $pdf->download('invoice.pdf');
+        return $pdf->download('Comprovativo de inscrição.pdf');
     }
 
 
