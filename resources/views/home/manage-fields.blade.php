@@ -3,7 +3,7 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow container sm:px-6 lg:px-8 py-6">
-        <h3 class="text-3xl font-bold text-center mb-8 text-gray-800">Meus Campos</h3>
+        <h3 class="text-4xl font-semibold text-center mb-8 text-gray-800">Meus Campos</h3>
 
         @if($fields->isEmpty())
         <div class="text-center py-4 px-6 bg-yellow-100 text-yellow-700 rounded-md shadow-md">
