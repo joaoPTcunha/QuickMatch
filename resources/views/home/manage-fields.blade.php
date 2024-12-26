@@ -2,11 +2,11 @@
 @include('home.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow container sm:px-6 lg:px-8 py-6">
+    <div class="flex-grow container sm:px-6 lg:px-8 py-6 px-3">
         <h3 class="text-4xl font-semibold text-center mb-8 text-gray-800">Meus Campos</h3>
 
         @if($fields->isEmpty())
-        <div class="text-center py-4 px-6 bg-yellow-100 text-yellow-700 rounded-md shadow-md">
+        <div class="text-center py-4 bg-yellow-100 text-yellow-700 rounded-md shadow-md">
             <p>Ainda não tem campos registados</p>
         </div>
         @else
@@ -15,9 +15,9 @@
             <div class="flex flex-col bg-white rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
                 <!-- Imagem -->
                 <div class="flex justify-center mb-4">
-                    <label for="field_image_{{ $field->id }}" class="block w-full p-5">
+                    <div for="field_image_{{ $field->id }}" class="block w-full p-5">
                         <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
-                    </label>
+                    </div>
                 </div>
                 <!-- Informações do Campo -->
                 <div class="p-6 flex flex-col flex-grow">
@@ -30,62 +30,62 @@
 
                     <!-- Disponibilidade -->
                     @if($field->availability)
-                        <div class="text-sm text-gray-700 mb-4">
-                            <span class="font-semibold">Disponibilidade:</span>
-                            <ul class="list-inside list-disc space-y-1 mt-1">
-                                @php
-                                    // Decodificando a disponibilidade do campo
-                                    $availabilitySlots = json_decode($field->availability, true);
+                    <div class="text-sm text-gray-700 mb-4">
+                        <span class="font-semibold">Disponibilidade:</span>
+                        <ul class="list-inside list-disc space-y-1 mt-1">
+                            @php
+                            // Decodificando a disponibilidade do campo
+                            $availabilitySlots = json_decode($field->availability, true);
 
-                                    // Mapeamento dos dias para português
-                                    $dayTranslations = [
-                                        'monday' => 'Segundas-feiras',
-                                        'tuesday' => 'Terças-feiras',
-                                        'wednesday' => 'Quartas-feiras',
-                                        'thursday' => 'Quintas-feiras',
-                                        'friday' => 'Sextas-feiras',
-                                        'saturday' => 'Sábados',
-                                        'sunday' => 'Domingos',
-                                    ];
+                            // Mapeamento dos dias para português
+                            $dayTranslations = [
+                            'monday' => 'Segundas-feiras',
+                            'tuesday' => 'Terças-feiras',
+                            'wednesday' => 'Quartas-feiras',
+                            'thursday' => 'Quintas-feiras',
+                            'friday' => 'Sextas-feiras',
+                            'saturday' => 'Sábados',
+                            'sunday' => 'Domingos',
+                            ];
+                            @endphp
+
+                            @if(is_array($availabilitySlots) && count($availabilitySlots) > 0)
+                            @foreach($availabilitySlots as $day => $times)
+                            @if(is_array($times))
+                            <li>
+                                <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
+
+                                @if(count($times) == 1)
+                                <!-- Caso exista apenas um horário, mostramos diretamente -->
+                                @php
+                                $startTime = data_get($times[0], 'start', 'Indefinido');
+                                $endTime = data_get($times[0], 'end', 'Indefinido');
                                 @endphp
-                                
-                                @if(is_array($availabilitySlots) && count($availabilitySlots) > 0)
-                                    @foreach($availabilitySlots as $day => $times)
-                                        @if(is_array($times))
-                                            <li>
-                                                <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
-                                                
-                                                @if(count($times) == 1)
-                                                    <!-- Caso exista apenas um horário, mostramos diretamente -->
-                                                    @php
-                                                        $startTime = data_get($times[0], 'start', 'Indefinido');
-                                                        $endTime = data_get($times[0], 'end', 'Indefinido');
-                                                    @endphp
-                                                    <span>{{ $startTime }} - {{ $endTime }}</span>
-                                                @else
-                                                    <!-- Caso exista mais de um horário, iteramos sobre eles -->
-                                                    @foreach($times as $time)
-                                                        @php
-                                                            $startTime = data_get($time, 'start', 'Indefinido');
-                                                            $endTime = data_get($time, 'end', 'Indefinido');
-                                                        @endphp
-                                                        <span>{{ $startTime }} - {{ $endTime }}</span>
-                                                        @if(!$loop->last), @endif
-                                                    @endforeach
-                                                @endif
-                                                
-                                            </li>
-                                        @endif
-                                    @endforeach
+                                <span>{{ $startTime }} - {{ $endTime }}</span>
                                 @else
-                                    <p class="text-sm text-gray-700 mb-3">Formato de disponibilidade inválido ou sem horários definidos.</p>
+                                <!-- Caso exista mais de um horário, iteramos sobre eles -->
+                                @foreach($times as $time)
+                                @php
+                                $startTime = data_get($time, 'start', 'Indefinido');
+                                $endTime = data_get($time, 'end', 'Indefinido');
+                                @endphp
+                                <span>{{ $startTime }} - {{ $endTime }}</span>
+                                @if(!$loop->last), @endif
+                                @endforeach
                                 @endif
-                            </ul>
-                        </div>
+
+                            </li>
+                            @endif
+                            @endforeach
+                            @else
+                            <p class="text-sm text-gray-700 mb-3">Formato de disponibilidade inválido ou sem horários definidos.</p>
+                            @endif
+                        </ul>
+                    </div>
                     @else
-                        <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
+                    <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
                     @endif
-                    
+
                     <!-- Botões -->
                     <div class="flex justify-center mt-auto space-x-4">
                         <a href="{{ route('edit-field', $field->id) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">

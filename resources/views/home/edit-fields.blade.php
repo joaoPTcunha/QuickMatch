@@ -13,10 +13,11 @@
                 @method('PUT')
 
                 <div class="flex justify-center mb-4">
-                    <label for="image" class="cursor-pointer block w-1/2">
+                    <label for="image" class="cursor-pointer block w-full sm:w-1/2">
                         <img id="avatar" src="{{ asset('Fields/' . $field->image) }}" alt="Avatar" class="w-full h-40 object-cover rounded-md mb-3">
                     </label>
-                    
+
+
                     <input type="file" id="image" name="image" class="hidden" accept="image/*">
                 </div>
                 <div class="text-center mb-4">
@@ -52,40 +53,40 @@
                     <label class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</label>
                     <div class="mt-4">
                         <label for="availability" class="text-sm text-gray-700">Selecione os dias e horários</label>
-                
+
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                            @foreach(['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira', 
-                                     'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 
-                                     'sunday' => 'Domingo'] as $day => $label)
-                                <div>
-                                    <!-- Checkbox para selecionar o dia -->
-                                    <input type="checkbox" id="{{ $day }}" name="days[]" value="{{ $day }}" class="mr-2"
-                                        @if(in_array($day, old('days', isset($availability[$day]) ? [$day] : []))) checked @endif>
-                                    <label for="{{ $day }}">{{ $label }}</label>
-                
-                                    <!-- Campos de horário dinâmico de início e fim -->
-                                    <div id="{{ $day }}-times" class="mt-2 {{ in_array($day, old('days', isset($availability[$day]) ? [$day] : [])) ? '' : 'hidden' }}">
-                                        <div class="timeslot-container">
-                                            @foreach(old($day.'_start', isset($availability[$day]) ? $availability[$day] : []) as $index => $time)
-                                                <div class="timeslot">
-                                                    <label for="{{ $day }}_start_{{ $index }}" class="text-sm text-gray-700">Início</label>
-                                                    <input type="time" name="{{ $day }}_start[]" id="{{ $day }}_start_{{ $index }}"
-                                                        value="{{ old($day.'_start.'.$index, $time['start'] ?? '') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                                    
-                                                    <label for="{{ $day }}_end_{{ $index }}" class="text-sm text-gray-700">Fim</label>
-                                                    <input type="time" name="{{ $day }}_end[]" id="{{ $day }}_end_{{ $index }}"
-                                                        value="{{ old($day.'_end.'.$index, $time['end'] ?? '') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                
-                                                    <button type="button" class="remove-time-btn text-red-500 hover:underline mt-2" onclick="removeTimeSlot('{{ $day }}', {{ $index }})">Remover</button>
-                                                </div>
-                                            @endforeach
+                            @foreach(['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira',
+                            'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado',
+                            'sunday' => 'Domingo'] as $day => $label)
+                            <div>
+                                <!-- Checkbox para selecionar o dia -->
+                                <input type="checkbox" id="{{ $day }}" name="days[]" value="{{ $day }}" class="mr-2"
+                                    @if(in_array($day, old('days', isset($availability[$day]) ? [$day] : []))) checked @endif>
+                                <label for="{{ $day }}">{{ $label }}</label>
+
+                                <!-- Campos de horário dinâmico de início e fim -->
+                                <div id="{{ $day }}-times" class="mt-2 {{ in_array($day, old('days', isset($availability[$day]) ? [$day] : [])) ? '' : 'hidden' }}">
+                                    <div class="timeslot-container">
+                                        @foreach(old($day.'_start', isset($availability[$day]) ? $availability[$day] : []) as $index => $time)
+                                        <div class="timeslot">
+                                            <label for="{{ $day }}_start_{{ $index }}" class="text-sm text-gray-700">Início</label>
+                                            <input type="time" name="{{ $day }}_start[]" id="{{ $day }}_start_{{ $index }}"
+                                                value="{{ old($day.'_start.'.$index, $time['start'] ?? '') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+
+                                            <label for="{{ $day }}_end_{{ $index }}" class="text-sm text-gray-700">Fim</label>
+                                            <input type="time" name="{{ $day }}_end[]" id="{{ $day }}_end_{{ $index }}"
+                                                value="{{ old($day.'_end.'.$index, $time['end'] ?? '') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+
+                                            <button type="button" class="remove-time-btn text-red-500 hover:underline mt-2" onclick="removeTimeSlot('{{ $day }}', {{ $index }})">Remover</button>
                                         </div>
-                                        <button type="button" class="add-time-btn text-blue-500 hover:underline mt-4" onclick="addTimeSlot('{{ $day }}')">Adicionar horário</button>
+                                        @endforeach
                                     </div>
+                                    <button type="button" class="add-time-btn text-blue-500 hover:underline mt-4" onclick="addTimeSlot('{{ $day }}')">Adicionar horário</button>
                                 </div>
+                            </div>
                             @endforeach
-                        </div>                
-                    </div>                         
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mb-4">
@@ -155,19 +156,30 @@
     @include('home.footer')
 
     <style>
-        #map { height: 400px; }
+        #map {
+            height: 400px;
+        }
     </style>
 
     <script>
         let map, marker;
-        const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
+        const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjTTN6dDhqMnIxdmdjMmx5M2YyajR0bGQ0In0.4lNVR4phF_p8Kp2RdTQAXQ';
+
 
         function initMap() {
             mapboxgl.accessToken = mapboxApiKey;
-            
+
             // Initialize with field's current location or default to Portugal center
-            const initialLat = {{ $field->latitude ?? 39.3999 }};
-            const initialLng = {{ $field->longitude ?? -8.2242 }};
+            const initialLat = {
+                {
+                    $field - > latitude ?? 39.3999
+                }
+            };
+            const initialLng = {
+                {
+                    $field - > longitude ?? -8.2242
+                }
+            };
 
             map = new mapboxgl.Map({
                 container: 'map',
@@ -177,14 +189,14 @@
             });
 
             marker = new mapboxgl.Marker({
-                draggable: true
-            })
-            .setLngLat([initialLng, initialLat])
-            .addTo(map)
-            .on('dragend', function() {
-                const lngLat = marker.getLngLat();
-                reverseGeocode(lngLat);
-            });
+                    draggable: true
+                })
+                .setLngLat([initialLng, initialLat])
+                .addTo(map)
+                .on('dragend', function() {
+                    const lngLat = marker.getLngLat();
+                    reverseGeocode(lngLat);
+                });
 
             const geocoder = new MapboxGeocoder({
                 accessToken: mapboxApiKey,
@@ -193,7 +205,15 @@
                 countries: 'pt'
             });
 
+            // Adicionar o geocoder no mapa e ajustar largura
             map.addControl(geocoder, 'top-right');
+            const geocoderElement = document.querySelector('.mapboxgl-ctrl-geocoder');
+
+            // Configurar largura total no carregamento
+            geocoderElement.style.width = '80%';
+            geocoderElement.style.maxWidth = 'none';
+            geocoderElement.style.margin = '10px';
+
 
             map.on('click', function(event) {
                 placeMarker(event.lngLat);
@@ -210,14 +230,14 @@
                 marker.remove();
             }
             marker = new mapboxgl.Marker({
-                draggable: true
-            })
-            .setLngLat(lngLat)
-            .addTo(map)
-            .on('dragend', function() {
-                const lngLat = marker.getLngLat();
-                reverseGeocode(lngLat);
-            });
+                    draggable: true
+                })
+                .setLngLat(lngLat)
+                .addTo(map)
+                .on('dragend', function() {
+                    const lngLat = marker.getLngLat();
+                    reverseGeocode(lngLat);
+                });
 
             reverseGeocode(lngLat);
         }

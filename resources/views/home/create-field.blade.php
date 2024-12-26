@@ -3,7 +3,7 @@
 
 <body class="bg-gray-100 flex flex-col min-h-screen">
     <main class="container mx-auto px-4 py-6 flex-grow">
-        <div class="p-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto"> 
+        <div class="p-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto">
             <!-- Título dentro do card -->
             <h2 class="text-3xl text-center py-6 text-gray-800 font-semibold">
                 {{ __('Adicionar Novo Campo') }}
@@ -14,8 +14,8 @@
                     <label for="image" class="cursor-pointer block w-1/2">
                         <img id="avatar" src="https://via.placeholder.com/600x300" alt="Avatar" class="w-full h-40 object-cover rounded-md mb-3">
                     </label>
-                    
-                    
+
+
                     <input type="file" id="image" name="image" class="hidden" accept="image/*">
                 </div>
                 <div class="text-center mb-4">
@@ -45,169 +45,169 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</label>
+                    <div class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</div>
                     <div class="mt-4">
-                        <label for="availability" class="text-sm text-gray-700">Selecione os dias e horários</label>
-                        
+                        <div for="availability" class="text-sm text-gray-700">Selecione os dias e horários</div>
+
                         <!-- Filtro para seleção dos dias -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                    <!-- Segunda-feira -->
-                    <div>
-                        <input type="checkbox" id="monday" name="days[]" value="monday" class="mr-2">
-                        <label for="monday">Segunda-feira</label>
-                        <div id="monday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="monday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="monday_start[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="monday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="monday_end[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
+                            <!-- Segunda-feira -->
+                            <div>
+                                <input type="checkbox" id="monday" name="days[]" value="monday" class="mr-2">
+                                <label for="monday">Segunda-feira</label>
+                                <div id="monday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <div for="monday_start" class="text-sm text-gray-700">Início</div>
+                                        <input type="time" name="monday_start[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <div for="monday_end" class="text-sm text-gray-700">Fim</div>
+                                        <input type="time" name="monday_end[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
                             </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Terça-feira -->
-                    <div>
-                        <input type="checkbox" id="tuesday" name="days[]" value="tuesday" class="mr-2">
-                        <label for="tuesday">Terça-feira</label>
-                        <div id="tuesday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="tuesday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="tuesday_start[]" id="tuesday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="tuesday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="tuesday_end[]" id="tuesday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Quarta-feira -->
-                    <div>
-                        <input type="checkbox" id="wednesday" name="days[]" value="wednesday" class="mr-2">
-                        <label for="wednesday">Quarta-feira</label>
-                        <div id="wednesday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="wednesday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="wednesday_start[]" id="wednesday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="wednesday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="wednesday_end[]" id="wednesday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Quinta-feira -->
-                    <div>
-                        <input type="checkbox" id="thursday" name="days[]" value="thursday" class="mr-2">
-                        <label for="thursday">Quinta-feira</label>
-                        <div id="thursday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="thursday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="thursday_start[]" id="thursday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="thursday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="thursday_end[]" id="thursday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Sexta-feira -->
-                    <div>
-                        <input type="checkbox" id="friday" name="days[]" value="friday" class="mr-2">
-                        <label for="friday">Sexta-feira</label>
-                        <div id="friday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="friday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="friday_start[]" id="friday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="friday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="friday_end[]" id="friday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Sábado -->
-                    <div>
-                        <input type="checkbox" id="saturday" name="days[]" value="saturday" class="mr-2">
-                        <label for="saturday">Sábado</label>
-                        <div id="saturday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="saturday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="saturday_start[]" id="saturday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="saturday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="saturday_end[]" id="saturday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Domingo -->
-                    <div>
-                        <input type="checkbox" id="sunday" name="days[]" value="sunday" class="mr-2">
-                        <label for="sunday">Domingo</label>
-                        <div id="sunday-times" class="mt-2 hidden">
-                            <div class="time-range">
-                                <label for="sunday_start" class="text-sm text-gray-700">Início</label>
-                                <input type="time" name="sunday_start[]" id="sunday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                                <label for="sunday_end" class="text-sm text-gray-700">Fim</label>
-                                <input type="time" name="sunday_end[]" id="sunday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
-                            </div>
-                            <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
-                        </div>
-                    </div>
-                </div>
 
-                
-                <div class="mb-4">
-                    <label for="price" class="block text-sm font-medium text-gray-700 mt-2">Preço por Hora</label>
-                    <input type="text" name="price" id="price" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o valor" />
-                </div>
+                            <!-- Terça-feira -->
+                            <div>
+                                <input type="checkbox" id="tuesday" name="days[]" value="tuesday" class="mr-2">
+                                <label for="tuesday">Terça-feira</label>
+                                <div id="tuesday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <label for="tuesday_start" class="text-sm text-gray-700">Início</label>
+                                        <input type="time" name="tuesday_start[]" id="tuesday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <label for="tuesday_end" class="text-sm text-gray-700">Fim</label>
+                                        <input type="time" name="tuesday_end[]" id="tuesday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
+                            </div>
 
-                <div class="mb-4">
-                    <label for="modality-futebol" class="block text-sm font-medium text-gray-700">Modalidades</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-futebol" name="modality[]" value="futebol" class="mr-2"> Futebol
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-futebol7" name="modality[]" value="futebol 7" class="mr-2"> Futebol 7
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-futsal" name="modality[]" value="futsal" class="mr-2"> Futsal
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-basquetebol" name="modality[]" value="basquetebol" class="mr-2"> Basquetebol
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-voleibol" name="modality[]" value="voleibol" class="mr-2"> Voleibol
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-andebol" name="modality[]" value="andebol" class="mr-2"> Andebol
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-tenis" name="modality[]" value="ténis" class="mr-2"> Ténis
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-raguebi" name="modality[]" value="raguebi" class="mr-2"> Raguebi
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-atletismo" name="modality[]" value="atletismo" class="mr-2"> Atletismo
-                        </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" id="modality-outros" name="modality[]" value="outros" class="mr-2"> Outros
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-6">
-                    <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
-                        Adicionar Campo
-                    </button>
-                </div>
+                            <!-- Quarta-feira -->
+                            <div>
+                                <input type="checkbox" id="wednesday" name="days[]" value="wednesday" class="mr-2">
+                                <label for="wednesday">Quarta-feira</label>
+                                <div id="wednesday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <label for="wednesday_start" class="text-sm text-gray-700">Início</label>
+                                        <input type="time" name="wednesday_start[]" id="wednesday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <label for="wednesday_end" class="text-sm text-gray-700">Fim</label>
+                                        <input type="time" name="wednesday_end[]" id="wednesday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
+                            </div>
+
+                            <!-- Quinta-feira -->
+                            <div>
+                                <input type="checkbox" id="thursday" name="days[]" value="thursday" class="mr-2">
+                                <label for="thursday">Quinta-feira</label>
+                                <div id="thursday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <label for="thursday_start" class="text-sm text-gray-700">Início</label>
+                                        <input type="time" name="thursday_start[]" id="thursday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <label for="thursday_end" class="text-sm text-gray-700">Fim</label>
+                                        <input type="time" name="thursday_end[]" id="thursday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
+                            </div>
+
+                            <!-- Sexta-feira -->
+                            <div>
+                                <input type="checkbox" id="friday" name="days[]" value="friday" class="mr-2">
+                                <label for="friday">Sexta-feira</label>
+                                <div id="friday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <label for="friday_start" class="text-sm text-gray-700">Início</label>
+                                        <input type="time" name="friday_start[]" id="friday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <label for="friday_end" class="text-sm text-gray-700">Fim</label>
+                                        <input type="time" name="friday_end[]" id="friday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
+                            </div>
+
+                            <!-- Sábado -->
+                            <div>
+                                <input type="checkbox" id="saturday" name="days[]" value="saturday" class="mr-2">
+                                <label for="saturday">Sábado</label>
+                                <div id="saturday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <label for="saturday_start" class="text-sm text-gray-700">Início</label>
+                                        <input type="time" name="saturday_start[]" id="saturday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <label for="saturday_end" class="text-sm text-gray-700">Fim</label>
+                                        <input type="time" name="saturday_end[]" id="saturday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
+                            </div>
+
+                            <!-- Domingo -->
+                            <div>
+                                <input type="checkbox" id="sunday" name="days[]" value="sunday" class="mr-2">
+                                <label for="sunday">Domingo</label>
+                                <div id="sunday-times" class="mt-2 hidden">
+                                    <div class="time-range">
+                                        <label for="sunday_start" class="text-sm text-gray-700">Início</label>
+                                        <input type="time" name="sunday_start[]" id="sunday_start" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                        <label for="sunday_end" class="text-sm text-gray-700">Fim</label>
+                                        <input type="time" name="sunday_end[]" id="sunday_end" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
+                                    </div>
+                                    <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label for="price" class="block text-sm font-medium text-gray-700 mt-2">Preço por Hora</label>
+                            <input type="text" name="price" id="price" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira o valor" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="modality-futebol" class="block text-sm font-medium text-gray-700">Modalidades</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-futebol" name="modality[]" value="futebol" class="mr-2"> Futebol
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-futebol7" name="modality[]" value="futebol 7" class="mr-2"> Futebol 7
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-futsal" name="modality[]" value="futsal" class="mr-2"> Futsal
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-basquetebol" name="modality[]" value="basquetebol" class="mr-2"> Basquetebol
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-voleibol" name="modality[]" value="voleibol" class="mr-2"> Voleibol
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-andebol" name="modality[]" value="andebol" class="mr-2"> Andebol
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-tenis" name="modality[]" value="ténis" class="mr-2"> Ténis
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-raguebi" name="modality[]" value="raguebi" class="mr-2"> Raguebi
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-atletismo" name="modality[]" value="atletismo" class="mr-2"> Atletismo
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="modality-outros" name="modality[]" value="outros" class="mr-2"> Outros
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-6">
+                            <button type="submit" class="w-full bg-blue-900 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
+                                Adicionar Campo
+                            </button>
+                        </div>
             </form>
         </div>
     </main>
-        @include('home.footer')
+    @include('home.footer')
 
     <style>
         #map {
@@ -316,29 +316,29 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const daysCheckboxes = document.querySelectorAll('input[type="checkbox"][name="days[]"]');
-    
-    daysCheckboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            const day = this.value;
-            const timesDiv = document.getElementById(day + '-times');
-            
-            if (this.checked) {
-                timesDiv.classList.remove('hidden');
-            } else {
-                timesDiv.classList.add('hidden');
-            }
-        });
-    });
+            const daysCheckboxes = document.querySelectorAll('input[type="checkbox"][name="days[]"]');
 
-    // Adicionar novos intervalos de tempo
-    document.querySelectorAll('.add-time-range').forEach(function(button) {
-        button.addEventListener('click', function() {
-            const parentDiv = this.parentElement;
-            const timeRangeDiv = document.createElement('div');
-            timeRangeDiv.classList.add('time-range', 'mt-2');
+            daysCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const day = this.value;
+                    const timesDiv = document.getElementById(day + '-times');
 
-            timeRangeDiv.innerHTML = `
+                    if (this.checked) {
+                        timesDiv.classList.remove('hidden');
+                    } else {
+                        timesDiv.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Adicionar novos intervalos de tempo
+            document.querySelectorAll('.add-time-range').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const parentDiv = this.parentElement;
+                    const timeRangeDiv = document.createElement('div');
+                    timeRangeDiv.classList.add('time-range', 'mt-2');
+
+                    timeRangeDiv.innerHTML = `
                 <label class="text-sm text-gray-700">Início</label>
                 <input type="time" name="${parentDiv.id.replace('-times', '_start[]')}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" />
                 <label class="text-sm text-gray-700">Fim</label>
@@ -346,18 +346,17 @@
                 <button type="button" class="remove-time-range text-sm text-red-600 hover:underline mt-2">Remover</button>
             `;
 
-            parentDiv.insertBefore(timeRangeDiv, this);
+                    parentDiv.insertBefore(timeRangeDiv, this);
 
-            // Adicionar funcionalidade para remover intervalos
-            timeRangeDiv.querySelector('.remove-time-range').addEventListener('click', function() {
-                timeRangeDiv.remove();
+                    // Adicionar funcionalidade para remover intervalos
+                    timeRangeDiv.querySelector('.remove-time-range').addEventListener('click', function() {
+                        timeRangeDiv.remove();
+                    });
+                });
             });
         });
-    });
-});
-
     </script>
-   
+
 </body>
 
 </html>

@@ -1,5 +1,5 @@
-@include('home.header')
 @include('home.css')
+@include('home.header')
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="container mx-auto flex-grow py-8 px-4 rounded-lg">
@@ -50,7 +50,7 @@
                 <form action="{{ route('send.problem') }}" method="POST">
                     @if (session('success'))
                     <div class="bg-green-500 text-white p-4 rounded-lg mb-6">
-                            {{ session('success') }}
+                        {{ session('success') }}
                     </div>
                     @endif
                     @csrf
