@@ -67,7 +67,7 @@
                 <textarea id="player-list" rows="5" class="w-full p-3 rounded bg-gray-100 text-gray-800 border border-gray-300 placeholder-gray-400" placeholder="Adiciona os jogadores aqui.."></textarea>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
-                    <button class="btn p-3 bg-blue-500 text-white rounded shadow transition duration-300 hover:bg-blue-700 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogadores</button>
+                    <button class="btn p-3 bg-blue-800 text-white rounded shadow transition duration-300 hover:bg-blue-900 w-full sm:w-auto" onclick="addPlayer()">Adicionar Jogadores</button>
                 </div>
             </div>
 

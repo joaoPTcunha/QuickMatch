@@ -166,7 +166,7 @@
                 </div>
                 <!-- Garantir que o botão fique dentro do card -->
                 <div class="mt-4 text-center">
-                    <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                    <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-800 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-900 transition-all duration-300">
                         Marcar Evento
                     </a>
                 </div>

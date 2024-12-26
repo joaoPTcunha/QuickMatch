@@ -3,7 +3,7 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow container sm:px-6 lg:px-8 py-6 px-3">
-        <h3 class="text-4xl font-semibold text-center mb-8 text-gray-800">Meus Campos</h3>
+        <h3 class="text-4xl font-semibold text-center mb-8 text-gray-800">Os Meus Campos</h3>
 
         @if($fields->isEmpty())
         <div class="text-center py-4 bg-yellow-100 text-yellow-700 rounded-md shadow-md">
@@ -88,7 +88,7 @@
 
                     <!-- Botões -->
                     <div class="flex justify-center mt-auto space-x-4">
-                        <a href="{{ route('edit-field', $field->id) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                        <a href="{{ route('edit-field', $field->id) }}" class="inline-block bg-yellow-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-yellow-600 transition-all duration-300">
                             Editar
                         </a>
 
@@ -109,7 +109,7 @@
         @endif
 
         <div class="mt-8 text-center">
-            <a href="{{ route('create-field') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
+            <a href="{{ route('create-field') }}" class="inline-block bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
                 Adicionar Novo Campo
             </a>
         </div>

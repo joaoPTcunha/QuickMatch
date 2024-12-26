@@ -4,8 +4,8 @@
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow p-4 sm:p-6">
         <div class="flex flex-col sm:flex-col sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
-            <h1 class="text-4xl font-semibold mb-8 text-center text-gray-800">Suporte ao Cliente</h1>
-            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline">
+            <h1 class="text-4xl font-semibold mb-3 text-center text-gray-800">Suporte ao Cliente</h1>
+            <a href="{{ url('/problems_history') }}" class="text-blue-500 hover:underline text-center">
                 Histórico de Problemas
             </a>
         </div>
