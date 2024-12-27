@@ -43,7 +43,6 @@
                 <div class="mb-4">
                     <label for="modality" class="block text-sm font-medium text-gray-700">Modalidades</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
-                        <!-- recupera modalidades e remove os espacos -->
                         @php
                         $selectedModalities = array_map('trim', explode(',', $field->modality));
                         @endphp

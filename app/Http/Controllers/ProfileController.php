@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 
+//EDITAR PERFIL
 class ProfileController extends Controller
 {
 
@@ -43,7 +44,6 @@ class ProfileController extends Controller
     $user = Auth::user();
 
     if ($user instanceof User) {
-        // Atualiza os campos do perfil
         $user->name = $request->input('name');
         $user->surname = $request->input('surname');
         $user->user_name = $request->input('user_name');
@@ -52,7 +52,6 @@ class ProfileController extends Controller
         $user->phone = $request->input('phone');
         $user->address = $request->input('address');
 
-        // Verifica se o tipo de usuário foi alterado
         if ($request->has('usertype')) {
             $newUsertype = $request->input('usertype');
 
@@ -68,22 +67,17 @@ class ProfileController extends Controller
             }
         }
 
-        // Verifica se o usuário deseja remover a foto de perfil
         if ($request->input('remove_profile_picture')) {
-            // Exclui a foto de perfil do diretório
             if ($user->profile_picture && file_exists(public_path('Profile_Photo/' . $user->profile_picture))) {
                 unlink(public_path('Profile_Photo/' . $user->profile_picture));
             }
-            // Remove o nome da foto de perfil do banco de dados
             $user->profile_picture = null;
         }
 
-        // Se uma nova foto for enviada, armazenamos a imagem
         if ($request->hasFile('profile_picture')) {
             $this->storeUserProfileImage($request, $user);
         }
 
-        // Salva as alterações
         $user->save();
 
         toastr()->timeout(10000)->closeButton()->success('Perfil atualizado com sucesso');
@@ -92,30 +86,23 @@ class ProfileController extends Controller
 }
 
 
-
+//ATUALIZAR IMAGEM DE PERFIL
 protected function storeUserProfileImage(Request $request, User $user)
 {
     if ($request->hasFile('profile_picture')) {
-        // Remove a foto antiga se houver
         if ($user->profile_picture && file_exists(public_path('Profile_Photo/' . $user->profile_picture))) {
             unlink(public_path('Profile_Photo/' . $user->profile_picture));
         }
 
-        // Armazena a nova foto
         $image = $request->file('profile_picture');
         $imageName = time() . '.' . $image->getClientOriginalExtension();
         $image->move(public_path('Profile_Photo'), $imageName);
 
-        // Atualiza o banco de dados com o nome da nova foto
         $user->profile_picture = $imageName;
     }
 }
 
-
-
-    /**
-     * Delete the user's account.
-     */
+//APAGAR CONTA
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

@@ -16,7 +16,6 @@
             </div>
         </label>
 
-        <!-- Menu Principal -->
         <nav class="hidden lg:flex lg:flex-row lg:space-x-3 lg:items-center w-full lg:w-auto">
             <a href="{{ url('admin/index') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Estatísticas</a>
             <a href="{{ url('/fields-admin') }}" class="text-gray-700 hover:text-gray-900 px-2 py-2">Campos</a>
@@ -50,7 +49,7 @@
         </nav>
     </div>
 
-    <!-- menu hambúrguer -->
+    <!-- MENU MOBILE -->
     <div class="lg:hidden">
         <div id="menu-items" class="flex-col space-y-2 p-2 hidden">
             <a href="{{ url('admin/index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Estatísticas</a>

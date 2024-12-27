@@ -113,13 +113,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             const scheduleSelect = document.getElementById('horarios-disponiveis');
             const dateInput = document.getElementById('specific-date');
-            let selectedDay = null; // Variable to store selected day from schedule
-
+            let selectedDay = null; 
             scheduleSelect.addEventListener('change', function() {
                 const selectedValues = Array.from(this.selectedOptions).map(option => option.value);
                 if (selectedValues.length > 0) {
                     const [day] = selectedValues[0].split('|');
-                    selectedDay = day; // Store the first selected day's name
+                    selectedDay = day; 
                     setupDateRestrictions(dateInput, day);
                     
                     const nextValidDate = getNextDayOfWeek(day);
@@ -136,7 +135,6 @@
                     const selectedDate = new Date(this.value);
                     const dayOfWeek = getDayName(selectedDate.getDay());
                     
-                    // If selected date doesn't match the required day, adjust it to the next valid date
                     if (dayOfWeek !== selectedDay) {
                         const nextValidDate = getNextDayOfWeek(selectedDay, selectedDate);
                         this.value = nextValidDate.toISOString().split('T')[0];

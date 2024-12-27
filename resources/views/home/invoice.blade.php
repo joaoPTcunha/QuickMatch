@@ -19,7 +19,7 @@
 
         .logo img {
             width: auto;
-            max-height: 150px; /* Aumentando o tamanho da imagem */
+            max-height: 150px; 
             object-fit: contain;
             display: block;
             margin: 0 auto;

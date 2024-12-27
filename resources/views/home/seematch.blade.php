@@ -31,9 +31,8 @@
 
                         <div class="mt-4 text-center flex justify-between items-center">
                             <div class="flex space-x-4">
-                                <!-- Botão Conversar com o Dono -->
                                 @php
-                                $contactNumber = preg_replace('/[^0-9]/', '', $event->field->contact); // Remove caracteres não numéricos
+                                $contactNumber = preg_replace('/[^0-9]/', '', $event->field->contact); 
                                 $whatsappMessage = urlencode("Olá, estou interessado no evento realizado no campo: {$event->field->name}. Gostaria de mais informações.");
                                 @endphp
                                 <a href="https://wa.me/{{ $contactNumber }}?text={{ $whatsappMessage }}"
@@ -42,7 +41,6 @@
                                     Conversar com o Dono
                                 </a>
                         
-                                <!-- Botão Apagar Evento -->
                                 <button class="inline-block bg-red-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-600 transition-all duration-300 text-m" id="deleteButton-{{ $event->id }}" data-event-id="{{ $event->id }}">
                                     Apagar Evento
                                 </button>
@@ -54,7 +52,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                             </svg>
                         </a>
-                        <!-- Botão de compartilhamento -->
                         <button id="shareButton-{{ $event->id }}" class="text-gray-500 hover:text-gray-700">
                             <svg class="h-8 w-8 text-gray-500 hover:text-gray-700" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
@@ -66,7 +63,6 @@
                             </svg>
                         </button>
 
-                        <!-- Modal de compartilhamento -->
                         <div id="shareModal-{{ $event->id }}" class="absolute hidden top-0 left-1/2 transform -translate-x-1/2 mt-10 w-64 p-4 bg-white border border-gray-300 rounded-lg shadow-lg">
                             <h3 class="text-lg font-semibold mb-2 text-center">Partilhar evento</h3>
                             <div class="flex justify-center space-x-4">
@@ -114,11 +110,10 @@
 </body>
 
 <script>
-    // Verifica se o botão de compartilhamento existe antes de adicionar o ouvinte de eventos
 const shareButtons = document.querySelectorAll('[id^="shareButton-"]');
 shareButtons.forEach(button => {
     button.addEventListener('click', function() {
-        const eventId = button.id.split('-')[1]; // Obtém o ID do evento a partir do botão
+        const eventId = button.id.split('-')[1]; 
         const modal = document.getElementById('shareModal-' + eventId);
         modal.classList.toggle('hidden');
     });
@@ -137,7 +132,7 @@ copyLinkButtons.forEach(button => {
     
     deleteButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const eventId = button.getAttribute('data-event-id'); // Obtém o ID do evento do atributo de dados
+            const eventId = button.getAttribute('data-event-id'); 
             
             Swal.fire({
                 title: 'Tem certeza que deseja apagar este evento?',
@@ -153,10 +148,9 @@ copyLinkButtons.forEach(button => {
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Caso o usuário confirme, submete o formulário para apagar o evento
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/events/${eventId}`; // Substitua por sua rota de exclusão de evento
+                    form.action = `/events/${eventId}`;
 
                     const csrfToken = document.createElement('input');
                     csrfToken.type = 'hidden';

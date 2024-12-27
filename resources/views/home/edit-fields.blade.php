@@ -41,7 +41,6 @@
                     <input type="text" name="location" id="location" value="{{ old('location', $field->location) }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira no mapa a localização do campo" readonly />
                 </div>
 
-                <!-- Mapa do Mapbox -->
                 <div id="map" class="mb-4 w-full h-64"></div>
 
                 <div class="mb-4">
@@ -59,12 +58,10 @@
                                      'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 
                                      'sunday' => 'Domingo'] as $day => $label)
                                 <div>
-                                    <!-- Checkbox para selecionar o dia -->
                                     <input type="checkbox" id="{{ $day }}" name="days[]" value="{{ $day }}" class="mr-2"
                                         @if(in_array($day, old('days', isset($availability[$day]) ? [$day] : []))) checked @endif>
                                     <label for="{{ $day }}">{{ $label }}</label>
                 
-                                    <!-- Campos de horário dinâmico de início e fim -->
                                     <div id="{{ $day }}-times" class="mt-2 {{ in_array($day, old('days', isset($availability[$day]) ? [$day] : [])) ? '' : 'hidden' }}">
                                         <div class="timeslot-container">
                                             @foreach(old($day.'_start', isset($availability[$day]) ? $availability[$day] : []) as $index => $time)
@@ -139,7 +136,6 @@
                         </label>
                     </div>
 
-                    <!-- Campo Modalidade Personalizada (aparece quando 'Outro' é selecionado) -->
                     <div class="mb-4 {{ in_array('outro', old('modality', explode(',', $field->modality))) ? '' : 'hidden' }}">
                         <label for="customModality" class="block text-sm font-medium text-gray-700">Qual a modalidade?</label>
                         <input type="text" name="customModality" id="customModality" value="{{ old('customModality') }}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -165,8 +161,7 @@
 
         function initMap() {
             mapboxgl.accessToken = mapboxApiKey;
-            
-            // Initialize with field's current location or default to Portugal center
+            //VAI BUSCAR COORDENADAS DO CAMPO SELECIONADO
             const initialLat = {{ $field->latitude ?? 39.3999 }};
             const initialLng = {{ $field->longitude ?? -8.2242 }};
 
@@ -194,11 +189,9 @@
                 countries: 'pt'
             });
             
-            // Adicionar o geocoder no mapa e ajustar largura
             map.addControl(geocoder, 'top-right');
             const geocoderElement = document.querySelector('.mapboxgl-ctrl-geocoder');
             
-            // Configurar largura total no carregamento
             geocoderElement.style.width = '80%';
             geocoderElement.style.maxWidth = 'none';
             geocoderElement.style.margin = '10px';
@@ -247,7 +240,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
 
-            // Image preview handler
             document.getElementById('image').addEventListener('change', function(event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -259,7 +251,6 @@
                 }
             });
 
-            // Availability time slots handler
             const daysCheckboxes = document.querySelectorAll('input[type="checkbox"][name="days[]"]');
             daysCheckboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', function() {

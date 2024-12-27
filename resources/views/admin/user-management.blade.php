@@ -110,7 +110,7 @@
                 </table>
             </div>
 
-            <!-- modal ver -->
+            <!-- MODAL -->
             @foreach($users as $user)
             <div id="modal-{{ $user->id }}" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 opacity-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 px-2">
                 <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full relative">
@@ -151,7 +151,6 @@
                 </div>
             </div>
 
-            <!-- modal editar -->
             <div id="edit-modal-{{ $user->id }}"
                 class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none px-3 mt-3">
                 <div class="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full relative overflow-auto max-h-screen sm:px-6">

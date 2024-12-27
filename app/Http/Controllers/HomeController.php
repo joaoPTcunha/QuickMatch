@@ -19,58 +19,86 @@ class HomeController extends Controller
         return view('home.index');
     }
 
-    public function participateInEvent($id)
+    //MOSTRAR EVENTOS
+    public function showEvents(Request $request)
     {
-        $event = Event::findOrFail($id); // Obtém o evento com o ID fornecido
-        $userId = Auth::id(); // Obtém o ID do usuário autenticado
+        $userId = Auth::id(); 
+        $query = Event::with(['field', 'user']); 
 
-        // Verificar se o evento já está cheio
-        if ($event->num_subscribers >= $event->num_participants) {
-            toastr()->error('O evento já está lotado!');
-            return redirect()->route('events'); // Redireciona de volta para a página de eventos
+        if ($request->filled('filter') && $request->filter !== 'all') {
+            $query->where('modality', $request->filter); 
         }
 
-        // Verifica se o usuário já está inscrito no evento
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('description', 'like', '%' . $search . '%'); 
+        }
+
+        if ($request->filled('sort')) {
+            if ($request->sort === 'recent') {
+                $query->orderBy('event_date_time', 'desc');
+            } elseif ($request->sort === 'alphabetical') {
+                $query->orderBy('description', 'asc');
+            } elseif ($request->sort === 'registered') {
+            }
+        }
+
+        $events = $query->paginate(9);
+
+        foreach ($events as $event) {
+            $participants = json_decode($event->participants_user_id, true) ?? [];
+            $event->isSubscribed = in_array($userId, array_column($participants, 'user_id'));
+        }
+
+        return view('home.events', compact('events'));
+    }
+
+    //PARTICIPAR EM EVENTOS
+    public function participateInEvent($id)
+    {
+        $event = Event::findOrFail($id); 
+        $userId = Auth::id(); 
+
+        
+        if ($event->num_subscribers >= $event->num_participants) {
+            toastr()->error('O evento já está lotado!');
+            return redirect()->route('events'); 
+        }
+
+       
         $participants = json_decode($event->participants_user_id, true) ?? [];
         if (in_array($userId, array_column($participants, 'user_id'))) {
             toastr()->error('Você já está inscrito neste evento!');
-            return redirect()->route('events'); // Redireciona de volta para a página de eventos
+            return redirect()->route('events'); 
         }
 
-        // Adiciona o usuário à lista de participantes
         $participants[] = ['user_id' => $userId, 'user_name' => Auth::user()->user_name];
-        $event->participants_user_id = json_encode($participants); // Atualiza o campo de participantes
-        $event->increment('num_subscribers'); // Incrementa o número de inscritos
-        $event->save(); // Salva as alterações no banco de dados
+        $event->participants_user_id = json_encode($participants); 
+        $event->increment('num_subscribers'); 
+        $event->save(); 
 
         toastr()->success('Você inscreveu se com sucesso no evento!');
-        return redirect()->route('events'); // Redireciona de volta para a página de eventos
+        return redirect()->route('events'); 
     }
 
+    //CANCELAR INSCRIÇÃO
     public function cancelParticipation($id)
     {
         $event = Event::findOrFail($id);
 
-        // Get the user ID of the currently authenticated user
         $userId = Auth::id();
 
-        // Decode the JSON to get the list of participants
         $participants = json_decode($event->participants_user_id, true) ?? [];
 
-        // Check if the user is in the participants list
         $participantKey = array_search($userId, array_column($participants, 'user_id'));
 
         if ($participantKey !== false) {
-            // If the user is a participant, remove them from the list
             unset($participants[$participantKey]);
 
-            // Update the participants list in the event
             $event->participants_user_id = json_encode(array_values($participants));
 
-            // Decrement the number of subscribers
             $event->decrement('num_subscribers');
 
-            // Save the changes to the event
             $event->save();
 
             toastr()->success('Sua inscrição foi cancelada com sucesso.');
@@ -78,12 +106,11 @@ class HomeController extends Controller
             toastr()->error('Você não está inscrito neste evento.');
         }
 
-        // Redirect to the events page
         return redirect()->route('showEvents');
     }
 
 
-
+    //CRIAR EVENTOS
     public function newMatch(Request $request)
     {
         $field = null;
@@ -112,12 +139,11 @@ class HomeController extends Controller
         return view('home.newmatch', compact('field', 'modalities', 'availability'));
     }
 
-
+    //CRIAR CAMPOS (IR BUSCAR OS DADOS DO CAMPO)
     public function newMatchField($id)
     {
         $field = Field::findOrFail($id);
 
-        // Certifique-se de que o nome do campo é uma string
         $field->name = is_array($field->name) ? implode(', ', $field->name) : $field->name;
 
         $modalities = explode(',', $field->modality);
@@ -136,7 +162,7 @@ class HomeController extends Controller
         return view('home.newmatch', compact('field', 'modalities', 'availability'));
     }
 
-
+    //FUNÇÃO PARA DISPONIBILIZAR OS HORÁRIOS DOS CAMPOS
     private function generateTimeSlots($startTime, $endTime)
     {
         $slots = [];
@@ -153,148 +179,13 @@ class HomeController extends Controller
         return $slots;
     }
 
-    public function seeMatch()
-    {
-        $userId = Auth::id(); // Obtém o ID do usuário autenticado
-        $events = Event::with(['user', 'field'])
-            ->where('user_id', $userId) // Filtra apenas eventos do usuário logado
-            ->get();
-
-        return view('home.seematch', compact('events'));
-    }
-
-    public function destroyEvent($id)
-    {
-        // Encontre o evento pelo ID e verifique se o usuário é o dono do evento
-        $event = Event::where('id', $id)
-            ->where('user_id', Auth::id()) // Garante que o evento pertence ao usuário logado
-            ->firstOrFail();
-
-        // Remova o evento da base de dados
-        $event->delete();
-
-        toastr()->timeout(10000)->closeButton()->success('Evento apagado com sucesso!');
-
-        return redirect()->route('seematch');
-    }
-
-    public function spinWheel()
-    {
-        return view('home.spinwheel');
-    }
-
-    public function field(Request $request)
-{
-    $query = Field::query();
-
-    // Filtro de modalidade: Permite filtrar campos que contenham a modalidade desejada em qualquer parte da string de modalidades
-    if ($request->filled('modality')) {
-        $modality = $request->modality;
-        // Verifica se a modalidade está em qualquer parte do campo 'modality', considerando que este pode ter mais de uma modalidade separada por vírgulas
-        $query->where('modality', 'LIKE', "%{$modality}%");
-    }
-
-    // Filtro de busca: Pesquisa em nome, localização, modalidade e usuário
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-                ->orWhere('location', 'like', "%{$search}%")
-                ->orWhere('modality', 'like', "%{$search}%")
-                ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
-        });
-    }
-
-    // Ordenação (opcional)
-    if ($request->filled('sort')) {
-        $sort = $request->sort;
-        switch ($sort) {
-            case 'name_asc':
-                $query->orderBy('name', 'asc');
-                break;
-            case 'name_desc':
-                $query->orderBy('name', 'desc');
-                break;
-            case 'price_asc':
-                $query->orderBy('price', 'asc');
-                break;
-            case 'price_desc':
-                $query->orderBy('price', 'desc');
-                break;
-        }
-    }
-
-    // Paginação
-    $fields = $query->paginate(10); // Paginação com 10 resultados por página
-
-    // Outros parâmetros que você possa estar usando para redirecionamento ou controle de origem
-    $from = $request->input('from', null); 
-    $redirect = $request->input('redirect', null);
-
-    return view('home.field', compact('fields', 'from', 'redirect'));
-}
-
-    public function contact()
-    {
-        return view('home.contact');
-    }
-
-    public function help()
-    {
-        $faqs = [
-            ['question' => 'Como posso redefinir minha senha?', 'answer' => 'Você pode redefinir sua senha clicando em "Esqueci a senha" na tela de login. Siga as instruções enviadas para o seu e-mail.'],
-            ['question' => 'Como posso entrar em contato com o suporte?', 'answer' => 'Você pode entrar em contato com o suporte através do e-mail suporte@exemplo.com ou pelo telefone (11) 1234-5678.'],
-            ['question' => 'Quais métodos de pagamento são aceitos?', 'answer' => 'Aceitamos cartões de crédito, débito e PayPal. Confira nossa página de pagamento para mais informações.'],
-        ];
-
-        return view('home.help', compact('faqs'));
-    }
-
-    public function sendProblem(Request $request)
-    {
-        $validatedData = $request->validate([
-            'subject' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
-        ]);
-
-        Problem::create([
-            'subject' => $validatedData['subject'],
-            'email' => Auth::user()->email,
-            'description' => $validatedData['description'],
-        ]);
-        toastr()->timeout(10000)->closeButton()->success('Reclamação enviada com sucesso');
-
-        return redirect()->route('help');
-    }
-
-    public function manageFields()
-    {
-        $user = Auth::user();
-
-        if ($user->usertype !== 'user_field') {
-            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
-            return redirect()->route('profile.edit');
-        }
-
-        $fields = Field::where('user_id', $user->id)->get();
-
-        return view('home.manage-fields', compact('fields'));
-    }
-
-    public function createField()
-    {
-        return view('home.create-field');
-    }
-
+    //PUBLICAÇÃO DO EVENTO
     public function storeEvent(Request $request)
     {
-        // Validação dos dados
         $validatedData = $request->validate([
             'field_id' => 'required|exists:fields,id',
             'field_name' => 'required|string',
-            'schedule' => 'required|string',  // Formato: 'day|start|end'
+            'schedule' => 'required|string',  
             'specific-date' => 'required|date',
             'price' => 'required|numeric|min:0',
             'modality' => 'required|string',
@@ -303,23 +194,19 @@ class HomeController extends Controller
         ]);
     
         try {
-            // Extrair dia da semana e horário do campo "schedule"
             [$dayOfWeek, $time] = explode('|', $validatedData['schedule']);
     
-            // Criar timestamp usando a data e o horário
             $eventDateTime = Carbon::createFromFormat(
                 'Y-m-d H:i',
                 $validatedData['specific-date'] . ' ' . $time
             );
     
-            // Verificar se o dia da semana da data corresponde ao selecionado
             $dayOfWeekFromDate = strtolower($eventDateTime->format('l'));
             if ($dayOfWeekFromDate !== $dayOfWeek) {
                 toastr()->error('A data selecionada não corresponde ao dia da semana escolhido.');
                 return back()->withInput();
             }
     
-            // Verificar se já existe um evento no mesmo campo, na mesma data e horário
             $existingEvent = Event::where('field_id', $validatedData['field_id'])
                 ->whereDate('event_date_time', $eventDateTime->toDateString()) // Verificar pela data
                 ->whereTime('event_date_time', $eventDateTime->toTimeString()) // Verificar pelo horário
@@ -330,12 +217,10 @@ class HomeController extends Controller
                 return back()->withInput();
             }
     
-            // Criar o evento
             $event = new Event();
             $event->field_id = $validatedData['field_id'];
-            // Se não tiver descrição, usar um valor padrão
             $event->description = $request->input('descricao', 'Evento esportivo');
-            $event->event_date_time = $eventDateTime; // Usar o Carbon timestamp criado
+            $event->event_date_time = $eventDateTime; 
             $event->price = $validatedData['price'];
             $event->modality = $validatedData['modality'];
             $event->num_participants = $validatedData['num_participants'];
@@ -346,7 +231,6 @@ class HomeController extends Controller
     
             $event->save();
     
-            // Inscrição automática do criador, se marcado
             if ($request->has('participar') && $request->participar) {
                 $event->num_subscribers = 1;
     
@@ -369,21 +253,150 @@ class HomeController extends Controller
         }
     }
     
+    //VER EVENTOS CRIADOS
+    public function seeMatch()
+    {
+        $userId = Auth::id(); 
+        $events = Event::with(['user', 'field'])
+            ->where('user_id', $userId) 
+            ->get();
 
+        return view('home.seematch', compact('events'));
+    }
+
+    public function destroyEvent($id)
+    {
+        $event = Event::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $event->delete();
+
+        toastr()->timeout(10000)->closeButton()->success('Evento apagado com sucesso!');
+
+        return redirect()->route('seematch');
+    }
+
+    //ROLETA
+    public function spinWheel()
+    {
+        return view('home.spinwheel');
+    }
+
+    //CAMPOS
+    public function field(Request $request)
+{
+    $query = Field::query();
+
+    if ($request->filled('modality')) {
+        $modality = $request->modality;
+        $query->where('modality', 'LIKE', "%{$modality}%");
+    }
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('location', 'like', "%{$search}%")
+                ->orWhere('modality', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        });
+    }
+
+    if ($request->filled('sort')) {
+        $sort = $request->sort;
+        switch ($sort) {
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+        }
+    }
+
+    $fields = $query->paginate(9); 
+
+    $from = $request->input('from', null); 
+    $redirect = $request->input('redirect', null);
+
+    return view('home.field', compact('fields', 'from', 'redirect'));
+}
+
+    //CONTACTOS
+    public function contact()
+    {
+        return view('home.contact');
+    }
+
+    //AJUDA
+    public function help()
+    {
+        return view('home.help', compact('faqs'));
+    }
+
+    //CENTRAL DE AJUDA
+    public function sendProblem(Request $request)
+    {
+        $validatedData = $request->validate([
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string|max:1000',
+        ]);
+
+        Problem::create([
+            'subject' => $validatedData['subject'],
+            'email' => Auth::user()->email,
+            'description' => $validatedData['description'],
+        ]);
+        toastr()->timeout(10000)->closeButton()->success('Reclamação enviada com sucesso');
+
+        return redirect()->route('help');
+    }
+
+    //VER CAMPOS CRIADOS (DONO DE CAMPO)
+    public function manageFields()
+    {
+        $user = Auth::user();
+
+        if ($user->usertype !== 'user_field') {
+            toastr()->timeout(10000)->closeButton()->warning('Precisa de ser um dono de campo para registar o seu Campo. Atualize o seu perfil.');
+            return redirect()->route('profile.edit');
+        }
+
+        $fields = Field::where('user_id', $user->id)->get();
+
+        return view('home.manage-fields', compact('fields'));
+    }
+
+    //PÁGINA CRIAR CAMPOS
+    public function createField()
+    {
+        return view('home.create-field');
+    }
+
+
+    //FUNÇÃO PARA CRIAR PDFS DO EVENTO CRIADO
     public function print_pdf($id)
     {
         $event = Event::findOrFail($id);
         $pdf = Pdf::loadView('home.invoice', compact('event'))->setOptions([
-            'image_path' => public_path('Logo.png'), // Definir o caminho da imagem no PDF
+            'image_path' => public_path('Logo.png'), 
         ]);
         $pdf = Pdf::loadView('home.invoice', compact('event'));
         return $pdf->download('Comprovativo de inscrição.pdf');
     }
 
-
+    //FUNÇÃO PARA PUBLICAR CAMPOS
     public function storeFields(Request $request)
 {
-    // Validação dos dados recebidos
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'required|string',
@@ -392,10 +405,9 @@ class HomeController extends Controller
         'price' => 'required|numeric',
         'modality' => 'required|array',
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'days' => 'required|array', // Garantir que os dias sejam enviados
+        'days' => 'required|array', 
     ]);
 
-    // Tratamento da modalidade
     $modality = $request->input('modality');
     if (is_array($modality)) {
         $validatedData['modality'] = implode(',', $modality);
@@ -403,7 +415,6 @@ class HomeController extends Controller
         $validatedData['modality'] = '';
     }
 
-    // Armazenamento da imagem
     try {
         $imageName = $this->storeFieldImage($request);
         if ($imageName) {
@@ -414,13 +425,10 @@ class HomeController extends Controller
         return back();
     }
 
-    // Adicionando o ID do usuário
     $validatedData['user_id'] = Auth::id();
 
-    // Adicionando o horário por dia da semana
     $availability = [];
 
-    // Itera sobre os dias e coleta todos os horários
     foreach ($request->input('days', []) as $day) {
         $startTimes = $request->input("{$day}_start");
         $endTimes = $request->input("{$day}_end");
@@ -439,7 +447,6 @@ class HomeController extends Controller
 
     $validatedData['availability'] = json_encode($availability);
 
-    // Criando o novo campo no banco de dados
     try {
         Field::create($validatedData);
     } catch (\Exception $e) {
@@ -447,13 +454,12 @@ class HomeController extends Controller
         return back();
     }
 
-    // Exibindo a mensagem de sucesso
     toastr()->timeout(10000)->closeButton()->success('Campo adicionado com sucesso!');
 
-    // Redirecionando para a página de gerenciamento de campos
     return redirect()->route('manage-fields');
 }
 
+    //GUARDAR IMAGEM DO CAMPO NA BASE DE DADOS
     private function storeFieldImage($request)
     {
         if ($request->hasFile('image')) {
@@ -465,16 +471,16 @@ class HomeController extends Controller
         return null;
     }
 
+    //EDITAR CAMPOS CRIADOS
     public function editField($id)
     {
         $field = Field::findOrFail($id);
         return view('home.edit-fields', compact('field'));
     }
 
-
+    //EDITAR CAMPOS CRIADOS
     public function updateField(Request $request, $id)
 {
-    // Validação dos dados recebidos
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'required|string',
@@ -483,10 +489,9 @@ class HomeController extends Controller
         'price' => 'required|numeric',
         'modality' => 'required|array',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'days' => 'required|array', // Garantir que os dias sejam enviados
+        'days' => 'required|array',
     ]);
 
-    // Tratamento da modalidade
     $modality = $request->input('modality');
     if (is_array($modality)) {
         $validatedData['modality'] = implode(',', $modality);
@@ -494,10 +499,9 @@ class HomeController extends Controller
         $validatedData['modality'] = '';
     }
 
-    // Armazenamento da imagem (caso haja uma nova)
     try {
         if ($request->hasFile('image')) {
-            $imageName = $this->storeFieldImage($request);  // Supondo que esse método seja o mesmo
+            $imageName = $this->storeFieldImage($request);  
             if ($imageName) {
                 $validatedData['image'] = $imageName;
             }
@@ -507,16 +511,12 @@ class HomeController extends Controller
         return back();
     }
 
-    // Obtém o campo que será atualizado
     $field = Field::findOrFail($id);
 
-    // Adicionando o ID do usuário (não precisa ser modificado, pois ele já pertence ao campo)
     $validatedData['user_id'] = $field->user_id;
 
-    // Atualizando o horário por dia da semana
     $availability = [];
 
-    // Itera sobre os dias e coleta todos os horários
     foreach ($request->input('days', []) as $day) {
         $startTimes = $request->input("{$day}_start");
         $endTimes = $request->input("{$day}_end");
@@ -533,10 +533,8 @@ class HomeController extends Controller
         }
     }
 
-    // Armazenando os horários atualizados
     $validatedData['availability'] = json_encode($availability);
 
-    // Atualizando o campo no banco de dados
     try {
         $field->update($validatedData);
     } catch (\Exception $e) {
@@ -544,13 +542,12 @@ class HomeController extends Controller
         return back();
     }
 
-    // Exibindo a mensagem de sucesso
     toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso!');
 
-    // Redirecionando para a página de gerenciamento de campos
     return redirect()->route('manage-fields');
 }
 
+    //APAGAR CAMPOS CRIADOS
     public function destroyField($id)
     {
         $field = Field::find($id);
@@ -569,46 +566,5 @@ class HomeController extends Controller
         return redirect()->route('manage-fields');
     }
 
-    public function showEvents(Request $request)
-    {
-        $userId = Auth::id(); // Obtém o ID do usuário autenticado
-        $query = Event::with(['field', 'user']); // Carrega os eventos com relação aos campos e usuários
-
-        // Filtro de modalidade
-        if ($request->filled('filter') && $request->filter !== 'all') {
-            $query->where('modality', $request->filter); // Filtra pela modalidade selecionada
-        }
-
-        // Filtro de pesquisa (por nome do evento)
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('description', 'like', '%' . $search . '%'); // Filtra pelo nome do evento
-        }
-
-        // Filtro de ordenação
-        if ($request->filled('sort')) {
-            if ($request->sort === 'recent') {
-                // Ordena por data mais recente
-                $query->orderBy('event_date_time', 'desc');
-            } elseif ($request->sort === 'alphabetical') {
-                // Ordena por descrição (ordem alfabética)
-                $query->orderBy('description', 'asc');
-            } elseif ($request->sort === 'registered') {
-                // Ordena por eventos nos quais o usuário está inscrito
-            }
-        }
-
-        // Paginação dos eventos
-        $events = $query->paginate(9); // Paginação com 9 eventos por página
-
-        // Adiciona a propriedade isSubscribed para cada evento (para ser usado no front-end)
-        foreach ($events as $event) {
-            // Converte o campo 'participants_user_id' (JSON) em array e verifica se o usuário está inscrito
-            $participants = json_decode($event->participants_user_id, true) ?? [];
-            $event->isSubscribed = in_array($userId, array_column($participants, 'user_id'));
-        }
-
-        // Retorna a view com os eventos filtrados
-        return view('home.events', compact('events'));
-    }
+   
 }

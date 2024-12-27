@@ -156,12 +156,11 @@
     const centerY = height / 2;
     const radius = width / 2.10;
 
-    let items = []; // Lista de jogadores
-    let teams = []; // Equipas criadas
-    let colors = ["#FF5733", "#33FF57", "#3357FF", "#FFC300", "#DAF7A6", "#581845", "#C70039"]; // Lista de cores fixas
-    let currentDeg = 0;
+    let items = []; // JOGADORES
+    let teams = []; // EQUIPAS
+    let colors = ["#FF5733", "#33FF57", "#3357FF", "#FFC300", "#DAF7A6", "#581845", "#C70039"]; 
     let itemDegs = {};
-    let currentPlayer = ""; // Para armazenar o jogador
+    let currentPlayer = "";
 
     function createWheel() {
         step = 360 / items.length;
@@ -171,20 +170,17 @@
     function draw() {
         ctx.clearRect(0, 0, width, height);
 
-        // Borda ao redor da roleta
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, toRad(0), toRad(360));
 
-        // Altera a cor da borda dependendo se há itens ou não
-        ctx.fillStyle = `rgb(${33},${33},${33})`; // Cor de fundo da roleta
+        ctx.fillStyle = `rgb(${33},${33},${33})`; 
         ctx.lineWidth = 3;
 
-        // Se não houver itens, a borda deve ser preta
-        ctx.strokeStyle = items.length === 0 ? 'black' : 'rgb(255, 255, 255)'; // Define a cor da borda
+        ctx.strokeStyle = items.length === 0 ? 'black' : 'rgb(255, 255, 255)'; 
         ctx.stroke();
 
         if (items.length === 0) {
-            return; // Se não houver itens, sai da função
+            return; 
         }
 
         let startDeg = currentDeg;
@@ -194,49 +190,41 @@
             let endDeg = startDeg + step;
             const player = items[i];
 
-            // Atribui uma nova cor se o jogador ainda não tiver uma
             if (!usedColors.has(player)) {
                 usedColors.set(player, getRandomUnusedColor());
             }
 
-            // Desenha o segmento
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.arc(centerX, centerY, radius, toRad(startDeg), toRad(endDeg));
             ctx.fillStyle = usedColors.get(player);
             ctx.fill();
 
-            // Borda do segmento
             ctx.lineWidth = 1;
             ctx.strokeStyle = '#fff';
             ctx.stroke();
 
-            // Desenha o texto
             ctx.save();
             ctx.translate(centerX, centerY);
             ctx.rotate(toRad(startDeg + step / 2));
             ctx.fillStyle = "#fff";
 
-            // Ajuste do tamanho da fonte
             let fontSize = 24;
             ctx.font = `bold ${fontSize}px "Segoe UI"`;
 
-            // Verifica se o texto excede o limite e ajusta o tamanho da fonte
             while (ctx.measureText(player).width > radius * 0.5 && fontSize > 10) {
                 fontSize -= 1;
-                ctx.font = `bold ${fontSize}px "Segoe UI"`; // Atualiza a fonte
+                ctx.font = `bold ${fontSize}px "Segoe UI"`; 
             }
 
-            // Centraliza o texto na fatia
             const textWidth = ctx.measureText(player).width;
-            const textX = (radius * 0.5) - (textWidth / 2); // Posição 'x' centrada na fatia
-            const textY = 10; // Posição 'y' ajustada para ficar visível
+            const textX = (radius * 0.5) - (textWidth / 2); 
+            const textY = 10; 
 
-            ctx.fillText(player, textX, textY); // Desenha o texto na fatia
+            ctx.fillText(player, textX, textY); 
 
             ctx.restore();
 
-            // Guarda ângulos dos segmentos para a seleção
             itemDegs[player] = {
                 startDeg: (startDeg % 360 + 360) % 360,
                 endDeg: (endDeg % 360 + 360) % 360
@@ -273,22 +261,20 @@
 
     function animate() {
         if (pause) {
-            clearInterval(triangleAnimation); // Para a animação da seta
+            clearInterval(triangleAnimation);
             return;
         }
 
         const speedControl = 35;
         speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * speedControl;
 
-        // Verificar se passou por uma nova seção (segmento da roleta)
-        const stepAngle = 360 / items.length; // O ângulo de cada item da roleta
+        const stepAngle = 360 / items.length; 
         lastAngle = currentDeg;
 
         if (speed < 0.01) {
             speed = 0;
             pause = true;
 
-            // Chama a função para selecionar o jogador
             selectPlayer();
 
             removeItem(currentPlayer);
@@ -321,11 +307,11 @@
 
 
     function spin() {
-        if (speed !== 0 || items.length === 0) return; // Verifica se há jogadores
+        if (speed !== 0 || items.length === 0) return; 
 
         maxRotation = (360 * 6) + randomRange(0, 360); // Gira 6 voltas completas + um ângulo aleatório
         currentDeg = 90;
-        pause = false; // Permite a animação
+        pause = false; 
         window.requestAnimationFrame(animate);
     }
 
@@ -361,7 +347,6 @@
     function updatePlayersFromTextarea() {
         const updatedPlayers = document.getElementById("player-list").value.trim().split('\n').map(name => name.trim()).filter(name => name !== '');
 
-        // Remove jogadores que não estão mais na textarea da roleta
         items = items.filter(player => updatedPlayers.includes(player));
 
         createWheel();
@@ -373,7 +358,6 @@
         const playerNames = document.getElementById("player-list").value.trim().split('\n');
         const uniqueNames = [...new Set(playerNames)];
 
-        // Filtra os nomes novos que não estão na roleta
         const newNames = uniqueNames.filter(name => !items.includes(name) && name.trim() !== '');
 
         const sportType = document.getElementById("sport-type").value;
@@ -429,7 +413,6 @@
             return;
         }
 
-        // Adiciona os novos nomes à roleta
         newNames.forEach(player => {
             if (!usedColors.has(player)) {
                 usedColors.set(player, getRandomUnusedColor());
@@ -444,26 +427,21 @@
         createWheel();
         updateTeamDisplay();
 
-        // Atualiza a textarea para mostrar a lista de jogadores que ainda estão na roleta
         document.getElementById("player-list").value = items.join("\n");
     }
 
 
 
     function removeItem(item) {
-        // Recupera a cor do jogador removido e a coloca de volta na lista de cores disponíveis
         const removedColor = usedColors.get(item);
         if (removedColor && !availableColorsList.includes(removedColor)) {
             availableColorsList.push(removedColor);
         }
 
-        // Remove a cor do mapa de cores usadas
         usedColors.delete(item);
 
-        // Remove o jogador da lista
         items = items.filter(i => i !== item);
 
-        // Atualiza a textarea para mostrar a lista de jogadores que ainda estão na roleta
         document.getElementById("player-list").value = items.join("\n");
 
         createWheel();
@@ -495,35 +473,32 @@
         let minPlayersPerTeam;
 
         switch (sportType) {
-            case 'futebol':
-                minPlayersPerTeam = 11;
+            case '2x2':
+                minPlayersPerTeam = 2;
                 break;
-            case 'futebol 7':
-                minPlayersPerTeam = 7;
+            case '3x3':
+                minPlayersPerTeam = 3;
                 break;
-            case 'futsal':
+            case '4x4':
+                minPlayersPerTeam = 4;
+                break;
+            case '5x5':
                 minPlayersPerTeam = 5;
                 break;
-            case 'basquetebol':
-                minPlayersPerTeam = 5;
-                break;
-            case 'voleibol':
+            case '6x6':
                 minPlayersPerTeam = 6;
                 break;
-            case 'andebol':
+            case '7x7':
                 minPlayersPerTeam = 7;
                 break;
-            case 'ténis':
-                minPlayersPerTeam = 2;
+            case '10x10':
+                minPlayersPerTeam = 10;
                 break;
-            case 'raguebi':
-                minPlayersPerTeam = 15;
-                break;
-            case 'padel':
-                minPlayersPerTeam = 2;
+            case '12x12':
+                minPlayersPerTeam = 12;
                 break;
             default:
-                minPlayersPerTeam = 1;
+                minPlayersPerTeam = 0;
         }
     }
     createWheel();

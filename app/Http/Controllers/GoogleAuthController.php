@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Registered;
 
+//FUNCIONALIDADE GOOGLE LOGIN
 class GoogleAuthController extends Controller
 {
     public function redirect()
@@ -24,7 +25,7 @@ class GoogleAuthController extends Controller
             $name = $nameParts[0];
             $surname = $nameParts[1] ?? '';
 
-            $baseUsername = strtolower(str_replace(' ', '.', $fullName)); // nome completo como base
+            $baseUsername = strtolower(str_replace(' ', '.', $fullName)); 
             $username = $baseUsername;
             $counter = 1;
 
