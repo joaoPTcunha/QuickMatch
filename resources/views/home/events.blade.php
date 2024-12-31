@@ -8,7 +8,7 @@
         <form method="GET" action="{{ route('showEvents') }}">
             @csrf
             <div class="flex flex-wrap justify-between items-center ml-5 mr-5 px-4 text-gray-800 mb-6 space-y-4 sm:space-y-0">
-                <!-- Modalidades como texto clicável (desktop) -->
+                <!-- MOBILE -->
                 <div class="hidden sm:flex flex-wrap space-x-4">
                     <span class="filter-link cursor-pointer hover:underline text-gray-700 text-lg">
                         <a href="{{ route('showEvents', ['filter' => 'all']) }}" class="{{ request('filter') == 'all' ? 'text-gray-800' : 'text-gray-700' }}">Todos</a>
@@ -156,14 +156,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Map modal elements
             const modal = document.getElementById('locationModal');
             const closeModalButtons = document.querySelectorAll('#closeModal, #closeModalButton');
             const openModalButtons = document.querySelectorAll('button[data-location]');
             const travelModeSelect = document.getElementById('travelMode');
             let isModalOpen = false;
 
-            // Modal event listeners
             openModalButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const location = button.getAttribute('data-location');
@@ -192,7 +190,7 @@
                 geocodeAddress(location);
             });
 
-            // Mapbox configuration
+            // TOKEN MAPBOX
             const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
 
             function geocodeAddress(address) {
@@ -296,7 +294,6 @@
             }
         });
 
-        // Participation confirmation functions
         function confirmParticipation(eventId) {
             Swal.fire({
                 title: 'Confirmação',

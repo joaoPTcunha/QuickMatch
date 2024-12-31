@@ -26,12 +26,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($fields as $field)
                 <div class="event-card bg-white p-4 rounded-lg border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300">
-                    <!-- Imagem -->
                     <div class="flex justify-center mb-4">
                         <img src="{{ asset('Fields/' . $field->image) }}" alt="{{ $field->name }}" class="w-full h-40 object-cover rounded-md shadow-md">
                     </div>
 
-                    <!-- Detalhes -->
                     <h2 class="text-xl text-center font-bold text-gray-800 mb-2">{{ $field->name }}</h2>
                     <div class="text-gray-700 text-sm mb-4 space-y-1">
                         <p><span class="font-semibold">Localização:</span> {{ $field->location }}</p>
@@ -43,7 +41,6 @@
                         <p><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
                     </div>
 
-                    <!-- Botões -->
                     <div class="mt-4 flex justify-center space-x-2">
                         <a href="{{ route('admin.fields-edit', $field->id) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition-all duration-300 text-sm">Editar</a>
                         <button type="button" data-field-id="{{ $field->id }}" onclick="confirmDelete(this)" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 text-sm">Apagar</button>

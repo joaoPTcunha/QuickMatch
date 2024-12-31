@@ -76,7 +76,7 @@
             @endguest
         </nav>
     </div>
-    <!-- Menu Mobile -->
+    <!-- MOBILE -->
     <div class="md:hidden">
         <div id="menu-items" class="flex-col space-y-2 p-4 hidden">
             <div class="relative">

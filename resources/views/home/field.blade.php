@@ -7,9 +7,7 @@
 
         <form method="GET" action="{{ url()->current() }}" class="mb-6">
             @csrf
-            <!-- Modalidades texto clicável (desktop) -->
             <div class="flex flex-wrap items-center px-4 sm:px-6 lg:px-8 mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
-                <!-- Modalidades para desktop -->
                 <div class="hidden sm:flex flex-wrap items-center space-x-4 w-full mb-4">
                     <span class="filter-link cursor-pointer text-lg">
                         <a href="{{ url()->current() }}" class="{{ !request('modality') ? 'text-gray-800 font-semibold' : 'text-gray-700' }}">Todos</a>
@@ -37,7 +35,7 @@
                     </span>
                 </div>
 
-                <!-- Modalidades dropdown para mobile -->
+                <!-- MODALIDADES MOBILE -->
                 <div class="sm:hidden w-full">
                     <select name="modality" class="w-full px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2" onchange="this.form.submit()">
                         <option value="">Todas as Modalidades</option>
@@ -51,7 +49,6 @@
                     </select>
                 </div>
 
-                <!-- Ordenação -->
                 <div class="w-full sm:w-auto">
                     <select name="sort" class="w-full px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
                         <option value="">Ordenar por...</option>
@@ -62,7 +59,6 @@
                     </select>
                 </div>
 
-                <!-- Barra de pesquisa -->
                 <div class="flex items-center w-full sm:w-1/2">
                     <div class="relative w-full">
                         <input type="text"
@@ -78,7 +74,6 @@
                 </div>
             </div>
 
-            <!-- Mensagem de nenhum resultado encontrado (mover para perto da barra de pesquisa) -->
             @if($fields->isEmpty())
             <div class="text-center text-gray-500 text-lg mb-4">
                 Nenhum resultado encontrado.
@@ -86,7 +81,6 @@
             @endif
         </form>
 
-        <!-- Exibição dos campos -->
         @if(!$fields->isEmpty())
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 lg:p-8">
             @foreach($fields as $field)
@@ -106,16 +100,13 @@
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Email:</span> {{ $field->user->email }}</p>
                     <p class="text-sm text-gray-700 mb-1"><span class="font-semibold">Contacto:</span> {{ $field->contact }}</p>
 
-                    <!-- Disponibilidade -->
                     @if($field->availability)
                     <div class="text-sm text-gray-700 mb-4">
                         <span class="font-semibold">Disponibilidade:</span>
                         <ul class="list-inside list-disc space-y-1 mt-1">
                             @php
-                            // Decodificando a disponibilidade do campo
                             $availabilitySlots = json_decode($field->availability, true);
 
-                            // Mapeamento dos dias para português
                             $dayTranslations = [
                             'monday' => 'Segundas-feiras',
                             'tuesday' => 'Terças-feiras',
@@ -134,14 +125,12 @@
                                 <span class="font-semibold">{{ ucfirst($dayTranslations[$day] ?? $day) }}:</span>
 
                                 @if(count($times) == 1)
-                                <!-- Caso exista apenas um horário, mostramos diretamente -->
                                 @php
                                 $startTime = data_get($times[0], 'start', 'Indefinido');
                                 $endTime = data_get($times[0], 'end', 'Indefinido');
                                 @endphp
                                 <span>{{ $startTime }} - {{ $endTime }}</span>
                                 @else
-                                <!-- Caso exista mais de um horário, iteramos sobre eles -->
                                 @foreach($times as $time)
                                 @php
                                 $startTime = data_get($time, 'start', 'Indefinido');
@@ -164,9 +153,8 @@
                     <p class="text-sm text-gray-700 mb-3">Disponibilidade não definida.</p>
                     @endif
                 </div>
-                <!-- Garantir que o botão fique dentro do card -->
                 <div class="mt-4 text-center">
-                    <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition-all duration-300">
+                    <a href="{{ url('/newmatch/'.$field->id) }}" class="inline-block bg-blue-800 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-900 transition-all duration-300">
                         Marcar Evento
                     </a>
                 </div>

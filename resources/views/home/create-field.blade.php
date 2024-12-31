@@ -36,7 +36,6 @@
                     <input type="text" name="location" id="location" class="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Insira no mapa a localização do campo" autocomplete="off" readonly />
                 </div>
 
-                <!-- Mapa do Mapbox -->
                 <div id="map" class="mb-4 w-full h-64"></div>
 
                 <div class="mb-4">
@@ -48,10 +47,7 @@
                     <div class="block text-sm font-medium text-gray-700">Horário de Disponibilidade</div>
                     <div class="mt-4">
                         <div for="availability" class="text-sm text-gray-700">Selecione os dias e horários</div>
-
-                        <!-- Filtro para seleção dos dias -->
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                            <!-- Segunda-feira -->
                             <div>
                                 <input type="checkbox" id="monday" name="days[]" value="monday" class="mr-2">
                                 <label for="monday">Segunda-feira</label>
@@ -65,8 +61,6 @@
                                     <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
                                 </div>
                             </div>
-
-                            <!-- Terça-feira -->
                             <div>
                                 <input type="checkbox" id="tuesday" name="days[]" value="tuesday" class="mr-2">
                                 <label for="tuesday">Terça-feira</label>
@@ -80,8 +74,6 @@
                                     <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
                                 </div>
                             </div>
-
-                            <!-- Quarta-feira -->
                             <div>
                                 <input type="checkbox" id="wednesday" name="days[]" value="wednesday" class="mr-2">
                                 <label for="wednesday">Quarta-feira</label>
@@ -95,8 +87,6 @@
                                     <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
                                 </div>
                             </div>
-
-                            <!-- Quinta-feira -->
                             <div>
                                 <input type="checkbox" id="thursday" name="days[]" value="thursday" class="mr-2">
                                 <label for="thursday">Quinta-feira</label>
@@ -110,8 +100,6 @@
                                     <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
                                 </div>
                             </div>
-
-                            <!-- Sexta-feira -->
                             <div>
                                 <input type="checkbox" id="friday" name="days[]" value="friday" class="mr-2">
                                 <label for="friday">Sexta-feira</label>
@@ -125,8 +113,6 @@
                                     <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
                                 </div>
                             </div>
-
-                            <!-- Sábado -->
                             <div>
                                 <input type="checkbox" id="saturday" name="days[]" value="saturday" class="mr-2">
                                 <label for="saturday">Sábado</label>
@@ -140,8 +126,6 @@
                                     <button type="button" class="add-time-range mt-2 text-sm text-blue-600 hover:underline">Adicionar outro horário</button>
                                 </div>
                             </div>
-
-                            <!-- Domingo -->
                             <div>
                                 <input type="checkbox" id="sunday" name="days[]" value="sunday" class="mr-2">
                                 <label for="sunday">Domingo</label>
@@ -218,20 +202,18 @@
     <script>
         let map, marker;
 
-        // Chave de API do Mapbox
+        // TOKEN MAPBOX
         const mapboxApiKey = 'pk.eyJ1Ijoiam9zZTAxMCIsImEiOiJjbTN6dWxmOW8yMHptMmpzY2tmZnp6cDkxIn0.RDV-Y71ZzX5d8sq8CFy0Fg';
 
-        // Função para inicializar o mapa
         function initMap() {
             mapboxgl.accessToken = mapboxApiKey;
             map = new mapboxgl.Map({
                 container: 'map',
-                style: 'mapbox://styles/mapbox/satellite-streets-v11', // Estilo de satélite com rótulos
-                center: [-8.2242, 39.3999], // Coordenadas do centro de Portugal
+                style: 'mapbox://styles/mapbox/satellite-streets-v11', 
+                center: [-8.2242, 39.3999], 
                 zoom: 7
             });
 
-            // Adiciona marcador padrão
             marker = new mapboxgl.Marker({
                     draggable: true
                 })
@@ -242,7 +224,6 @@
                     reverseGeocode(lngLat);
                 });
 
-            // Adiciona o Geocoder ao mapa
             const geocoder = new MapboxGeocoder({
                 accessToken: mapboxApiKey,
                 mapboxgl: mapboxgl,
@@ -252,19 +233,16 @@
 
             map.addControl(geocoder, 'top-right');
 
-            // Ouvinte de clique no mapa
             map.on('click', function(event) {
                 placeMarker(event.lngLat);
             });
 
-            // Ouvinte de seleção de localização pelo Geocoder
             geocoder.on('result', function(event) {
                 const lngLat = event.result.geometry.coordinates;
                 placeMarker(lngLat);
             });
         }
 
-        // Função para colocar o marcador e preencher o campo de localização
         function placeMarker(lngLat) {
             if (marker) {
                 marker.remove();
@@ -282,7 +260,6 @@
             reverseGeocode(lngLat);
         }
 
-        // Função para obter o endereço a partir das coordenadas
         function reverseGeocode(lngLat) {
             fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxApiKey}&country=pt`)
                 .then(response => response.json())
@@ -296,11 +273,9 @@
                 .catch(error => console.error("Erro ao obter o endereço:", error));
         }
 
-        // Inicializa o mapa
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
 
-            // Script para exibir a imagem selecionada
             document.getElementById('image').addEventListener('change', function(event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -331,7 +306,6 @@
                 });
             });
 
-            // Adicionar novos intervalos de tempo
             document.querySelectorAll('.add-time-range').forEach(function(button) {
                 button.addEventListener('click', function() {
                     const parentDiv = this.parentElement;
@@ -348,7 +322,6 @@
 
                     parentDiv.insertBefore(timeRangeDiv, this);
 
-                    // Adicionar funcionalidade para remover intervalos
                     timeRangeDiv.querySelector('.remove-time-range').addEventListener('click', function() {
                         timeRangeDiv.remove();
                     });

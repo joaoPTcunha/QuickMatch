@@ -9,7 +9,6 @@ class Field extends Model
 {
     use HasFactory;
 
-    // Campos que podem ser preenchidos em massa
     protected $fillable = [
         'user_id',
         'name',
@@ -19,21 +18,18 @@ class Field extends Model
         'price',
         'modality',
         'image',
-        'availability',  // Adicionando o campo availability
+        'availability',  
     ];
 
-    // Definir os castings para garantir que availability seja tratado como um array
     protected $casts = [
-        'availability' => 'array',  // Cast do campo availability para array
+        'availability' => 'array',  
     ];
 
-    // Relacionamento com o usuário
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relacionamento com os eventos
     public function events()
     {
         return $this->hasMany(Event::class);

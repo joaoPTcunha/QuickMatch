@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Field;
 use App\Models\Event;
 
+//MOSTRAR ESTATISTICAS NA PÁGINA INICIAL
 class AdminController extends Controller
 {
     public function index()
@@ -224,7 +225,7 @@ class AdminController extends Controller
         return response()->json(['years' => $years]);
     }
 
-
+    //PÁGINA GESTÃO UTILIZADORES
     public function userManagement()
     {
         $users = User::select([
@@ -385,6 +386,7 @@ class AdminController extends Controller
         return view('users.show', compact('user'));
     }
 
+    //EDIÇÃO DE CAMPOS ADMIN
     public function fieldsAdmin()
     {
         $fields = Field::paginate(6);
@@ -480,6 +482,7 @@ class AdminController extends Controller
         return redirect()->route('admin.fields');
     }
 
+    //PÁGINAD DE SUPORTE ADMIN
     public function support()
     {
         $problems = Problem::where('is_solved', false)->get();

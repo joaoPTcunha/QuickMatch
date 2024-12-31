@@ -5,11 +5,10 @@
     <div class="container mx-auto flex-grow py-8 px-4 rounded-lg">
         <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Central de Ajuda</h1>
 
-        <!-- FAQ Section -->
+        <!-- FAQS -->
         <section class="mb-12">
             <h2 class="text-2xl font-semibold mb-4">Perguntas Frequentes (FAQ)</h2>
             <div class="rounded-lg shadow-md p-6 bg-white">
-                <!-- FAQ 1 -->
                 <div class="mb-4">
                     <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold">1. Como faço uma reserva?</h3>
@@ -17,7 +16,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ 2 -->
                 <div class="mb-4">
                     <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold">2. Posso cancelar minha reserva?</h3>
@@ -25,7 +23,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ 3 -->
                 <div class="mb-4">
                     <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold">3. Como posso encontrar o campo ideal para a minha prática?</h3>
@@ -33,7 +30,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ 4 -->
                 <div class="mb-4">
                     <div class="faq-card p-4 bg-gray-300 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold">4. O que fazer se eu tiver problemas com o site?</h3>
@@ -43,7 +39,7 @@
             </div>
         </section>
 
-        <!-- Enviar Reclamação Section -->
+        <!-- RECLAMAÇÃO -->
         <section>
             <h2 class="text-2xl font-semibold mb-4">Envie uma Reclamação</h2>
             <div class="bg-white rounded-lg shadow-md p-6">

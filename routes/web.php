@@ -12,7 +12,7 @@ Route::get('/', [HomeController::class, 'index'])->name('index');
 
 Route::get('/index', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
 
-### Perfil
+#PERFIL
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__ . '/auth.php';
 
-#google
+#GOOGLE
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 

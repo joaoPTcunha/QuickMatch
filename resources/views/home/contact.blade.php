@@ -4,8 +4,8 @@
 
 <body class="flex flex-col min-h-screen bg-gray-100">
     <div class="flex-grow">
-    <div class="flex-1 container mx-auto px-4 py-12">
-        <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Contactos</h1>
+    <div class="flex-1 container mx-auto px-4 py-6">
+        <h1 class="text-4xl text-center mb-12 text-gray-800 font-semibold">Contactos</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-4">Criadores</h2>
