@@ -7,11 +7,9 @@
             Editar Campo
         </h2>
         <div class="p-6 bg-white shadow-md rounded-lg max-w-2xl mx-auto">
-
             <div class="flex justify-center mb-4">
-                <label for="image">
-                    <img id="avatar" src="{{ $field->image ? asset('Fields/' . $field->image) : 'https://via.placeholder.com/150' }}"
-                        alt="Avatar" class="w-full h-36 object-cover rounded-md mb-3">
+                <label for="image" class="cursor-pointer block w-full sm:w-1/2">
+                    <img id="avatar" src="{{ asset('Fields/' . $field->image) }}" alt="Avatar" class="w-full h-40 object-cover rounded-md mb-3">
                 </label>
             </div>
 
