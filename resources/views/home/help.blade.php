@@ -5,7 +5,6 @@
     <div class="container mx-auto flex-grow py-8 px-4 rounded-lg">
         <h1 class="text-4xl text-center py-6 text-gray-800 font-semibold">Central de Ajuda</h1>
 
-        <!-- FAQS -->
         <section class="mb-12">
             <h2 class="text-2xl font-semibold mb-4">Perguntas Frequentes (FAQ)</h2>
             <div class="rounded-lg shadow-md p-6 bg-white">
@@ -38,8 +37,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- RECLAMAÇÃO -->
         <section>
             <h2 class="text-2xl font-semibold mb-4">Envie uma Reclamação</h2>
             <div class="bg-white rounded-lg shadow-md p-6">

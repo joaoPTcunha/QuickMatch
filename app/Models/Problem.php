@@ -1,7 +1,5 @@
 <?php
 
-// app/Models/Problem.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +10,7 @@ class Problem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'subject', 
+        'subject',
         'email',
         'description',
     ];

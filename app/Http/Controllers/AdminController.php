@@ -406,7 +406,6 @@ class AdminController extends Controller
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction', 'asc');
 
-        // Realiza a pesquisa e a paginação dos campos
         $fields = Field::query()
             ->when($query, function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%$query%")
@@ -420,7 +419,7 @@ class AdminController extends Controller
             })
             ->orderBy($sort, $direction)
             ->with('user')
-            ->paginate(6);  // Adicionando a paginação com 6 itens por página
+            ->paginate(6);
 
         return view('admin.fields-admin', compact('fields'));
     }

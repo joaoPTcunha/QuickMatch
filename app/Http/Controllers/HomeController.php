@@ -22,16 +22,16 @@ class HomeController extends Controller
     //MOSTRAR EVENTOS
     public function showEvents(Request $request)
     {
-        $userId = Auth::id(); 
-        $query = Event::with(['field', 'user']); 
+        $userId = Auth::id();
+        $query = Event::with(['field', 'user']);
 
         if ($request->filled('filter') && $request->filter !== 'all') {
-            $query->where('modality', $request->filter); 
+            $query->where('modality', $request->filter);
         }
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('description', 'like', '%' . $search . '%'); 
+            $query->where('description', 'like', '%' . $search . '%');
         }
 
         if ($request->filled('sort')) {
@@ -56,29 +56,28 @@ class HomeController extends Controller
     //PARTICIPAR EM EVENTOS
     public function participateInEvent($id)
     {
-        $event = Event::findOrFail($id); 
-        $userId = Auth::id(); 
+        $event = Event::findOrFail($id);
+        $userId = Auth::id();
 
-        
+
         if ($event->num_subscribers >= $event->num_participants) {
             toastr()->error('O evento já está lotado!');
-            return redirect()->route('events'); 
+            return redirect()->route('events');
         }
 
-       
         $participants = json_decode($event->participants_user_id, true) ?? [];
         if (in_array($userId, array_column($participants, 'user_id'))) {
             toastr()->error('Você já está inscrito neste evento!');
-            return redirect()->route('events'); 
+            return redirect()->route('events');
         }
 
         $participants[] = ['user_id' => $userId, 'user_name' => Auth::user()->user_name];
-        $event->participants_user_id = json_encode($participants); 
-        $event->increment('num_subscribers'); 
-        $event->save(); 
+        $event->participants_user_id = json_encode($participants);
+        $event->increment('num_subscribers');
+        $event->save();
 
         toastr()->success('Você inscreveu se com sucesso no evento!');
-        return redirect()->route('events'); 
+        return redirect()->route('events');
     }
 
     //CANCELAR INSCRIÇÃO
@@ -185,42 +184,42 @@ class HomeController extends Controller
         $validatedData = $request->validate([
             'field_id' => 'required|exists:fields,id',
             'field_name' => 'required|string',
-            'schedule' => 'required|string',  
+            'schedule' => 'required|string',
             'specific-date' => 'required|date',
             'price' => 'required|numeric|min:0',
             'modality' => 'required|string',
             'num_participants' => 'required|integer|min:1',
             'participar' => 'boolean',
         ]);
-    
+
         try {
             [$dayOfWeek, $time] = explode('|', $validatedData['schedule']);
-    
+
             $eventDateTime = Carbon::createFromFormat(
                 'Y-m-d H:i',
                 $validatedData['specific-date'] . ' ' . $time
             );
-    
+
             $dayOfWeekFromDate = strtolower($eventDateTime->format('l'));
             if ($dayOfWeekFromDate !== $dayOfWeek) {
                 toastr()->error('A data selecionada não corresponde ao dia da semana escolhido.');
                 return back()->withInput();
             }
-    
+
             $existingEvent = Event::where('field_id', $validatedData['field_id'])
                 ->whereDate('event_date_time', $eventDateTime->toDateString()) // Verificar pela data
                 ->whereTime('event_date_time', $eventDateTime->toTimeString()) // Verificar pelo horário
                 ->first();
-    
+
             if ($existingEvent) {
                 toastr()->error('Já existe um evento agendado para esse horário neste campo.');
                 return back()->withInput();
             }
-    
+
             $event = new Event();
             $event->field_id = $validatedData['field_id'];
             $event->description = $request->input('descricao', 'Evento esportivo');
-            $event->event_date_time = $eventDateTime; 
+            $event->event_date_time = $eventDateTime;
             $event->price = $validatedData['price'];
             $event->modality = $validatedData['modality'];
             $event->num_participants = $validatedData['num_participants'];
@@ -228,23 +227,23 @@ class HomeController extends Controller
             $event->user_id = Auth::id();
             $event->status = 'pending';
             $event->participants_user_id = json_encode([]);
-    
+
             $event->save();
-    
+
             if ($request->has('participar') && $request->participar) {
                 $event->num_subscribers = 1;
-    
+
                 $participants = [
                     [
                         'user_id' => Auth::id(),
                         'user_name' => Auth::user()->name
                     ]
                 ];
-    
+
                 $event->participants_user_id = json_encode($participants);
                 $event->save();
             }
-    
+
             toastr()->success('Evento publicado com sucesso!');
             return redirect()->route('seematch');
         } catch (\Exception $e) {
@@ -252,13 +251,13 @@ class HomeController extends Controller
             return back()->withInput();
         }
     }
-    
+
     //VER EVENTOS CRIADOS
     public function seeMatch()
     {
-        $userId = Auth::id(); 
+        $userId = Auth::id();
         $events = Event::with(['user', 'field'])
-            ->where('user_id', $userId) 
+            ->where('user_id', $userId)
             ->get();
 
         return view('home.seematch', compact('events'));
@@ -285,51 +284,51 @@ class HomeController extends Controller
 
     //CAMPOS
     public function field(Request $request)
-{
-    $query = Field::query();
+    {
+        $query = Field::query();
 
-    if ($request->filled('modality')) {
-        $modality = $request->modality;
-        $query->where('modality', 'LIKE', "%{$modality}%");
-    }
-
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-                ->orWhere('location', 'like', "%{$search}%")
-                ->orWhere('modality', 'like', "%{$search}%")
-                ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
-        });
-    }
-
-    if ($request->filled('sort')) {
-        $sort = $request->sort;
-        switch ($sort) {
-            case 'name_asc':
-                $query->orderBy('name', 'asc');
-                break;
-            case 'name_desc':
-                $query->orderBy('name', 'desc');
-                break;
-            case 'price_asc':
-                $query->orderBy('price', 'asc');
-                break;
-            case 'price_desc':
-                $query->orderBy('price', 'desc');
-                break;
+        if ($request->filled('modality')) {
+            $modality = $request->modality;
+            $query->where('modality', 'LIKE', "%{$modality}%");
         }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%")
+                    ->orWhere('modality', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('sort')) {
+            $sort = $request->sort;
+            switch ($sort) {
+                case 'name_asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+            }
+        }
+
+        $fields = $query->paginate(9);
+
+        $from = $request->input('from', null);
+        $redirect = $request->input('redirect', null);
+
+        return view('home.field', compact('fields', 'from', 'redirect'));
     }
-
-    $fields = $query->paginate(9); 
-
-    $from = $request->input('from', null); 
-    $redirect = $request->input('redirect', null);
-
-    return view('home.field', compact('fields', 'from', 'redirect'));
-}
 
     //CONTACTOS
     public function contact()
@@ -340,7 +339,7 @@ class HomeController extends Controller
     //AJUDA
     public function help()
     {
-        return view('home.help', compact('faqs'));
+        return view('home.help');
     }
 
     //CENTRAL DE AJUDA
@@ -388,7 +387,7 @@ class HomeController extends Controller
     {
         $event = Event::findOrFail($id);
         $pdf = Pdf::loadView('home.invoice', compact('event'))->setOptions([
-            'image_path' => public_path('Logo.png'), 
+            'image_path' => public_path('Logo.png'),
         ]);
         $pdf = Pdf::loadView('home.invoice', compact('event'));
         return $pdf->download('Comprovativo de inscrição.pdf');
@@ -396,68 +395,68 @@ class HomeController extends Controller
 
     //FUNÇÃO PARA PUBLICAR CAMPOS
     public function storeFields(Request $request)
-{
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'location' => 'required|string|max:255',
-        'contact' => 'required|string|max:255',
-        'price' => 'required|numeric',
-        'modality' => 'required|array',
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'days' => 'required|array', 
-    ]);
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'modality' => 'required|array',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'days' => 'required|array',
+        ]);
 
-    $modality = $request->input('modality');
-    if (is_array($modality)) {
-        $validatedData['modality'] = implode(',', $modality);
-    } else {
-        $validatedData['modality'] = '';
-    }
-
-    try {
-        $imageName = $this->storeFieldImage($request);
-        if ($imageName) {
-            $validatedData['image'] = $imageName;
+        $modality = $request->input('modality');
+        if (is_array($modality)) {
+            $validatedData['modality'] = implode(',', $modality);
+        } else {
+            $validatedData['modality'] = '';
         }
-    } catch (\Exception $e) {
-        toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
-        return back();
-    }
 
-    $validatedData['user_id'] = Auth::id();
-
-    $availability = [];
-
-    foreach ($request->input('days', []) as $day) {
-        $startTimes = $request->input("{$day}_start");
-        $endTimes = $request->input("{$day}_end");
-
-        if ($startTimes && $endTimes) {
-            $dayAvailability = [];
-            foreach ($startTimes as $index => $start) {
-                $dayAvailability[] = [
-                    'start' => $start,
-                    'end' => $endTimes[$index],
-                ];
+        try {
+            $imageName = $this->storeFieldImage($request);
+            if ($imageName) {
+                $validatedData['image'] = $imageName;
             }
-            $availability[$day] = $dayAvailability;
+        } catch (\Exception $e) {
+            toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
+            return back();
         }
+
+        $validatedData['user_id'] = Auth::id();
+
+        $availability = [];
+
+        foreach ($request->input('days', []) as $day) {
+            $startTimes = $request->input("{$day}_start");
+            $endTimes = $request->input("{$day}_end");
+
+            if ($startTimes && $endTimes) {
+                $dayAvailability = [];
+                foreach ($startTimes as $index => $start) {
+                    $dayAvailability[] = [
+                        'start' => $start,
+                        'end' => $endTimes[$index],
+                    ];
+                }
+                $availability[$day] = $dayAvailability;
+            }
+        }
+
+        $validatedData['availability'] = json_encode($availability);
+
+        try {
+            Field::create($validatedData);
+        } catch (\Exception $e) {
+            toastr()->error('Erro ao criar o campo: ' . $e->getMessage());
+            return back();
+        }
+
+        toastr()->timeout(10000)->closeButton()->success('Campo adicionado com sucesso!');
+
+        return redirect()->route('manage-fields');
     }
-
-    $validatedData['availability'] = json_encode($availability);
-
-    try {
-        Field::create($validatedData);
-    } catch (\Exception $e) {
-        toastr()->error('Erro ao criar o campo: ' . $e->getMessage());
-        return back();
-    }
-
-    toastr()->timeout(10000)->closeButton()->success('Campo adicionado com sucesso!');
-
-    return redirect()->route('manage-fields');
-}
 
     //GUARDAR IMAGEM DO CAMPO NA BASE DE DADOS
     private function storeFieldImage($request)
@@ -480,72 +479,72 @@ class HomeController extends Controller
 
     //EDITAR CAMPOS CRIADOS
     public function updateField(Request $request, $id)
-{
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'location' => 'required|string|max:255',
-        'contact' => 'required|string|max:255',
-        'price' => 'required|numeric',
-        'modality' => 'required|array',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'days' => 'required|array',
-    ]);
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'modality' => 'required|array',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'days' => 'required|array',
+        ]);
 
-    $modality = $request->input('modality');
-    if (is_array($modality)) {
-        $validatedData['modality'] = implode(',', $modality);
-    } else {
-        $validatedData['modality'] = '';
-    }
+        $modality = $request->input('modality');
+        if (is_array($modality)) {
+            $validatedData['modality'] = implode(',', $modality);
+        } else {
+            $validatedData['modality'] = '';
+        }
 
-    try {
-        if ($request->hasFile('image')) {
-            $imageName = $this->storeFieldImage($request);  
-            if ($imageName) {
-                $validatedData['image'] = $imageName;
+        try {
+            if ($request->hasFile('image')) {
+                $imageName = $this->storeFieldImage($request);
+                if ($imageName) {
+                    $validatedData['image'] = $imageName;
+                }
+            }
+        } catch (\Exception $e) {
+            toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
+            return back();
+        }
+
+        $field = Field::findOrFail($id);
+
+        $validatedData['user_id'] = $field->user_id;
+
+        $availability = [];
+
+        foreach ($request->input('days', []) as $day) {
+            $startTimes = $request->input("{$day}_start");
+            $endTimes = $request->input("{$day}_end");
+
+            if ($startTimes && $endTimes) {
+                $dayAvailability = [];
+                foreach ($startTimes as $index => $start) {
+                    $dayAvailability[] = [
+                        'start' => $start,
+                        'end' => $endTimes[$index],
+                    ];
+                }
+                $availability[$day] = $dayAvailability;
             }
         }
-    } catch (\Exception $e) {
-        toastr()->error('Erro ao salvar a imagem: ' . $e->getMessage());
-        return back();
-    }
 
-    $field = Field::findOrFail($id);
+        $validatedData['availability'] = json_encode($availability);
 
-    $validatedData['user_id'] = $field->user_id;
-
-    $availability = [];
-
-    foreach ($request->input('days', []) as $day) {
-        $startTimes = $request->input("{$day}_start");
-        $endTimes = $request->input("{$day}_end");
-
-        if ($startTimes && $endTimes) {
-            $dayAvailability = [];
-            foreach ($startTimes as $index => $start) {
-                $dayAvailability[] = [
-                    'start' => $start,
-                    'end' => $endTimes[$index],
-                ];
-            }
-            $availability[$day] = $dayAvailability;
+        try {
+            $field->update($validatedData);
+        } catch (\Exception $e) {
+            toastr()->error('Erro ao atualizar o campo: ' . $e->getMessage());
+            return back();
         }
+
+        toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso!');
+
+        return redirect()->route('manage-fields');
     }
-
-    $validatedData['availability'] = json_encode($availability);
-
-    try {
-        $field->update($validatedData);
-    } catch (\Exception $e) {
-        toastr()->error('Erro ao atualizar o campo: ' . $e->getMessage());
-        return back();
-    }
-
-    toastr()->timeout(10000)->closeButton()->success('Campo atualizado com sucesso!');
-
-    return redirect()->route('manage-fields');
-}
 
     //APAGAR CAMPOS CRIADOS
     public function destroyField($id)
@@ -565,6 +564,4 @@ class HomeController extends Controller
         toastr()->timeout(10000)->closeButton()->success('Campo apagado com sucesso!');
         return redirect()->route('manage-fields');
     }
-
-   
 }
